@@ -63,4 +63,11 @@
             android:id="@+id/submit"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/login_btn_shape"/>
+
+    <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar"
+            android:layout_gravity="center_horizontal"
+            android:indeterminate="false"/>
 </LinearLayout>
