@@ -1,6 +1,8 @@
 package com.WindHunter;
 
+import android.view.Gravity;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 import com.WindHunter.tools.*;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -31,12 +33,10 @@ public class LoginActivity extends Activity {
                 String password = ((EditText) findViewById(R.id.password)).getText().toString();
 
                 // 检测空白输入
-                // TODO: 改为屏幕下面的浮动框，编辑框变红
+                // TODO: 以后美化
                 if (email.isEmpty() || password.isEmpty()){
-                    new AlertDialog.Builder(LoginActivity.this)
-                            .setMessage(R.string.login_alert)
-                            .setPositiveButton(R.string.login_alert_ok, null)
-                            .show();
+                    Toast toast=Toast.makeText(LoginActivity.this, "请输入邮箱或密码～", Toast.LENGTH_SHORT);
+                    toast.show();
                     return;
                 }
 
@@ -72,11 +72,10 @@ public class LoginActivity extends Activity {
         }
 
         @Override
-        // TODO: 需要改成浮动框
+        // TODO：以后可以考虑增加背景例如气泡效果
         protected void alert() {
-            new AlertDialog.Builder(LoginActivity.this)
-                    .setMessage("NetWork Error")
-                    .show();
+            Toast toast=Toast.makeText(LoginActivity.this,"对不起，网络连接错误～",Toast.LENGTH_SHORT);
+            toast.show();
         }
     }
 }
