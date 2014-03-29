@@ -22,7 +22,8 @@ public class WelcomeActivity extends Activity {
         // 设置全局配置
         SharedPreferences settings = getSharedPreferences("settings", MODE_PRIVATE);
         SharedPreferences.Editor settingsEditor = settings.edit();
-        settingsEditor.putString("Host", "192.168.1.1");
+        // 测试服务器地址
+        settingsEditor.putString("Host", "42.121.113.32/weibo/");
         settingsEditor.commit();
 
         // 设置延时跳转

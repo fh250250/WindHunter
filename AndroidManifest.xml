@@ -10,6 +10,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".LoginActivity" android:theme="@style/login"/>
+        <activity android:name=".MainActivity"/>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>
