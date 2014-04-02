@@ -56,8 +56,7 @@ public class LoginActivity extends Activity {
                 // 检测空白输入
                 // TODO: 以后美化
                 if (email.isEmpty() || password.isEmpty()){
-                    Toast toast=Toast.makeText(LoginActivity.this, "请输入邮箱或密码～", Toast.LENGTH_SHORT);
-                    toast.show();
+                    Toast.makeText(LoginActivity.this, R.string.login_alert_emptyerror, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -124,7 +123,7 @@ public class LoginActivity extends Activity {
                     boolean tmp = jsonResult.has("code");
                     if ( tmp && jsonResult.getString("code").equals("00001") ){
                         // 认证失败
-                        Toast.makeText(LoginActivity.this, "登录失败，账号或密码错误", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, R.string.login_alert_autherror, Toast.LENGTH_SHORT).show();
                         ((EditText) findViewById(R.id.password)).setText("");
                     }else{
                         // 成功
@@ -144,7 +143,7 @@ public class LoginActivity extends Activity {
                 }
             }else{
                 // TODO：以后可以考虑增加背景例如气泡效果
-                Toast.makeText(LoginActivity.this,"对不起，网络连接错误～",Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this,R.string.login_alert_neterror,Toast.LENGTH_SHORT).show();
             }
 
             findViewById(R.id.progressBar).setVisibility(View.GONE);

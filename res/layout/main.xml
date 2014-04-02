@@ -1,8 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+    <TableLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 android:background="@drawable/main_bg"
+                 android:stretchColumns="*">
+        <TableRow
+                android:id="@+id/tableRow1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="20dp"
+                >
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+            <ImageView
+                    android:id="@+id/image_weibo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/main_weibo"
+                    android:contentDescription="@string/main_image_weibo"
+                    />
 
-</LinearLayout>
+            <ImageView
+                    android:id="@+id/image_homepage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/main_homepage"
+                    android:contentDescription="@string/main_image_homepage"
+                    />
+
+            <ImageView
+                    android:id="@+id/image_friends"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/main_friends"
+                    android:contentDescription="@string/main_image_friends"
+                    />
+        </TableRow>
+        <TableRow
+                android:id="@+id/tableRow2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                >
+
+            <ImageView
+                    android:id="@+id/image_chat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/main_chat"
+                    android:contentDescription="@string/main_image_chat"
+                    />
+
+            <ImageView
+                    android:id="@+id/image_frindfriends"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/main_findfriends"
+                    android:contentDescription="@string/main_image_findfriends"
+                    />
+
+            <ImageView
+                    android:id="@+id/image_messages"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/main_messages"
+                    android:contentDescription="@string/main_image_messages"
+                    />
+        </TableRow>
+
+        <TableRow
+                android:id="@+id/tableRow3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingTop="20dp"
+                >
+
+            <ImageView
+                    android:id="@+id/image_sign"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/main_sign"
+                    android:contentDescription="@string/main_image_sign"/>
+
+            <ImageView
+                    android:id="@+id/image_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/main_settings"
+                    android:contentDescription="@string/main_iamge_settings"
+                    />
+
+            <ImageView
+                    android:id="@+id/image_help"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/main_help"
+                    android:contentDescription="@string/main_image_help"
+                    />
+        </TableRow>
+    </TableLayout>
+</FrameLayout>
