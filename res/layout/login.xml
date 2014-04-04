@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout
-              xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:background="@drawable/login_background"
-              android:baselineAligned="false"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@android:color/white"
+        android:baselineAligned="false"
         >
     <TableRow
             android:layout_width="wrap_content"
@@ -21,58 +21,40 @@
                 android:src="@drawable/login_logo"
                 />
     </TableRow>
-
-    <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/bg_edittext"
-            android:inputType="textEmailAddress"
-            android:padding="5dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:ems="10"
-            android:textColorHint="#AAAAAA"
-            android:textSize="20sp"
-            android:singleLine="true"
+    <com.beardedhen.androidbootstrap.BootstrapEditText
             android:id="@+id/email"
-            android:hint="@string/login_email"/>
-    <EditText
             android:layout_width="fill_parent"
             android:layout_height="50dp"
-            android:background="@drawable/bg_edittext"
-            android:inputType="textPassword"
-            android:padding="5dp"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:ems="10"
-            android:textColorHint="#AAAAAA"
-            android:textSize="20sp"
-            android:singleLine="true"
+            android:hint="@string/login_email"
+            bootstrapbutton:be_roundedCorners="true"
+            bootstrapbutton:be_state="default"
+            android:gravity="left|center"
+            />
+    <com.beardedhen.androidbootstrap.BootstrapEditText
             android:id="@+id/password"
-            android:layout_gravity="center_horizontal"
-            android:hint="@string/login_password"/>
-    <Button
             android:layout_width="fill_parent"
             android:layout_height="50dp"
-            android:text="@string/login_submit"
-            android:textSize="20sp"
-            android:textColor="@android:color/holo_blue_dark"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:id="@+id/submit"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/login_btn_shape"/>
+            android:hint="@string/login_password"
+            android:password="true"
+            bootstrapbutton:be_roundedCorners="true"
+            bootstrapbutton:be_state="default"
+            android:gravity="left|center"
+            />
     <com.beardedhen.androidbootstrap.BootstrapButton
-            android:id="@+id/btnBig"
+            android:id="@+id/submit"
             android:layout_width="fill_parent"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:text="Primary"
-            bootstrapbutton:bb_icon_left="fa-cloud"
+            android:text="@string/login_submit"
+            bootstrapbutton:bb_icon_left="fa-check-circle"
             bootstrapbutton:bb_roundedCorners="true"
             bootstrapbutton:bb_type="primary"
             bootstrapbutton:bb_text_gravity="center" />

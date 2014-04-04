@@ -8,8 +8,8 @@ import com.WindHunter.tools.*;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.exception.HttpException;
@@ -31,13 +31,13 @@ public class LoginActivity extends Activity {
     private final String requestKey = "THINKSNS";
 
     // 登录按钮
-    @ViewInject(R.id.submit)      Button loginBtn;
+    @ViewInject(R.id.submit)      BootstrapButton loginBtn;
     // 进度条
     @ViewInject(R.id.progressBar) ProgressBar progressBar;
     // 账号输入框
-    @ViewInject(R.id.email)       EditText emailEditText;
+    @ViewInject(R.id.email)       BootstrapEditText emailEditText;
     // 密码输入框
-    @ViewInject(R.id.password)    EditText passwordEditText;
+    @ViewInject(R.id.password)    BootstrapEditText passwordEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
