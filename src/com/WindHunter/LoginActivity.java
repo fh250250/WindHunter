@@ -28,19 +28,16 @@ public class LoginActivity extends Activity {
 
 
     // 默认加密request_key
-    private String requestKey = "THINKSNS";
+    private final String requestKey = "THINKSNS";
 
-    @ViewInject(R.id.submit)
-    Button loginBtn;
-
-    @ViewInject(R.id.progressBar)
-    ProgressBar progressBar;
-
-    @ViewInject(R.id.email)
-    EditText emailEditText;
-
-    @ViewInject(R.id.password)
-    EditText passwordEditText;
+    // 登录按钮
+    @ViewInject(R.id.submit)      Button loginBtn;
+    // 进度条
+    @ViewInject(R.id.progressBar) ProgressBar progressBar;
+    // 账号输入框
+    @ViewInject(R.id.email)       EditText emailEditText;
+    // 密码输入框
+    @ViewInject(R.id.password)    EditText passwordEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,10 +92,7 @@ public class LoginActivity extends Activity {
                     @Override
                     public void onStart() {
                         // 禁用控件
-                        progressBar.setVisibility(View.VISIBLE);
-                        emailEditText.setEnabled(false);
-                        passwordEditText.setEnabled(false);
-                        loginBtn.setEnabled(false);
+                        setUIEnable(false);
                     }
 
                     @Override
@@ -117,6 +111,7 @@ public class LoginActivity extends Activity {
                                 // 认证失败
                                 Toast.makeText(LoginActivity.this, R.string.login_alert_autherror, Toast.LENGTH_SHORT).show();
                                 passwordEditText.setText("");
+                                setUIEnable(true);
                             }else{
                                 // 成功
                                 SharedPreferences settings = getSharedPreferences("settings", MODE_PRIVATE);
@@ -139,80 +134,18 @@ public class LoginActivity extends Activity {
                     public void onFailure(HttpException e, String s) {
                         // TODO：以后可以考虑增加背景例如气泡效果
                         Toast.makeText(LoginActivity.this,R.string.login_alert_neterror,Toast.LENGTH_SHORT).show();
+                        setUIEnable(true);
                     }
                 });
 
-
-        // 恢复控件
-        progressBar.setVisibility(View.GONE);
-        emailEditText.setEnabled(true);
-        passwordEditText.setEnabled(true);
-        loginBtn.setEnabled(true);
     }
 
-//    private class LoginTask extends AsyncTask<String, Integer, String>{
-//
-//        @Override
-//        protected String doInBackground(String... api) {
-//            try{
-//                HttpClient httpClient = new DefaultHttpClient();
-//                HttpGet httpGet = new HttpGet(api[0]);
-//                HttpResponse httpResponse = httpClient.execute(httpGet);
-//                // 返回请求数据
-//                return EntityUtils.toString(httpResponse.getEntity());
-//            } catch (ClientProtocolException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            return "error";
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-//            findViewById(R.id.email).setEnabled(false);
-//            findViewById(R.id.password).setEnabled(false);
-//            findViewById(R.id.submit).setEnabled(false);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String result) {
-//            if ( !result.equals("error") ){
-//                try {
-//                    // 获取JSON对象
-//                    JSONObject jsonResult = new JSONObject(result);
-//                    // 先计算出是否有code 防止 '&&'后面的代码先执行而照成异常
-//                    boolean tmp = jsonResult.has("code");
-//                    if ( tmp && jsonResult.getString("code").equals("00001") ){
-//                        // 认证失败
-//                        Toast.makeText(LoginActivity.this, R.string.login_alert_autherror, Toast.LENGTH_SHORT).show();
-//                        ((EditText) findViewById(R.id.password)).setText("");
-//                    }else{
-//                        // 成功
-//                        SharedPreferences settings = getSharedPreferences("settings", MODE_PRIVATE);
-//                        SharedPreferences.Editor editor = settings.edit();
-//                        editor.putString("oauth_token", jsonResult.getString("oauth_token"));
-//                        editor.putString("oauth_token_secret", jsonResult.getString("oauth_token_secret"));
-//                        editor.putString("uid", jsonResult.getString("uid"));
-//                        editor.commit();
-//
-//                        // 登录成功 页面跳转
-//                        startActivity(new Intent().setClass(LoginActivity.this, MainActivity.class));
-//                        LoginActivity.this.finish();
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }else{
-//                Toast.makeText(LoginActivity.this,R.string.login_alert_neterror,Toast.LENGTH_SHORT).show();
-//            }
-//
-//            findViewById(R.id.progressBar).setVisibility(View.GONE);
-//            findViewById(R.id.email).setEnabled(true);
-//            findViewById(R.id.password).setEnabled(true);
-//            findViewById(R.id.submit).setEnabled(true);
-//        }
-//    }
+    // 登录界面控件的控制
+    private void setUIEnable(boolean b){
+        progressBar.setVisibility(b ? View.GONE : View.VISIBLE);
+        emailEditText.setEnabled(b);
+        passwordEditText.setEnabled(b);
+        loginBtn.setEnabled(b);
+    }
 
 }
