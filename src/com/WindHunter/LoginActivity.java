@@ -96,11 +96,6 @@ public class LoginActivity extends Activity {
                     }
 
                     @Override
-                    public void onLoading(long total, long current, boolean isUploading) {
-                        super.onLoading(total, current, isUploading);
-                    }
-
-                    @Override
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         try {
                             // 获取JSON对象
@@ -126,7 +121,8 @@ public class LoginActivity extends Activity {
                                 LoginActivity.this.finish();
                             }
                         } catch (JSONException e) {
-                            e.printStackTrace();
+                            Toast.makeText(LoginActivity.this,R.string.login_alert_neterror,Toast.LENGTH_SHORT).show();
+                            setUIEnable(true);
                         }
                     }
 
