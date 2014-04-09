@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:gravity="left"
-              android:orientation="horizontal"
-              android:layout_width="wrap_content"
-              android:layout_height="fill_parent">
-
-    <Button
-            android:id="@+id/title_bar_menu"
-            android:background="@drawable/titlebar_menu_selector"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-    <TextView
-            android:id="@+id/uname"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"/>
-
+              xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"              android:gravity="center"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content">
+        <com.beardedhen.androidbootstrap.BootstrapButton
+                android:id="@+id/title_bar_menu"
+                bootstrapbutton:bb_roundedCorners="true"
+                bootstrapbutton:bb_type="default"
+                bootstrapbutton:bb_icon_left="fa-th-large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        <TextView
+                android:id="@+id/uname"
+                android:textSize="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"/>
 </LinearLayout>

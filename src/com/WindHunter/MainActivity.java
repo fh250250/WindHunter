@@ -1,6 +1,7 @@
 package com.WindHunter;
 
 
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.*;
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.ViewUtils;
@@ -26,6 +28,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 
 public class MainActivity extends ActionBarActivity {
@@ -55,8 +59,7 @@ public class MainActivity extends ActionBarActivity {
         getSupportActionBar().setCustomView(personal_info);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
 
-
-        Button title_bar_menu = (Button)personal_info.findViewById(R.id.title_bar_menu);
+        BootstrapButton title_bar_menu = (BootstrapButton)personal_info.findViewById(R.id.title_bar_menu);
         title_bar_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,6 +94,7 @@ public class MainActivity extends ActionBarActivity {
                         }
                     }
 
+                    // TODO: 需要增加网络错误的提醒
                     @Override
                     public void onFailure(HttpException e, String s) {
                         Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
@@ -160,6 +164,8 @@ public class MainActivity extends ActionBarActivity {
                                 weiboList.setAdapter(weiboAdapter);
                             }
                         } catch (JSONException e) {
+
+                            // TODO: 需要增加网络错误的提醒
                             e.printStackTrace();
                         }
                     }
@@ -196,6 +202,7 @@ public class MainActivity extends ActionBarActivity {
         // 占位图片
         // TODO: 需添加占位图片和加载失败图片
         bitmapUtils.configDefaultLoadingImage(R.drawable.icon);
+        bitmapUtils.configDefaultLoadFailedImage(R.drawable.icon);
         bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
     }
 
