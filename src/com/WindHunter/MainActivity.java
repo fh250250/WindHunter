@@ -6,10 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.*;
@@ -22,7 +19,7 @@ import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
 import com.lidroid.xutils.view.annotation.ViewInject;
-import com.slidingmenu.lib.SlidingMenu;
+import com.special.ResideMenu.ResideMenu;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +34,8 @@ public class MainActivity extends ActionBarActivity {
     private BitmapUtils bitmapUtils;
     private HttpUtils httpUtils;
 
+
+    private ResideMenu resideMenu;
 
     // ListView
     @ViewInject(R.id.weibo_list)
@@ -112,8 +111,7 @@ public class MainActivity extends ActionBarActivity {
 
 
         // 加载slideMenu
-        // TODO: 运行时出错 尽快修复此 bug
-//        initSlideMenu();
+        initSlideMenu();
 
 
 
@@ -167,16 +165,14 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void initSlideMenu(){
-        final SlidingMenu menu=new SlidingMenu(this);
-        menu.setMode(SlidingMenu.LEFT);
-        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-        menu.setShadowWidthRes(R.dimen.shadow_width);
-        menu.setShadowDrawable(R.drawable.shadow);
-        menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-        menu.setBehindWidth(200);
-        menu.setFadeDegree(0.35f);
-        menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-        menu.setMenu(R.layout.menu);
+        resideMenu = new ResideMenu(this);
+        resideMenu.setBackground(R.drawable.menu_background);
+        resideMenu.attachToActivity(this);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return resideMenu.onInterceptTouchEvent(ev) || super.dispatchTouchEvent(ev);
     }
 
     private void initBitmapUtils(){
