@@ -162,7 +162,7 @@ public class MainActivity extends Activity {
 
         // 占位图片
         // TODO: 需添加占位图片和加载失败图片
-        bitmapUtils.configDefaultLoadingImage(R.drawable.ic_launcher);
+        bitmapUtils.configDefaultLoadingImage(R.drawable.icon);
         bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
     }
 
