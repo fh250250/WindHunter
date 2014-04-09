@@ -55,7 +55,16 @@ public class MainActivity extends ActionBarActivity {
         getSupportActionBar().setCustomView(personal_info);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
 
-        final ImageView avatar = (ImageView)personal_info.findViewById(R.id.avatar);
+
+        Button title_bar_menu = (Button)personal_info.findViewById(R.id.title_bar_menu);
+        title_bar_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resideMenu.openMenu();
+            }
+        });
+
+
         final TextView uname = (TextView)personal_info.findViewById(R.id.uname);
 
         // 组装个人信息API 请求参数
@@ -75,10 +84,8 @@ public class MainActivity extends ActionBarActivity {
                     public void onSuccess(ResponseInfo<String> stringResponseInfo) {
                         try {
                             JSONObject jsonObject = new JSONObject(stringResponseInfo.result);
-                            String avatarUrl = jsonObject.getString("avatar_small");
 
                             uname.setText(jsonObject.getString("uname"));
-                            bitmapUtils.display(avatar, avatarUrl);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

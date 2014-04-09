@@ -6,10 +6,11 @@
               android:layout_width="wrap_content"
               android:layout_height="fill_parent">
 
-    <ImageView
-            android:id="@+id/avatar"
+    <Button
+            android:id="@+id/title_bar_menu"
+            android:background="@drawable/titlebar_menu_selector"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"/>
+            android:layout_height="wrap_content"/>
 
     <TextView
             android:id="@+id/uname"
