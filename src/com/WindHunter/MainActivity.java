@@ -1,12 +1,13 @@
 package com.WindHunter;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -30,39 +31,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity {
 
     private String host, oauth_token, oauth_token_secret, uid;
     private BitmapUtils bitmapUtils;
+    private HttpUtils httpUtils;
 
-    // 个人头像
-    @ViewInject(R.id.avatar)
-    ImageView avatar;
 
     // ListView
     @ViewInject(R.id.weibo_list)
     ListView weiboList;
 
+
+    // 绘制ActionBar
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+    public boolean onCreateOptionsMenu(Menu menu) {
 
-        // 注入Activity
-        ViewUtils.inject(this);
+        // 禁用LOGO与Title
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        // 配置BitmapUtils
-        initBitmapUtils();
+        // 设置自定义的ActionBar布局
+        View personal_info = LayoutInflater.from(this).inflate(R.layout.personal_info, null);
+        getSupportActionBar().setCustomView(personal_info);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
 
-        // 加载slideMenu
-        initSlideMenu();
-
-        // 从全局对象中获取认证数据
-        SharedPreferences settings = getSharedPreferences("settings", MODE_PRIVATE);
-        host = settings.getString("Host", "demo.thinksns.com/t3/");
-        oauth_token = settings.getString("oauth_token", "");
-        oauth_token_secret = settings.getString("oauth_token_secret", "");
-        uid = settings.getString("uid", "");
+        final ImageView avatar = (ImageView)personal_info.findViewById(R.id.avatar);
+        final TextView uname = (TextView)personal_info.findViewById(R.id.uname);
 
         // 组装个人信息API 请求参数
         String userShowApi = "http://" + host + "index.php?app=api&mod=User&act=show";
@@ -72,8 +67,7 @@ public class MainActivity extends Activity {
         requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
 
         // 完成请求并绘制个人信息界面
-        HttpUtils http = new HttpUtils();
-        http.send(HttpRequest.HttpMethod.GET,
+        httpUtils.send(HttpRequest.HttpMethod.GET,
                 userShowApi,
                 requestParams,
                 new RequestCallBack<String>(){
@@ -82,8 +76,9 @@ public class MainActivity extends Activity {
                     public void onSuccess(ResponseInfo<String> stringResponseInfo) {
                         try {
                             JSONObject jsonObject = new JSONObject(stringResponseInfo.result);
-                            String avatarUrl = jsonObject.getString("avatar_tiny");
+                            String avatarUrl = jsonObject.getString("avatar_small");
 
+                            uname.setText(jsonObject.getString("uname"));
                             bitmapUtils.display(avatar, avatarUrl);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -96,19 +91,54 @@ public class MainActivity extends Activity {
                     }
                 });
 
+        return true;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        // 配置BitmapUtils
+        initBitmapUtils();
+
+        // 初始化HttpUtils
+        httpUtils = new HttpUtils();
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+
+        // 注入Activity
+        ViewUtils.inject(this);
+
+
+
+        // 加载slideMenu
+        // TODO: 运行时出错 尽快修复此 bug
+//        initSlideMenu();
+
+
+
+        // 从全局对象中获取认证数据
+        SharedPreferences settings = getSharedPreferences("settings", MODE_PRIVATE);
+        host = settings.getString("Host", "demo.thinksns.com/t3/");
+        oauth_token = settings.getString("oauth_token", "");
+        oauth_token_secret = settings.getString("oauth_token_secret", "");
+        uid = settings.getString("uid", "");
+
+
+
 
         // 组装关注用户最新微博信息API
         String friendsTimeLineApi = "http://" + host + "index.php?app=api&mod=WeiboStatuses&act=friends_timeline";
-        RequestParams requestParams1 = new RequestParams();
-        requestParams1.addQueryStringParameter("mid", uid);
-        requestParams1.addQueryStringParameter("oauth_token", oauth_token);
-        requestParams1.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
+        RequestParams requestParams = new RequestParams();
+        requestParams.addQueryStringParameter("mid", uid);
+        requestParams.addQueryStringParameter("oauth_token", oauth_token);
+        requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
 
 
         // 请求绘制ListView界面
-        http.send(HttpRequest.HttpMethod.GET,
+        httpUtils.send(HttpRequest.HttpMethod.GET,
                 friendsTimeLineApi,
-                requestParams1,
+                requestParams,
                 new RequestCallBack<String>(){
 
                     @Override
