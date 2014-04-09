@@ -1,11 +1,10 @@
 package com.WindHunter;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
-import android.widget.ProgressBar;
+import android.view.Window;
 import android.widget.Toast;
 import com.WindHunter.tools.*;
 import android.os.Bundle;
@@ -34,8 +33,6 @@ public class LoginActivity extends ActionBarActivity {
 
     // 登录按钮
     @ViewInject(R.id.submit)      BootstrapButton loginBtn;
-    // 进度条
-    @ViewInject(R.id.progressBar) ProgressBar progressBar;
     // 账号输入框
     @ViewInject(R.id.email)       BootstrapEditText emailEditText;
     // 密码输入框
@@ -44,9 +41,11 @@ public class LoginActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        ActionBar actionBar = getActionBar();
-        actionBar.setTitle("Login");
-        actionBar.setDisplayShowHomeEnabled(false);
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        setTitle(R.string.login_title);
+
+        // 默认不显示进度条
+        setProgressBarIndeterminateVisibility(false);
 
         return true;
     }
@@ -54,13 +53,15 @@ public class LoginActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // 获取进度条
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
         setContentView(R.layout.login);
 
         // ViewUtils 注入
         ViewUtils.inject(this);
 
-        // 进度条不显示
-        progressBar.setVisibility(View.GONE);
     }
 
 
@@ -150,7 +151,7 @@ public class LoginActivity extends ActionBarActivity {
 
     // 登录界面控件的控制
     private void setUIEnable(boolean b){
-        progressBar.setVisibility(b ? View.GONE : View.VISIBLE);
+        setProgressBarIndeterminateVisibility(!b);
         emailEditText.setEnabled(b);
         passwordEditText.setEnabled(b);
         loginBtn.setEnabled(b);
