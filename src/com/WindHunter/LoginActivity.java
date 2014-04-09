@@ -1,11 +1,13 @@
 package com.WindHunter;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.WindHunter.tools.*;
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import com.beardedhen.androidbootstrap.BootstrapButton;
@@ -24,7 +26,7 @@ import org.json.JSONObject;
 
 
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends ActionBarActivity {
 
 
     // 默认加密request_key
@@ -38,6 +40,16 @@ public class LoginActivity extends Activity {
     @ViewInject(R.id.email)       BootstrapEditText emailEditText;
     // 密码输入框
     @ViewInject(R.id.password)    BootstrapEditText passwordEditText;
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        ActionBar actionBar = getActionBar();
+        actionBar.setTitle("Login");
+        actionBar.setDisplayShowHomeEnabled(false);
+
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
