@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.format.Time;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -27,10 +28,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
-
+import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -147,7 +149,7 @@ public class MainActivity extends ActionBarActivity {
 
 
         // 填充列表
-        freshList();
+        firstFillListView();
 
     }
 
@@ -164,9 +166,56 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onRefresh() {
                 // 下拉刷新
-                freshList();
-                weiboList.stopRefresh();
-                weiboList.setRefreshTime("Just now");
+
+                // 初始化为第一页
+                page = 1;
+
+                // 组装关注用户最新微博信息API
+                String friendsTimeLineApi = "http://" + host + "index.php?app=api&mod=WeiboStatuses&act=friends_timeline";
+                RequestParams requestParams = new RequestParams();
+                requestParams.addQueryStringParameter("mid", uid);
+                requestParams.addQueryStringParameter("count", COUNT);
+                requestParams.addQueryStringParameter("page", page + "");
+                requestParams.addQueryStringParameter("oauth_token", oauth_token);
+                requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
+
+
+                // 请求绘制ListView界面
+                httpUtils.send(HttpRequest.HttpMethod.GET,
+                        friendsTimeLineApi,
+                        requestParams,
+                        new RequestCallBack<String>(){
+
+                            @Override
+                            public void onSuccess(ResponseInfo<String> stringResponseInfo) {
+                                try {
+                                    JSONArray jsonArray = new JSONArray(stringResponseInfo.result);
+                                    if( jsonArray.length() == 0 ){
+                                        Toast.makeText(MainActivity.this, "没有内容", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        weiboAdapter.clear();
+
+                                        weiboAdapter.addAll(getWeiboDataArray(jsonArray));
+                                        weiboAdapter.notifyDataSetChanged();
+
+                                        // 页码加 1
+                                        page += 1;
+                                    }
+                                } catch (JSONException e) {
+                                    Toast.makeText(MainActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
+                                }
+
+                                weiboList.stopRefresh();
+                                weiboList.setRefreshTime(new SimpleDateFormat("HH:MM:SS").format(new Date()));
+                            }
+
+                            @Override
+                            public void onFailure(HttpException e, String s) {
+                                Toast.makeText(MainActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
+                                weiboList.stopRefresh();
+                                weiboList.setRefreshTime(new SimpleDateFormat("HH:MM:SS").format(new Date()));
+                            }
+                        });
             }
 
             @Override
@@ -318,7 +367,8 @@ public class MainActivity extends ActionBarActivity {
         private TextView weibo_item_content;
     }
 
-    private void freshList(){
+    // 首次填充ListView
+    private void firstFillListView(){
         // 初始化为第一页
         page = 1;
 
@@ -345,10 +395,6 @@ public class MainActivity extends ActionBarActivity {
                             if( jsonArray.length() == 0 ){
                                 Toast.makeText(MainActivity.this, "没有内容", Toast.LENGTH_SHORT).show();
                             }else{
-                                // 先清空
-                                weiboAdapter.clear();
-
-                                // 再加载
                                 weiboAdapter.addAll(getWeiboDataArray(jsonArray));
                                 weiboAdapter.notifyDataSetChanged();
 
