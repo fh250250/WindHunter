@@ -113,6 +113,11 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+
+        // 注入Activity
+        ViewUtils.inject(this);
 
         // 配置BitmapUtils
         initBitmapUtils();
@@ -120,11 +125,10 @@ public class MainActivity extends ActionBarActivity {
         // 初始化HttpUtils
         httpUtils = new HttpUtils();
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        // 初始化列表数据适配器
+        weiboAdapter = new WeiboAdapter(MainActivity.this, R.layout.weibo_list_item);
+        weiboList.setAdapter(weiboAdapter);
 
-        // 注入Activity
-        ViewUtils.inject(this);
 
         // 加载slideMenu
         initSlideMenu();
@@ -142,53 +146,9 @@ public class MainActivity extends ActionBarActivity {
         uid = settings.getString("uid", "");
 
 
-        // 初始化为第一页
-        page = 1;
+        // 填充列表
+        freshList();
 
-        // 组装关注用户最新微博信息API
-        String friendsTimeLineApi = "http://" + host + "index.php?app=api&mod=WeiboStatuses&act=friends_timeline";
-        RequestParams requestParams = new RequestParams();
-        requestParams.addQueryStringParameter("mid", uid);
-        requestParams.addQueryStringParameter("count", COUNT);
-        requestParams.addQueryStringParameter("page", page + "");
-        requestParams.addQueryStringParameter("oauth_token", oauth_token);
-        requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
-
-
-        // 请求绘制ListView界面
-        httpUtils.send(HttpRequest.HttpMethod.GET,
-                friendsTimeLineApi,
-                requestParams,
-                new RequestCallBack<String>(){
-
-                    @Override
-                    public void onSuccess(ResponseInfo<String> stringResponseInfo) {
-                        try {
-                            JSONArray jsonArray = new JSONArray(stringResponseInfo.result);
-                            if( jsonArray.length() == 0 ){
-                                // TODO: 没有微博
-                            }else{
-                                // 解析数据并填充
-                                weiboAdapter = new WeiboAdapter(MainActivity.this,
-                                                                             R.layout.weibo_list_item,
-                                                                             getWeiboDataArray(jsonArray));
-                                weiboList.setAdapter(weiboAdapter);
-
-                                // 页码加 1
-                                page += 1;
-                            }
-                        } catch (JSONException e) {
-
-                            // TODO: 需要增加网络错误的提醒
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(HttpException e, String s) {
-
-                    }
-                });
     }
 
     private void initSlideMenu(){
@@ -203,7 +163,10 @@ public class MainActivity extends ActionBarActivity {
         weiboList.setXListViewListener(new XListView.IXListViewListener() {
             @Override
             public void onRefresh() {
-                // TODO: 下拉刷新
+                // 下拉刷新
+                freshList();
+                weiboList.stopRefresh();
+                weiboList.setRefreshTime("Just now");
             }
 
             @Override
@@ -310,13 +273,11 @@ public class MainActivity extends ActionBarActivity {
     private class WeiboAdapter extends ArrayAdapter<WeiboData>{
 
         private int resource;
-        private List<WeiboData> items;
         private final LayoutInflater inflater;
 
-        public WeiboAdapter(Context context, int resource, List<WeiboData> items) {
-            super(context, resource, items);
+        public WeiboAdapter(Context context, int resource) {
+            super(context, resource);
             this.resource = resource;
-            this.items = items;
             inflater = LayoutInflater.from(context);
         }
 
@@ -335,7 +296,7 @@ public class MainActivity extends ActionBarActivity {
             }
 
             // 绘制每一行
-            WeiboData weiboData = items.get(position);
+            WeiboData weiboData = this.getItem(position);
 
             bitmapUtils.display(holder.weibo_item_avatar, weiboData.avatar);
             holder.weibo_item_uname.setText(weiboData.uname);
@@ -355,5 +316,54 @@ public class MainActivity extends ActionBarActivity {
 
         @ViewInject(R.id.weibo_item_content)
         private TextView weibo_item_content;
+    }
+
+    private void freshList(){
+        // 初始化为第一页
+        page = 1;
+
+        // 组装关注用户最新微博信息API
+        String friendsTimeLineApi = "http://" + host + "index.php?app=api&mod=WeiboStatuses&act=friends_timeline";
+        RequestParams requestParams = new RequestParams();
+        requestParams.addQueryStringParameter("mid", uid);
+        requestParams.addQueryStringParameter("count", COUNT);
+        requestParams.addQueryStringParameter("page", page + "");
+        requestParams.addQueryStringParameter("oauth_token", oauth_token);
+        requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
+
+
+        // 请求绘制ListView界面
+        httpUtils.send(HttpRequest.HttpMethod.GET,
+                friendsTimeLineApi,
+                requestParams,
+                new RequestCallBack<String>(){
+
+                    @Override
+                    public void onSuccess(ResponseInfo<String> stringResponseInfo) {
+                        try {
+                            JSONArray jsonArray = new JSONArray(stringResponseInfo.result);
+                            if( jsonArray.length() == 0 ){
+                                Toast.makeText(MainActivity.this, "没有内容", Toast.LENGTH_SHORT).show();
+                            }else{
+                                // 先清空
+                                weiboAdapter.clear();
+
+                                // 再加载
+                                weiboAdapter.addAll(getWeiboDataArray(jsonArray));
+                                weiboAdapter.notifyDataSetChanged();
+
+                                // 页码加 1
+                                page += 1;
+                            }
+                        } catch (JSONException e) {
+                            Toast.makeText(MainActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                        Toast.makeText(MainActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
