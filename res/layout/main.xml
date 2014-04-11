@@ -9,7 +9,6 @@
 
 
     <com.WH.xListView.XListView
-            android:layout_marginTop="8dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/weibo_list"/>

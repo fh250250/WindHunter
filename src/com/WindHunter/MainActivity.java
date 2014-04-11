@@ -267,7 +267,7 @@ public class MainActivity extends WHActivity {
             WeiboData weiboData = new WeiboData();
 
             weiboData.uname =  jsonItem.getString("uname");
-            weiboData.avatar = jsonItem.getString("avatar_small");
+            weiboData.avatar = jsonItem.getString("avatar_middle");
             weiboData.content = jsonItem.getString("content");
             weiboData.feed_id = jsonItem.getString("feed_id");
 
