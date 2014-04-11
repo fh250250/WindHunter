@@ -4,18 +4,12 @@ package com.WindHunter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.text.format.Time;
 import android.view.*;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
 import android.widget.*;
 import com.WH.xListView.XListView;
+import com.WindHunter.tools.WHActivity;
 import com.beardedhen.androidbootstrap.BootstrapButton;
-import com.lidroid.xutils.BitmapUtils;
-import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -23,7 +17,6 @@ import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
 import com.lidroid.xutils.view.annotation.ViewInject;
-import com.special.ResideMenu.ResideMenu;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,10 +25,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends WHActivity {
 
     private String host, oauth_token, oauth_token_secret, uid;
 
@@ -44,11 +36,7 @@ public class MainActivity extends ActionBarActivity {
     // 页码
     private int page;
 
-    private BitmapUtils bitmapUtils;
-    private HttpUtils httpUtils;
-
     private WeiboAdapter weiboAdapter;
-    private ResideMenu resideMenu;
 
     // ListView
     @ViewInject(R.id.weibo_list)
@@ -121,19 +109,11 @@ public class MainActivity extends ActionBarActivity {
         // 注入Activity
         ViewUtils.inject(this);
 
-        // 配置BitmapUtils
-        initBitmapUtils();
-
-        // 初始化HttpUtils
-        httpUtils = new HttpUtils();
 
         // 初始化列表数据适配器
         weiboAdapter = new WeiboAdapter(MainActivity.this, R.layout.weibo_list_item);
         weiboList.setAdapter(weiboAdapter);
 
-
-        // 加载slideMenu
-        initSlideMenu();
 
         // 加载XListView
         initXListView();
@@ -153,11 +133,6 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    private void initSlideMenu(){
-        resideMenu = new ResideMenu(this);
-        resideMenu.setBackground(R.drawable.menu_background);
-        resideMenu.attachToActivity(this);
-    }
 
     private void initXListView(){
         weiboList.setPullLoadEnable(true);
@@ -270,28 +245,6 @@ public class MainActivity extends ActionBarActivity {
         });
     }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        return resideMenu.onInterceptTouchEvent(ev) || super.dispatchTouchEvent(ev);
-    }
-
-    private void initBitmapUtils(){
-
-        // 生成BitmapUtils实体
-        bitmapUtils = new BitmapUtils(this);
-
-        // 配置位图显示动画
-        ScaleAnimation animation = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f,
-                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        animation.setDuration(800);
-        bitmapUtils.configDefaultImageLoadAnimation(animation);
-
-        // 占位图片
-        // TODO: 需添加占位图片和加载失败图片
-        bitmapUtils.configDefaultLoadingImage(R.drawable.icon);
-        bitmapUtils.configDefaultLoadFailedImage(R.drawable.icon);
-        bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
-    }
 
     private class WeiboData {
         private String uname;
