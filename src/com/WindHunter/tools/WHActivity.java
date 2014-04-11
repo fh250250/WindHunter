@@ -1,6 +1,7 @@
 package com.WindHunter.tools;
 
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -13,6 +14,8 @@ import com.lidroid.xutils.HttpUtils;
 import com.special.ResideMenu.ResideMenu;
 
 public class WHActivity extends ActionBarActivity {
+
+    protected String host, oauth_token, oauth_token_secret, uid;
 
     protected BitmapUtils bitmapUtils;
     protected HttpUtils httpUtils;
@@ -32,6 +35,13 @@ public class WHActivity extends ActionBarActivity {
 
         // 加载slideMenu
         initSlideMenu();
+
+        // 从全局对象中获取认证数据
+        SharedPreferences settings = getSharedPreferences("settings", MODE_PRIVATE);
+        host = settings.getString("Host", "demo.thinksns.com/t3/");
+        oauth_token = settings.getString("oauth_token", "");
+        oauth_token_secret = settings.getString("oauth_token_secret", "");
+        uid = settings.getString("uid", "");
     }
 
     @Override

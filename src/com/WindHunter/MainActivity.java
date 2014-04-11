@@ -3,7 +3,7 @@ package com.WindHunter;
 
 
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
@@ -28,8 +28,6 @@ import java.util.List;
 
 
 public class MainActivity extends WHActivity {
-
-    private String host, oauth_token, oauth_token_secret, uid;
 
     // 每页10条
     private final String COUNT = "10";
@@ -119,15 +117,6 @@ public class MainActivity extends WHActivity {
         initXListView();
 
 
-
-        // 从全局对象中获取认证数据
-        SharedPreferences settings = getSharedPreferences("settings", MODE_PRIVATE);
-        host = settings.getString("Host", "demo.thinksns.com/t3/");
-        oauth_token = settings.getString("oauth_token", "");
-        oauth_token_secret = settings.getString("oauth_token_secret", "");
-        uid = settings.getString("uid", "");
-
-
         // 填充列表
         firstFillListView();
 
@@ -135,8 +124,11 @@ public class MainActivity extends WHActivity {
 
 
     private void initXListView(){
+
+        // 启用上拉更多
         weiboList.setPullLoadEnable(true);
 
+        // 上下拉刷新
         weiboList.setXListViewListener(new XListView.IXListViewListener() {
             @Override
             public void onRefresh() {
@@ -243,13 +235,26 @@ public class MainActivity extends WHActivity {
                         });
             }
         });
+
+        // 点击监听事件
+        weiboList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                WeiboData weiboData = (WeiboData)parent.getItemAtPosition(position);
+                Intent intent = new Intent(MainActivity.this, WeiboActivity.class);
+                intent.putExtra("feed_id", weiboData.feed_id);
+
+                MainActivity.this.startActivity(intent);
+            }
+        });
     }
 
 
     private class WeiboData {
-        private String uname;
-        private String avatar;
-        private String content;
+        private String uname;       // 微博发布者
+        private String avatar;      // 发布者头像
+        private String content;     // 微博内容
+        private String feed_id;     // 微博id
     }
 
     private List<WeiboData> getWeiboDataArray(JSONArray jsonArray) throws JSONException {
@@ -264,6 +269,7 @@ public class MainActivity extends WHActivity {
             weiboData.uname =  jsonItem.getString("uname");
             weiboData.avatar = jsonItem.getString("avatar_small");
             weiboData.content = jsonItem.getString("content");
+            weiboData.feed_id = jsonItem.getString("feed_id");
 
             items.add(weiboData);
         }
