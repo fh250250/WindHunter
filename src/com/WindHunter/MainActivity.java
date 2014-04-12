@@ -103,6 +103,7 @@ public class MainActivity extends WHActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+
         // 注入Activity
         ViewUtils.inject(this);
 
