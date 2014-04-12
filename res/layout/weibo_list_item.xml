@@ -27,10 +27,8 @@
                 android:textSize="23sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-            <!--TODO:获取发布时间填入textview-->
         <TextView
-                android:id="@+id/weibo_item_time"
-                android:text="2014年4月4日 上午8:00"
+                android:id="@+id/weibo_item_ctime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
@@ -57,19 +55,15 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
 
-        <!--TODO:获取转发 评论 收藏 数目-->
         <TextView
                 android:layout_gravity="right"
                 android:id="@+id/weibo_item_num"
-                android:text="转发(23)|评论(34)|收藏(10)"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-        <!--TODO:获取from数据填入textview-->
         <TextView
                 android:layout_gravity="right"
                 android:layout_marginTop="10dp"
                 android:id="@+id/weibo_item_from"
-                android:text="来自Android客户端"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
     </LinearLayout>

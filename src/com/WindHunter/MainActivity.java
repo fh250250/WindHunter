@@ -85,14 +85,13 @@ public class MainActivity extends WHActivity {
 
                             uname.setText(jsonObject.getString("uname"));
                         } catch (JSONException e) {
-                            e.printStackTrace();
+                            Toast.makeText(MainActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
                         }
                     }
 
-                    // TODO: 需要增加网络错误的提醒
                     @Override
                     public void onFailure(HttpException e, String s) {
-                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -173,6 +172,7 @@ public class MainActivity extends WHActivity {
                                 }
 
                                 weiboList.stopRefresh();
+                                // TODO: 时间有错
                                 weiboList.setRefreshTime(new SimpleDateFormat("HH:MM:SS").format(new Date()));
                             }
 
@@ -180,6 +180,7 @@ public class MainActivity extends WHActivity {
                             public void onFailure(HttpException e, String s) {
                                 Toast.makeText(MainActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
                                 weiboList.stopRefresh();
+                                // TODO：时间有错
                                 weiboList.setRefreshTime(new SimpleDateFormat("HH:MM:SS").format(new Date()));
                             }
                         });
@@ -251,10 +252,15 @@ public class MainActivity extends WHActivity {
 
 
     private class WeiboData {
-        private String uname;       // 微博发布者
-        private String avatar;      // 发布者头像
-        private String content;     // 微博内容
-        private String feed_id;     // 微博id
+        private String uname;               // 微博发布者
+        private String avatar;              // 发布者头像
+        private String content;             // 微博内容
+        private String feed_id;             // 微博id
+        private String ctime;               // 发布时间
+        private String from;                // 来自什么平台
+        private String digg_count;          // 赞 数量
+        private String comment_count;       // 评论 数量
+        private String repost_count;        // 转发 数量
     }
 
     private List<WeiboData> getWeiboDataArray(JSONArray jsonArray) throws JSONException {
@@ -268,8 +274,13 @@ public class MainActivity extends WHActivity {
 
             weiboData.uname =  jsonItem.getString("uname");
             weiboData.avatar = jsonItem.getString("avatar_middle");
-            weiboData.content = jsonItem.getString("content");
+            weiboData.content = jsonItem.getString("feed_content");
             weiboData.feed_id = jsonItem.getString("feed_id");
+            weiboData.ctime = jsonItem.getString("ctime");
+            weiboData.from = jsonItem.getString("from");
+            weiboData.digg_count = jsonItem.getString("digg_count");
+            weiboData.comment_count = jsonItem.getString("comment_count");
+            weiboData.repost_count = jsonItem.getString("repost_count");
 
             items.add(weiboData);
         }
@@ -309,6 +320,10 @@ public class MainActivity extends WHActivity {
             bitmapUtils.display(holder.weibo_item_avatar, weiboData.avatar);
             holder.weibo_item_uname.setText(weiboData.uname);
             holder.weibo_item_content.setText(weiboData.content);
+            holder.weibo_item_ctime.setText(weiboData.ctime);
+            holder.weibo_item_from.setText(switchFromCode(weiboData.from));
+            holder.weibo_item_num.setText("赞(" + weiboData.digg_count + ") | 转发(" + weiboData.repost_count + ") | 评论(" + weiboData.comment_count
+                    + ")");
 
             return row;
         }
@@ -324,6 +339,15 @@ public class MainActivity extends WHActivity {
 
         @ViewInject(R.id.weibo_item_content)
         private TextView weibo_item_content;
+
+        @ViewInject(R.id.weibo_item_ctime)
+        private TextView weibo_item_ctime;
+
+        @ViewInject(R.id.weibo_item_from)
+        private TextView weibo_item_from;
+
+        @ViewInject(R.id.weibo_item_num)
+        private TextView weibo_item_num;
     }
 
     // 首次填充ListView
@@ -370,5 +394,18 @@ public class MainActivity extends WHActivity {
                         Toast.makeText(MainActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private String switchFromCode(String from){
+        if (from.equals("0"))
+            return "来自网站";
+        else if (from.equals("1"))
+            return "来自手机网页版";
+        else if (from.equals("2"))
+            return "来自Android客户端";
+        else if (from.equals("3"))
+            return "来自iPhone客户端";
+        else
+            return "未知平台";
     }
 }
