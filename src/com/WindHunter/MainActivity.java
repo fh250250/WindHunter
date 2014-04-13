@@ -259,9 +259,10 @@ public class MainActivity extends WHActivity {
         private String feed_id;             // 微博id
         private String ctime;               // 发布时间
         private String from;                // 来自什么平台
-        private String digg_count;          // 赞 数量
+        private String digg_count;          // 赞   数量
         private String comment_count;       // 评论 数量
         private String repost_count;        // 转发 数量
+        private List<String> attachUrls;    // 图片URL
     }
 
     private List<WeiboData> getWeiboDataArray(JSONArray jsonArray) throws JSONException {
@@ -282,6 +283,7 @@ public class MainActivity extends WHActivity {
             weiboData.digg_count = jsonItem.getString("digg_count");
             weiboData.comment_count = jsonItem.getString("comment_count");
             weiboData.repost_count = jsonItem.getString("repost_count");
+            weiboData.attachUrls = getAttachArray(jsonItem);
 
             items.add(weiboData);
         }
@@ -325,6 +327,8 @@ public class MainActivity extends WHActivity {
             holder.weibo_item_from.setText(switchFromCode(weiboData.from));
             holder.weibo_item_num.setText("赞(" + weiboData.digg_count + ") | 转发(" + weiboData.repost_count + ") | 评论(" + weiboData.comment_count
                     + ")");
+            addImageToLayout(weiboData.attachUrls, holder.weibo_item_img);
+
 
             return row;
         }
@@ -349,6 +353,9 @@ public class MainActivity extends WHActivity {
 
         @ViewInject(R.id.weibo_item_num)
         private TextView weibo_item_num;
+
+        @ViewInject(R.id.weibo_item_img)
+        private LinearLayout weibo_item_img;
     }
 
     // 首次填充ListView
@@ -408,5 +415,40 @@ public class MainActivity extends WHActivity {
             return "来自iPhone客户端";
         else
             return "未知平台";
+    }
+
+    // 返回图片URL列表
+    private List<String> getAttachArray(JSONObject jsonObject) throws JSONException {
+        List<String> urls = new ArrayList<String>();
+        if (jsonObject.getString("feedType").equals("postimage")){
+            JSONArray jsonArray = jsonObject.getJSONArray("attach");
+
+            for (int i = 0; i < jsonArray.length(); i++){
+                urls.add(jsonArray.getJSONObject(i).getString("attach_url"));
+            }
+        }
+
+        return urls;
+    }
+
+    // 动态加载图片到布局
+    private void addImageToLayout(List<String> attachUrls, LinearLayout layout){
+        layout.removeAllViews();
+
+        if (!attachUrls.isEmpty()){
+            ImageView imageView;
+            int counter = 0;
+            for (String url : attachUrls){
+                if (counter > 1)
+                    break;
+                imageView = new ImageView(this);
+
+                // TODO: 图片间需要间隙
+                layout.addView(imageView, new LinearLayout.LayoutParams(100, 100));
+                bitmapUtils.display(imageView, url);
+                counter++;
+            }
+        }
+
     }
 }

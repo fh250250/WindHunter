@@ -52,7 +52,7 @@ public abstract class WHActivity extends ActionBarActivity {
 
 
         pathView = new PathView(this);
-        setContentView(pathView);
+        super.setContentView(pathView);
     }
 
 
@@ -81,8 +81,8 @@ public abstract class WHActivity extends ActionBarActivity {
         bitmapUtils.configDefaultImageLoadAnimation(animation);
 
         // 占位图片
-        // TODO: 需添加占位图片和加载失败图片
-        bitmapUtils.configDefaultLoadingImage(R.drawable.icon);
+        // TODO: 需添加载失败图片
+        bitmapUtils.configDefaultLoadingImage(R.drawable.loadingimg);
         bitmapUtils.configDefaultLoadFailedImage(R.drawable.icon);
         bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
     }
