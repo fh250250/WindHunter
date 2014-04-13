@@ -15,9 +15,9 @@
             android:layout_gravity="center"
             >
         <ImageView
-                android:layout_marginTop="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:src="@drawable/login_logo"
                 />
     </TableRow>
@@ -25,19 +25,20 @@
             android:id="@+id/email"
             android:layout_width="fill_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:hint="@string/login_email"
             bootstrapbutton:be_roundedCorners="true"
             bootstrapbutton:be_state="default"
             android:gravity="left|center"
+            android:singleLine="true"
             />
     <com.beardedhen.androidbootstrap.BootstrapEditText
             android:id="@+id/password"
             android:layout_width="fill_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:hint="@string/login_password"
@@ -45,12 +46,13 @@
             bootstrapbutton:be_roundedCorners="true"
             bootstrapbutton:be_state="default"
             android:gravity="left|center"
+            android:singleLine="true"
             />
     <com.beardedhen.androidbootstrap.BootstrapButton
             android:id="@+id/submit"
             android:layout_width="fill_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:text="@string/login_submit"

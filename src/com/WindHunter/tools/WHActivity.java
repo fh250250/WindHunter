@@ -15,6 +15,7 @@ import com.WindHunter.R;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.special.ResideMenu.ResideMenu;
+import com.special.ResideMenu.ResideMenuItem;
 
 public abstract class WHActivity extends ActionBarActivity {
 
@@ -90,6 +91,24 @@ public abstract class WHActivity extends ActionBarActivity {
         resideMenu = new ResideMenu(this);
         resideMenu.setBackground(R.drawable.menu_background);
         resideMenu.attachToActivity(this);
+
+        String titles[]={" 主     页"," 微     博"," 收     藏"," 聊     天"," 微     吧"};
+        int icon[]={R.drawable.main_menu_home,
+                    R.drawable.main_menu_weibo,
+                    R.drawable.main_menu_collect,
+                    R.drawable.main_menu_chat,
+                    R.drawable.main_menu_app};
+
+        for (int i = 0; i < titles.length; i++){
+            ResideMenuItem item = new ResideMenuItem(this, icon[i], titles[i]);
+            item.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+            resideMenu.addMenuItem(item);
+        }
     }
 
     private void initPathView(final Context context){
@@ -97,10 +116,10 @@ public abstract class WHActivity extends ActionBarActivity {
         startMenu.setBackgroundResource(R.drawable.start_menu_btn);
         pathView.setStartMenu(startMenu);
 
-        int[] drawableIds = { R.drawable.start_menu_scan_normal,
-                              R.drawable.start_menu_call_normal,
-                              R.drawable.start_menu_sms_normal,
-                              R.drawable.start_menu_chat_normal};
+        int[] drawableIds = { R.drawable.main_menu_chat,
+                              R.drawable.main_menu_home,
+                              R.drawable.main_menu_collect,
+                              R.drawable.main_menu_weibo};
         View[] items = new View[drawableIds.length];
         for (int i = 0; i < drawableIds.length; i++) {
             ImageButton button = new ImageButton(this);
