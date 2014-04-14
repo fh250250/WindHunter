@@ -419,8 +419,14 @@ public class MainActivity extends WHActivity {
             ImageView imageView;
             int counter = 0;
             for (String url : attachUrls){
-                if (counter > 1)
+                if (counter > 1){
+
+                    //TODO:调整textview的位置
+                    TextView textView = new TextView(this);
+                    layout.addView(textView);
+                    textView.setText("点击查看更多");
                     break;
+                }
                 imageView = new ImageView(this);
 
                 // TODO: 图片间需要间隙
