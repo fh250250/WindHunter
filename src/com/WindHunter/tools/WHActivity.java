@@ -31,7 +31,6 @@ public abstract class WHActivity extends ActionBarActivity {
     protected HttpUtils httpUtils;
 
     protected ResideMenu resideMenu;
-    private PathView pathView;
 
 
     @Override
@@ -76,19 +75,8 @@ public abstract class WHActivity extends ActionBarActivity {
         // 加载slideMenu
         initSlideMenu(this);
 
-        // 加载PathView
-        pathView = new PathView(this);
-        super.setContentView(pathView);
     }
 
-
-    @Override
-    public void setContentView(int layoutResID) {
-        View layout = LayoutInflater.from(this).inflate(layoutResID, null);
-        pathView.addView(layout);
-
-        initPathView(this);
-    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -139,34 +127,9 @@ public abstract class WHActivity extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, UserActivity.class);
-                intent.putExtra("uid", uid);
+                intent.putExtra("user_id", uid);
                 context.startActivity(intent);
                 resideMenu.closeMenu();
-            }
-        });
-    }
-
-    private void initPathView(final Context context){
-        ImageButton startMenu = new ImageButton(this);
-        startMenu.setBackgroundResource(R.drawable.start_menu_btn);
-        pathView.setStartMenu(startMenu);
-
-        int[] drawableIds = { R.drawable.main_menu_chat,
-                              R.drawable.main_menu_home,
-                              R.drawable.main_menu_collect,
-                              R.drawable.main_menu_weibo};
-        View[] items = new View[drawableIds.length];
-        for (int i = 0; i < drawableIds.length; i++) {
-            ImageButton button = new ImageButton(this);
-            button.setBackgroundResource(drawableIds[i]);
-            items[i] = button;
-        }
-        pathView.setItems(items);
-
-        pathView.setOnItemClickListener(new PathView.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Toast.makeText(context, "您单击了第"+position+"项", Toast.LENGTH_SHORT).show();
             }
         });
     }

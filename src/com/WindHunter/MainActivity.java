@@ -404,7 +404,7 @@ public class MainActivity extends WHActivity {
             JSONArray jsonArray = jsonObject.getJSONArray("attach");
 
             for (int i = 0; i < jsonArray.length(); i++){
-                urls.add(jsonArray.getJSONObject(i).getString("attach_url"));
+                urls.add(jsonArray.getJSONObject(i).getString("attach_middle"));
             }
         }
 
