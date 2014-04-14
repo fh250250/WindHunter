@@ -45,26 +45,6 @@ public class MainActivity extends WHActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        // 禁用LOGO与Title
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        // 设置自定义的ActionBar布局
-        View personal_info = LayoutInflater.from(this).inflate(R.layout.personal_info, null);
-        getSupportActionBar().setCustomView(personal_info);
-        getSupportActionBar().setDisplayShowCustomEnabled(true);
-
-        BootstrapButton title_bar_menu = (BootstrapButton)personal_info.findViewById(R.id.title_bar_menu);
-        title_bar_menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                resideMenu.openMenu();
-            }
-        });
-
-
-        final TextView uname = (TextView)personal_info.findViewById(R.id.uname);
-
         // 组装个人信息API 请求参数
         String userShowApi = "http://" + host + "index.php?app=api&mod=User&act=show";
         RequestParams requestParams = new RequestParams();
@@ -72,7 +52,7 @@ public class MainActivity extends WHActivity {
         requestParams.addQueryStringParameter("oauth_token", oauth_token);
         requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
 
-        // 完成请求并绘制个人信息界面
+        // 完成请求并填充title
         httpUtils.send(HttpRequest.HttpMethod.GET,
                 userShowApi,
                 requestParams,
@@ -83,7 +63,7 @@ public class MainActivity extends WHActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(stringResponseInfo.result);
 
-                            uname.setText(jsonObject.getString("uname"));
+                            getSupportActionBar().setTitle(jsonObject.getString("uname"));
                         } catch (JSONException e) {
                             Toast.makeText(MainActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
                         }
@@ -95,7 +75,7 @@ public class MainActivity extends WHActivity {
                     }
                 });
 
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
