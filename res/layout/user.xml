@@ -158,17 +158,23 @@
 
     <com.beardedhen.androidbootstrap.BootstrapButton
             android:id="@+id/user_checkin"
-            android:layout_margin="10dp"
+            android:layout_margin="30dp"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:text="点击签到"
+            bootstrapbutton:bb_icon_left="fa-calendar"
+            bootstrapbutton:bb_type="warning"
             bootstrapbutton:bb_roundedCorners="true"
             bootstrapbutton:bb_text_gravity="center"
             />
     <com.beardedhen.androidbootstrap.BootstrapButton
             android:id="@+id/user_follow"
-            android:layout_margin="10dp"
+            android:layout_margin="30dp"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:text="加关注"
+            bootstrapbutton:bb_icon_left="fa-plus"
+            bootstrapbutton:bb_type="primary"
             bootstrapbutton:bb_roundedCorners="true"
             bootstrapbutton:bb_text_gravity="center"
             />
