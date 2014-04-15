@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.WH.xListView.XListView;
 import com.WindHunter.tools.WHActivity;
 import com.WindHunter.tools.WeiboList;
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -45,13 +46,8 @@ public class UserActivity extends WHActivity {
     @ViewInject(R.id.user_follower_count)
     TextView user_follower_count;
 
-    @ViewInject(R.id.user_weibo_list)
-    XListView user_weibo_list;
-
     // 用户id
     private String user_id;
-
-    WeiboList weiboList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,11 +63,6 @@ public class UserActivity extends WHActivity {
 
         // 绘制个人信息部分
         makeUserUI(this);
-
-
-
-        weiboList = new WeiboList(this, user_weibo_list);
-        weiboList.setCount(5).setType("favorite_feed").run();
 
     }
 

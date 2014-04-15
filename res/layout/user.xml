@@ -1,23 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
+              android:background="@android:color/white"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
     <!--第一排-->
     <LinearLayout
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
 
         <ImageView
+                android:layout_marginTop="10dp"
                 android:id="@+id/user_avatar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
+                android:layout_width="70dp"
+                android:layout_height="70dp"/>
 
         <LinearLayout
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent">
@@ -28,96 +34,142 @@
 
                 <TextView
                         android:id="@+id/user_name"
+                        android:textSize="23sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
 
                 <TextView
                         android:id="@+id/user_sex"
+                        android:textSize="23sp"
+                        android:layout_marginLeft="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
 
             </LinearLayout>
 
             <TextView
+                    android:layout_marginTop="5dp"
+                    android:textSize="15sp"
                     android:id="@+id/user_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
         </LinearLayout>
 
-
-        <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-            <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                <TextView
-                        android:text="微博"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-                <TextView
-                        android:id="@+id/user_weibo_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                <TextView
-                        android:text="关注"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-                <TextView
-                        android:id="@+id/user_following_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                <TextView
-                        android:text="粉丝"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-                <TextView
-                        android:id="@+id/user_follower_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-
     </LinearLayout>
 
     <!--第二排-->
-    <TextView
-            android:id="@+id/user_intro"
+    <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
+        <TextView
+                android:text="个人介绍："
+                android:textSize="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:textColor="#000000"/>
+
+        <TextView
+                android:id="@+id/user_intro"
+                android:textSize="20sp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"/>
+    </LinearLayout>
 
     <!--第三排-->
-    <com.WH.xListView.XListView
-            android:id="@+id/user_weibo_list"
+    <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
 
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
+            <TextView
+                    android:text="微博"
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:textColor="#000000"/>
+
+            <TextView
+                    android:id="@+id/user_weibo_count"
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:text="关注"
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:textColor="#000000"/>
+
+            <TextView
+                    android:id="@+id/user_following_count"
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:text="粉丝"
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:textColor="#000000"/>
+
+            <TextView
+                    android:id="@+id/user_follower_count"
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.beardedhen.androidbootstrap.BootstrapButton
+            android:id="@+id/user_checkin"
+            android:layout_margin="10dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            bootstrapbutton:bb_roundedCorners="true"
+            bootstrapbutton:bb_text_gravity="center"
+            />
+    <com.beardedhen.androidbootstrap.BootstrapButton
+            android:id="@+id/user_follow"
+            android:layout_margin="10dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            bootstrapbutton:bb_roundedCorners="true"
+            bootstrapbutton:bb_text_gravity="center"
+            />
 </LinearLayout>
