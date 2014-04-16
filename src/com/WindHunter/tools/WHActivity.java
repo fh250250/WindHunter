@@ -39,6 +39,15 @@ public abstract class WHActivity extends ActionBarActivity {
         actionBar.setIcon(R.drawable.personal_info_menu);
         actionBar.setHomeButtonEnabled(true);
 
+        // 发微博 TODO: 图片颜色浅
+        menu.add("Post")
+                .setIcon(R.drawable.action_bar_post)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+        menu.add("@我的");
+        menu.add("评论我的");
+        menu.add("搜索");
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -46,6 +55,8 @@ public abstract class WHActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home){
             resideMenu.openMenu();
+        }else if (item.getTitle().equals("Post")){
+            // 跳转到发微博
         }
 
         return super.onOptionsItemSelected(item);

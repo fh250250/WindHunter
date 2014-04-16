@@ -74,7 +74,6 @@ public class LoginActivity extends ActionBarActivity {
         String password = passwordEditText.getText().toString();
 
         // 检测空白输入
-        // TODO: 以后美化
         if (email.isEmpty() || password.isEmpty()){
             Toast.makeText(LoginActivity.this, R.string.login_alert_emptyerror, Toast.LENGTH_SHORT).show();
             return;
@@ -141,7 +140,6 @@ public class LoginActivity extends ActionBarActivity {
 
                     @Override
                     public void onFailure(HttpException e, String s) {
-                        // TODO：以后可以考虑增加背景例如气泡效果
                         Toast.makeText(LoginActivity.this,R.string.login_alert_neterror,Toast.LENGTH_SHORT).show();
                         setUIEnable(true);
                     }

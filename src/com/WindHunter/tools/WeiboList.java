@@ -81,6 +81,11 @@ public class WeiboList {
         fillListView();
     }
 
+    public void fresh(){
+        weiboAdapter.clear();
+        fillListView();
+    }
+
     private void initXListView(){
 
         // 启用上拉更多

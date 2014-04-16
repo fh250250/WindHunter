@@ -3,13 +3,12 @@ package com.WindHunter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.WH.xListView.XListView;
 import com.WindHunter.tools.WHActivity;
-import com.WindHunter.tools.WeiboList;
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.exception.HttpException;
@@ -56,6 +55,14 @@ public class UserActivity extends WHActivity {
 
     // 用户id
     private String user_id;
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getSupportActionBar().setTitle("个人主页");
+
+        return super.onCreateOptionsMenu(menu);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

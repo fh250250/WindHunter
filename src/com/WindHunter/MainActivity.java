@@ -3,20 +3,14 @@ package com.WindHunter;
 
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.view.*;
 import android.widget.*;
 import com.WH.xListView.XListView;
 import com.WindHunter.tools.WHActivity;
 import com.WindHunter.tools.WeiboList;
 import com.lidroid.xutils.ViewUtils;
-import com.lidroid.xutils.exception.HttpException;
-import com.lidroid.xutils.http.RequestParams;
-import com.lidroid.xutils.http.ResponseInfo;
-import com.lidroid.xutils.http.callback.RequestCallBack;
-import com.lidroid.xutils.http.client.HttpRequest;
 import com.lidroid.xutils.view.annotation.ViewInject;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 public class MainActivity extends WHActivity {
@@ -31,36 +25,27 @@ public class MainActivity extends WHActivity {
     // 绘制ActionBar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        ActionBar actionBar = getSupportActionBar();
 
-        // 组装个人信息API 请求参数
-        String userShowApi = "http://" + host + "index.php?app=api&mod=User&act=show";
-        RequestParams requestParams = new RequestParams();
-        requestParams.addQueryStringParameter("user_id", uid);
-        requestParams.addQueryStringParameter("oauth_token", oauth_token);
-        requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
+        actionBar.setTitle("微博列表");
 
-        // 完成请求并填充title
-        httpUtils.send(HttpRequest.HttpMethod.GET,
-                userShowApi,
-                requestParams,
-                new RequestCallBack<String>(){
+        // 加入 微博转换按钮
+        Switch switchBar = new Switch(this);
+        switchBar.setTextOff("关注微博");
+        switchBar.setTextOn("全部微博");
+        actionBar.setCustomView(switchBar, new ActionBar.LayoutParams(Gravity.CENTER));
+        actionBar.setDisplayShowCustomEnabled(true);
 
-                    @Override
-                    public void onSuccess(ResponseInfo<String> stringResponseInfo) {
-                        try {
-                            JSONObject jsonObject = new JSONObject(stringResponseInfo.result);
-
-                            getSupportActionBar().setTitle(jsonObject.getString("uname"));
-                        } catch (JSONException e) {
-                            Toast.makeText(MainActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(HttpException e, String s) {
-                        Toast.makeText(MainActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        switchBar.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b){
+                    weiboList.setType("public_timeline").fresh();
+                }else{
+                    weiboList.setType("friends_timeline").fresh();
+                }
+            }
+        });
 
         return super.onCreateOptionsMenu(menu);
     }
