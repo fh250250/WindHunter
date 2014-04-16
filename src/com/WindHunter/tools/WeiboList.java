@@ -498,7 +498,7 @@ public class WeiboList {
                     .setText(switchFromCode(repostWeiboData.from));
 
             ((TextView)repostView.findViewById(R.id.weibo_item_repost_num))
-                    .setText("原文转发(" + repostWeiboData.repost_count + ") | 原文评论(" + repostWeiboData.comment_count + ")");
+                    .setText("转发(" + repostWeiboData.repost_count + ") | 评论(" + repostWeiboData.comment_count + ")");
 
             LinearLayout img = (LinearLayout)repostView.findViewById(R.id.weibo_item_repost_img);
             addImageToLayout(repostWeiboData.attachUrls, img);

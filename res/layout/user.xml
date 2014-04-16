@@ -18,8 +18,8 @@
         <ImageView
                 android:layout_marginTop="10dp"
                 android:id="@+id/user_avatar"
-                android:layout_width="70dp"
-                android:layout_height="70dp"/>
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
 
         <LinearLayout
                 android:layout_marginTop="10dp"
@@ -34,13 +34,13 @@
 
                 <TextView
                         android:id="@+id/user_name"
-                        android:textSize="23sp"
+                        android:textSize="20sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
 
                 <TextView
                         android:id="@+id/user_sex"
-                        android:textSize="23sp"
+                        android:textSize="20sp"
                         android:layout_marginLeft="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
@@ -49,7 +49,7 @@
 
             <TextView
                     android:layout_marginTop="5dp"
-                    android:textSize="15sp"
+                    android:textSize="13sp"
                     android:id="@+id/user_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
@@ -75,7 +75,7 @@
             <TextView
                     android:layout_gravity="center"
                     android:layout_marginRight="20dp"
-                    android:textSize="20sp"
+                    android:textSize="15sp"
                     android:id="@+id/user_follow_state"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
@@ -106,14 +106,14 @@
             android:layout_height="wrap_content">
         <TextView
                 android:text="个人介绍："
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#000000"/>
 
         <TextView
                 android:id="@+id/user_intro"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"/>
     </LinearLayout>
@@ -136,13 +136,13 @@
 
             <TextView
                     android:text="微博"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" android:textColor="#000000"/>
 
             <TextView
                     android:id="@+id/user_weibo_count"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
@@ -158,13 +158,13 @@
 
             <TextView
                     android:text="关注"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" android:textColor="#000000"/>
 
             <TextView
                     android:id="@+id/user_following_count"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
@@ -180,13 +180,13 @@
 
             <TextView
                     android:text="粉丝"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" android:textColor="#000000"/>
 
             <TextView
                     android:id="@+id/user_follower_count"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
