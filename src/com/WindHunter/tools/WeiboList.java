@@ -438,7 +438,8 @@ public class WeiboList {
                     TextView textView = new TextView(context);
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     layoutParams.gravity = Gravity.BOTTOM;
-                    layout.addView(textView);
+                    layoutParams.bottomMargin = 5;
+                    layout.addView(textView,layoutParams);
                     textView.setText("更多图片...");
                     break;
                 }
