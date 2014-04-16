@@ -307,6 +307,7 @@ public class WeiboList {
             holder.weibo_item_num.setText("赞(" + weiboData.digg_count + ") | 转发(" + weiboData.repost_count + ") | 评论(" + weiboData.comment_count
                     + ")");
             addImageToLayout(weiboData.attachUrls, holder.weibo_item_img);
+            addRepostToLayout(weiboData.repostWeiboData, holder.weibo_item_repost, inflater);
 
 
             return row;
@@ -332,6 +333,7 @@ public class WeiboList {
             weiboData.comment_count = jsonItem.getString("comment_count");
             weiboData.repost_count = jsonItem.getString("repost_count");
             weiboData.attachUrls = getAttachArray(jsonItem);
+            weiboData.repostWeiboData = getRepostWeibo(jsonItem);
 
             items.add(weiboData);
         }
@@ -339,6 +341,20 @@ public class WeiboList {
         return  items;
     }
 
+
+    // 转发微博的数据结构
+    private class RepostWeiboData {
+        private String uname;
+        private String ctime;
+        private String content;
+        private List<String> attachUrls;
+        private String from;
+        private String comment_count;
+        private String repost_count;
+    }
+
+
+    // 微博的数据结构
     private class WeiboData {
         private String uname;               // 微博发布者
         private String avatar;              // 发布者头像
@@ -350,6 +366,7 @@ public class WeiboList {
         private String comment_count;       // 评论 数量
         private String repost_count;        // 转发 数量
         private List<String> attachUrls;    // 图片URL
+        private RepostWeiboData repostWeiboData; // 转发的微博
     }
 
     // 持有者模式 用于加速列表
@@ -374,6 +391,9 @@ public class WeiboList {
 
         @ViewInject(R.id.weibo_item_img)
         private LinearLayout weibo_item_img;
+
+        @ViewInject(R.id.weibo_item_repost)
+        private LinearLayout weibo_item_repost;
     }
 
     private String switchFromCode(String from){
@@ -428,5 +448,55 @@ public class WeiboList {
             }
         }
 
+    }
+
+    // 返回转发微博数据
+    private RepostWeiboData getRepostWeibo(JSONObject jsonObject) throws JSONException {
+
+        if (jsonObject.getString("feedType").equals("repost")){
+
+            JSONObject repostWeibo = jsonObject.getJSONObject("transpond_data");
+            RepostWeiboData repostWeiboData = new RepostWeiboData();
+
+            repostWeiboData.uname = repostWeibo.getString("uname");
+            repostWeiboData.ctime = repostWeibo.getString("ctime");
+            repostWeiboData.content = repostWeibo.getString("feed_content");
+            repostWeiboData.from = repostWeibo.getString("from");
+            repostWeiboData.repost_count = repostWeibo.getString("repost_count");
+            repostWeiboData.comment_count = repostWeibo.getString("comment_count");
+            repostWeiboData.attachUrls = getAttachArray(repostWeibo);
+
+            return repostWeiboData;
+        }else{
+            return null;
+        }
+    }
+
+    // 动态加载转发微博
+    private void addRepostToLayout(RepostWeiboData repostWeiboData, LinearLayout layout, LayoutInflater inflater){
+        layout.removeAllViews();
+
+        if (repostWeiboData != null){
+            View repostView = inflater.inflate(R.layout.weibo_list_item_repost, null);
+            layout.addView(repostView);
+
+            ((TextView)repostView.findViewById(R.id.weibo_item_repost_uname))
+                    .setText("@" + repostWeiboData.uname);
+
+            ((TextView)repostView.findViewById(R.id.weibo_item_repost_ctime))
+                    .setText(repostWeiboData.ctime);
+
+            ((TextView)repostView.findViewById(R.id.weibo_item_repost_content))
+                    .setText(repostWeiboData.content);
+
+            ((TextView)repostView.findViewById(R.id.weibo_item_repost_from))
+                    .setText(switchFromCode(repostWeiboData.from));
+
+            ((TextView)repostView.findViewById(R.id.weibo_item_repost_num))
+                    .setText("原文转发(" + repostWeiboData.repost_count + ") | 原文评论(" + repostWeiboData.comment_count + ")");
+
+            LinearLayout img = (LinearLayout)repostView.findViewById(R.id.weibo_item_repost_img);
+            addImageToLayout(repostWeiboData.attachUrls, img);
+        }
     }
 }
