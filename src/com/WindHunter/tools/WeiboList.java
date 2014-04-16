@@ -3,6 +3,7 @@ package com.WindHunter.tools;
 
 import android.content.Context;
 import android.content.Intent;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -435,14 +436,17 @@ public class WeiboList {
 
                     //TODO:调整textview的位置
                     TextView textView = new TextView(context);
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    layoutParams.gravity = Gravity.BOTTOM;
                     layout.addView(textView);
-                    textView.setText("点击查看更多");
+                    textView.setText("更多图片...");
                     break;
                 }
                 imageView = new ImageView(context);
 
-                // TODO: 图片间需要间隙
-                layout.addView(imageView, new LinearLayout.LayoutParams(100, 100));
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(100,100);
+                layoutParams.leftMargin = 5;
+                layout.addView(imageView, layoutParams);
                 context.bitmapUtils.display(imageView, url);
                 counter++;
             }

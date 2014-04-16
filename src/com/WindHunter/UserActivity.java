@@ -53,8 +53,14 @@ public class UserActivity extends WHActivity {
     @ViewInject(R.id.user_follow)
     BootstrapButton user_follow;
 
+    @ViewInject(R.id.user_follow_state)
+    TextView user_follow_state;
+
     // 用户id
     private String user_id;
+
+    //关注状态
+    private boolean follow_state;
 
 
     @Override
@@ -130,6 +136,7 @@ public class UserActivity extends WHActivity {
             // 自己的主页
 
             user_follow.setVisibility(View.GONE);
+            user_follow_state.setVisibility(View.GONE);
             user_checkin.setVisibility(View.VISIBLE);
 
             // 组装签到信息API 请求参数
@@ -171,6 +178,7 @@ public class UserActivity extends WHActivity {
         }else{
             // 别人的主页
             user_follow.setVisibility(View.VISIBLE);
+            user_follow_state.setVisibility(View.VISIBLE);
             user_checkin.setVisibility(View.GONE);
 
             // 组装个人信息API 请求参数
@@ -193,15 +201,18 @@ public class UserActivity extends WHActivity {
                                     user_follow.setBootstrapType("primary");
                                     user_follow.setLeftIcon("fa-plus");
                                     user_follow.setText("加关注");
+                                    user_follow_state.setText("未关注");
+                                    follow_state = false;
                                 }else{
-                                    user_follow.setEnabled(false);
-                                    user_follow.setBootstrapType("success");
+                                    user_follow.setEnabled(true);
+                                    user_follow.setBootstrapType("danger");
+                                    user_follow.setText("取消关注");
+                                    user_follow.setLeftIcon("fa-minus");
+                                    follow_state = true;
                                     if (jsonObject.getJSONObject("follow_state").getInt("follower") == 0){
-                                        user_follow.setText("已关注");
-                                        user_follow.setLeftIcon("fa-check");
+                                        user_follow_state.setText("已关注");
                                     }else{
-                                        user_follow.setText("互相关注");
-                                        user_follow.setLeftIcon("fa-exchange");
+                                        user_follow_state.setText("互相关注");
                                     }
                                 }
                             } catch (JSONException e) {
@@ -250,5 +261,76 @@ public class UserActivity extends WHActivity {
                         Toast.makeText(UserActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    @OnClick(R.id.user_follow)
+    public void followClick(View view){
+        // 组装取消关注API 请求参数
+        String followApi = "http://" + host + "index.php?app=api&mod=User&act=follow_";
+        RequestParams requestParams = new RequestParams();
+        requestParams.addQueryStringParameter("user_id", user_id);
+        requestParams.addQueryStringParameter("oauth_token", oauth_token);
+        requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
+        if(follow_state){
+            //取消关注
+            httpUtils.send(HttpRequest.HttpMethod.GET,
+                    followApi + "destroy",
+                    requestParams,
+                    new RequestCallBack<String>() {
+                        @Override
+                        public void onSuccess(ResponseInfo<String> responseInfo) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(responseInfo.result);
+                                if(jsonObject.getInt("following") == 0){
+                                    Toast.makeText(UserActivity.this, "取消关注成功", Toast.LENGTH_SHORT).show();
+                                    user_follow.setBootstrapType("primary");
+                                    user_follow.setText("加关注");
+                                    user_follow.setLeftIcon("fa-plus");
+                                    follow_state = false;
+                                    user_follow_state.setText("未关注");
+                                }
+                            } catch (JSONException e) {
+                                Toast.makeText(UserActivity.this, "取消关注失败", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(HttpException e, String s) {
+                            Toast.makeText(UserActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }else {
+            //添加关注
+            httpUtils.send(HttpRequest.HttpMethod.GET,
+                    followApi+"create",
+                    requestParams,
+                    new RequestCallBack<String>() {
+                        @Override
+                        public void onSuccess(ResponseInfo<String> responseInfo) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(responseInfo.result);
+                                if(jsonObject.getInt("following") == 1){
+                                    Toast.makeText(UserActivity.this, "关注成功", Toast.LENGTH_SHORT).show();
+                                    user_follow.setBootstrapType("danger");
+                                    user_follow.setText("取消关注");
+                                    user_follow.setLeftIcon("fa-minus");
+                                    follow_state = true;
+                                    if (jsonObject.getInt("follower") == 0){
+                                        user_follow_state.setText("已关注");
+                                    }else{
+                                        user_follow_state.setText("互相关注");
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                Toast.makeText(UserActivity.this, "关注失败", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(HttpException e, String s) {
+                            Toast.makeText(UserActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
     }
 }

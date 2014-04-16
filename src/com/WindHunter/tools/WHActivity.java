@@ -39,7 +39,7 @@ public abstract class WHActivity extends ActionBarActivity {
         actionBar.setIcon(R.drawable.personal_info_menu);
         actionBar.setHomeButtonEnabled(true);
 
-        // 发微博 TODO: 图片颜色浅
+        // 发微博
         menu.add("Post")
                 .setIcon(R.drawable.action_bar_post)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
