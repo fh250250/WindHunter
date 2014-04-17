@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.WindHunter.tools.WHActivity;
@@ -18,6 +19,7 @@ import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -56,6 +58,12 @@ public class UserActivity extends WHActivity {
     @ViewInject(R.id.user_follow_state)
     TextView user_follow_state;
 
+    @ViewInject(R.id.user_follower_avatar)
+    LinearLayout user_follower_avatar;
+
+    @ViewInject(R.id.user_following_avatar)
+    LinearLayout user_following_avatar;
+
     // 用户id
     private String user_id;
 
@@ -87,6 +95,10 @@ public class UserActivity extends WHActivity {
 
 
         drawButton(this);
+
+        addAvatarToLayout(this, "following", user_following_avatar, 4);
+
+        addAvatarToLayout(this, "followers", user_follower_avatar, 4);
 
     }
 
@@ -332,5 +344,71 @@ public class UserActivity extends WHActivity {
                         }
                     });
         }
+    }
+
+
+    // 用图像填充布局
+    private void addAvatarToLayout(final Context context, String type, final LinearLayout layout, final int max){
+        // 组装关注列表API 请求参数
+        String followApi = "http://" + host + "index.php?app=api&mod=User&act=user_" + type;
+        RequestParams requestParams = new RequestParams();
+        requestParams.addQueryStringParameter("user_id", user_id);
+        requestParams.addQueryStringParameter("oauth_token", oauth_token);
+        requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
+
+        httpUtils.send(HttpRequest.HttpMethod.GET,
+                followApi,
+                requestParams,
+                new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        try {
+                            JSONArray jsonArray = new JSONArray(responseInfo.result);
+                            if (jsonArray.length() == 0){
+                                TextView textView = new TextView(context);
+                                layout.addView(textView);
+                                textView.setText("无");
+                            }else{
+                                String avatarUrl;
+                                String uname;
+                                ImageView imageView;
+                                TextView textView;
+                                LinearLayout imageBox;
+
+                                for (int i = 0; i < jsonArray.length(); i++){
+                                    // 获取数据
+                                    avatarUrl = jsonArray.getJSONObject(i).getString("avatar_small");
+                                    uname = jsonArray.getJSONObject(i).getString("uname");
+
+                                    // 动态生成View TODO: 需要调整填充量
+                                    imageView = new ImageView(context);
+                                    imageBox = new LinearLayout(context);
+                                    textView = new TextView(context);
+
+                                    imageBox.setOrientation(LinearLayout.VERTICAL);
+                                    imageBox.addView(imageView);
+                                    imageBox.addView(textView);
+
+                                    layout.addView(imageBox);
+
+                                    // 绘制View
+                                    textView.setText(uname);
+                                    bitmapUtils.display(imageView, avatarUrl);
+
+                                    if (i > max - 2){
+                                        break;
+                                    }
+                                }
+                            }
+                        } catch (JSONException e) {
+                            Toast.makeText(context, "网络出错", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                        Toast.makeText(context, "网络出错", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
