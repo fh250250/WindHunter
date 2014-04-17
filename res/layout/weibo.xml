@@ -7,9 +7,27 @@
         android:orientation="vertical"
         android:background="@color/white">
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/weibo_text"/>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+        <ImageView
+                android:id="@+id/weibo_user_avatar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <TextView
+                android:id="@+id/weibo_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <Button
+                android:id="@+id/weibo_user"
+                android:text="跳转"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"/>
+
+            </LinearLayout>
 
 </LinearLayout>

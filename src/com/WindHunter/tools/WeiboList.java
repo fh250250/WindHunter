@@ -326,7 +326,13 @@ public class WeiboList {
 
             weiboData.uname =  jsonItem.getString("uname");
             weiboData.avatar = jsonItem.getString("avatar_middle");
-            weiboData.content = jsonItem.getString("feed_content");
+
+            // 空内容
+            if (jsonItem.getString("feed_content").equals("null"))
+                weiboData.content = "";
+            else
+                weiboData.content = jsonItem.getString("feed_content");
+
             weiboData.feed_id = jsonItem.getString("feed_id");
             weiboData.ctime = jsonItem.getString("ctime");
             weiboData.from = jsonItem.getString("from");
@@ -465,7 +471,13 @@ public class WeiboList {
 
             repostWeiboData.uname = repostWeibo.getString("uname");
             repostWeiboData.ctime = repostWeibo.getString("ctime");
-            repostWeiboData.content = repostWeibo.getString("feed_content");
+
+            // 空内容
+            if (repostWeibo.getString("feed_content").equals("null"))
+                repostWeiboData.content = "";
+            else
+                repostWeiboData.content = repostWeibo.getString("feed_content");
+
             repostWeiboData.from = repostWeibo.getString("from");
             repostWeiboData.repost_count = repostWeibo.getString("repost_count");
             repostWeiboData.comment_count = repostWeibo.getString("comment_count");

@@ -128,9 +128,10 @@ public class UserActivity extends WHActivity {
                             user_weibo_count.setText(user.getJSONObject("count_info").getInt("weibo_count") + "");
                             user_following_count.setText(user.getJSONObject("count_info").getInt("following_count") + "");
                             user_follower_count.setText(user.getJSONObject("count_info").getInt("follower_count") + "");
-                            if (user.getString("intro") == null)
+                            if (user.getString("intro").equals("null"))
                                 user_intro.setText("这个人很懒，什么都没写");
-                            user_intro.setText(user.getString("intro"));
+                            else
+                                user_intro.setText(user.getString("intro"));
                         } catch (JSONException e) {
                             Toast.makeText(context, "网络出错", Toast.LENGTH_SHORT).show();
                         }
