@@ -12,6 +12,7 @@ import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import com.WindHunter.AtActivity;
+import com.WindHunter.MainActivity;
 import com.WindHunter.R;
 import com.WindHunter.UserActivity;
 import com.lidroid.xutils.BitmapUtils;
@@ -140,6 +141,15 @@ public abstract class WHActivity extends ActionBarActivity {
                 Intent intent = new Intent(context, UserActivity.class);
                 intent.putExtra("user_id", uid);
                 context.startActivity(intent);
+                resideMenu.closeMenu();
+            }
+        });
+
+        // 跳转到微博列表
+        items.get(1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.startActivity(new Intent(context, MainActivity.class));
                 resideMenu.closeMenu();
             }
         });

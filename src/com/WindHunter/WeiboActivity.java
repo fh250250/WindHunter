@@ -5,10 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.View;
+import android.view.*;
 import android.widget.*;
 import com.WindHunter.tools.WHActivity;
 import com.WindHunter.tools.WeiboList;
@@ -117,7 +114,7 @@ public class WeiboActivity extends WHActivity {
                             weibo_from.setText(WeiboList.switchFromCode(weibo.getString("from")));
 
 
-                            addImageToLayout(context, weibo, weibo_img, 4);
+                            addImageToLayout(context, weibo, weibo_img, 3);
 
                             addRepostToLayout(context, weibo, weibo_repost);
 
@@ -152,13 +149,15 @@ public class WeiboActivity extends WHActivity {
 
                 int row = attaches.length() / maxRow;
                 int single = attaches.length() % maxRow;
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(5,5,5,5);
 
                 // 整行的
                 for (int i = 0; i < row; i++){
                     imgBox = new LinearLayout(context);
                     for (int j = 0; j < maxRow; j++){
                         img = new ImageView(context);
-                        imgBox.addView(img);
+                        imgBox.addView(img,layoutParams);
                         bitmapUtils.display(img, attaches.getJSONObject(i * maxRow + j).getString("attach_small"));
                     }
                     layout.addView(imgBox);
@@ -168,7 +167,7 @@ public class WeiboActivity extends WHActivity {
                 imgBox = new LinearLayout(context);
                 for (int i = 0; i < single; i++){
                     img = new ImageView(context);
-                    imgBox.addView(img);
+                    imgBox.addView(img,layoutParams);
                     bitmapUtils.display(img, attaches.getJSONObject(row * maxRow + i).getString("attach_small"));
                 }
                 layout.addView(imgBox);
