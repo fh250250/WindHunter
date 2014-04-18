@@ -56,9 +56,16 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:text="@string/login_submit"
-            bootstrapbutton:bb_icon_left="fa-check-circle"
             bootstrapbutton:bb_roundedCorners="true"
             bootstrapbutton:bb_type="primary"
             bootstrapbutton:bb_text_gravity="center" />
+
+    <CheckBox
+            android:id="@+id/remember_password"
+            android:text="记住密码"
+            android:layout_gravity="left"
+            android:layout_marginLeft="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
 </LinearLayout>

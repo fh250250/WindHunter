@@ -2,9 +2,12 @@ package com.WindHunter;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.Window;
+import android.widget.CheckBox;
 import android.widget.Toast;
 import com.WindHunter.tools.*;
 import android.os.Bundle;
@@ -38,10 +41,15 @@ public class LoginActivity extends ActionBarActivity {
     // 密码输入框
     @ViewInject(R.id.password)    BootstrapEditText passwordEditText;
 
+    // 记住密码框
+    @ViewInject(R.id.remember_password)
+    CheckBox remember_password;
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(false);
         setTitle(R.string.login_title);
 
         // 默认不显示进度条
@@ -62,6 +70,13 @@ public class LoginActivity extends ActionBarActivity {
         // ViewUtils 注入
         ViewUtils.inject(this);
 
+        // 默认勾选
+        remember_password.setChecked(true);
+
+        // 填账号密码
+        SharedPreferences remember = getSharedPreferences("remember", MODE_PRIVATE);
+        emailEditText.setText(remember.getString("email", ""));
+        passwordEditText.setText(remember.getString("password", ""));
     }
 
 
@@ -70,8 +85,8 @@ public class LoginActivity extends ActionBarActivity {
     public void submitClick(View view){
 
         // 获取输入
-        String email = emailEditText.getText().toString();
-        String password = passwordEditText.getText().toString();
+        final String email = emailEditText.getText().toString();
+        final String password = passwordEditText.getText().toString();
 
         // 检测空白输入
         if (email.isEmpty() || password.isEmpty()){
@@ -131,6 +146,20 @@ public class LoginActivity extends ActionBarActivity {
                                 // 登录成功 页面跳转
                                 startActivity(new Intent().setClass(LoginActivity.this, MainActivity.class));
                                 LoginActivity.this.finish();
+
+                                // 记住账号密码
+                                SharedPreferences remember = getSharedPreferences("remember", MODE_PRIVATE);
+                                SharedPreferences.Editor rememberEditor = remember.edit();
+                                if (remember_password.isChecked()){
+                                    rememberEditor.putString("email", email);
+                                    rememberEditor.putString("password", password);
+                                    rememberEditor.commit();
+                                }else {
+                                    rememberEditor.putString("email", "");
+                                    rememberEditor.putString("password", "");
+                                    rememberEditor.commit();
+                                }
+
                             }
                         } catch (JSONException e) {
                             Toast.makeText(LoginActivity.this,R.string.login_alert_neterror,Toast.LENGTH_SHORT).show();
