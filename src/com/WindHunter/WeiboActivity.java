@@ -5,10 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.widget.*;
 import com.WindHunter.tools.WHActivity;
+import com.WindHunter.tools.WeiboList;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -17,19 +20,41 @@ import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WeiboActivity extends WHActivity {
 
     @ViewInject(R.id.weibo_user)
-    Button weibo_user;
+    LinearLayout weibo_user;
 
     @ViewInject(R.id.weibo_user_avatar)
     ImageView weibo_user_avatar;
 
     @ViewInject(R.id.weibo_user_name)
     TextView weibo_user_name;
+
+    @ViewInject(R.id.weibo_repost)
+    LinearLayout weibo_repost;
+
+    @ViewInject(R.id.weibo_ctime)
+    TextView weibo_ctime;
+
+    @ViewInject(R.id.weibo_content)
+    TextView weibo_content;
+
+    @ViewInject(R.id.weibo_from)
+    TextView weibo_from;
+
+    @ViewInject(R.id.weibo_num)
+    TextView weibo_num;
+
+    @ViewInject(R.id.weibo_img)
+    LinearLayout weibo_img;
 
     private String feed_id;
     private String user_id;
@@ -70,11 +95,33 @@ public class WeiboActivity extends WHActivity {
                     @Override
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         try {
-                            JSONObject jsonObject = new JSONObject(responseInfo.result);
+                            JSONObject weibo = new JSONObject(responseInfo.result);
 
-                            user_id = jsonObject.getString("uid");
-                            weibo_user_name.setText(jsonObject.getString("uname"));
-                            bitmapUtils.display(weibo_user_avatar, jsonObject.getString("avatar_middle"));
+                            user_id = weibo.getString("uid");
+                            weibo_user_name.setText(weibo.getString("uname"));
+                            bitmapUtils.display(weibo_user_avatar, weibo.getString("avatar_middle"));
+
+                            weibo_ctime.setText(weibo.getString("ctime"));
+
+                            if (weibo.isNull("feed_content"))
+                                weibo_content.setText("");
+                            else
+                                weibo_content.setText(weibo.getString("feed_content"));
+
+                            weibo_num.setText("赞(" +
+                                    weibo.getString("digg_count") +
+                                    ") | 转发(" + weibo.getString("repost_count") +
+                                    ") | 评论(" + weibo.getString("comment_count") +
+                                    ")");
+
+                            weibo_from.setText(WeiboList.switchFromCode(weibo.getString("from")));
+
+
+                            addImageToLayout(context, weibo, weibo_img, 4);
+
+                            addRepostToLayout(context, weibo, weibo_repost);
+
+
                         } catch (JSONException e) {
                             Toast.makeText(context, "网络出错", Toast.LENGTH_SHORT).show();
                         }
@@ -95,4 +142,76 @@ public class WeiboActivity extends WHActivity {
         startActivity(intent);
     }
 
+    private void addImageToLayout(Context context, JSONObject weibo, LinearLayout layout, int maxRow) throws JSONException {
+        if (weibo.getString("feedType").equals("postimage")){
+            JSONArray attaches = weibo.getJSONArray("attach");
+
+            if (attaches.length() != 0){
+                LinearLayout imgBox;
+                ImageView img;
+
+                int row = attaches.length() / maxRow;
+                int single = attaches.length() % maxRow;
+
+                // 整行的
+                for (int i = 0; i < row; i++){
+                    imgBox = new LinearLayout(context);
+                    for (int j = 0; j < maxRow; j++){
+                        img = new ImageView(context);
+                        imgBox.addView(img);
+                        bitmapUtils.display(img, attaches.getJSONObject(i * maxRow + j).getString("attach_small"));
+                    }
+                    layout.addView(imgBox);
+                }
+
+                // 单个的
+                imgBox = new LinearLayout(context);
+                for (int i = 0; i < single; i++){
+                    img = new ImageView(context);
+                    imgBox.addView(img);
+                    bitmapUtils.display(img, attaches.getJSONObject(row * maxRow + i).getString("attach_small"));
+                }
+                layout.addView(imgBox);
+            }
+        }
+    }
+
+    private void addRepostToLayout(Context context, JSONObject weibo, LinearLayout layout) throws JSONException {
+        if (weibo.getString("feedType").equals("repost")){
+            JSONObject repost = weibo.getJSONObject("transpond_data");
+
+            if (repost.getString("is_del").equals("1")){
+                // 原文内容已删除
+                TextView delMsg = new TextView(context);
+                layout.addView(delMsg);
+                delMsg.setText("内容已被删除");
+                delMsg.setGravity(Gravity.CENTER);
+                delMsg.setHeight(100);
+                delMsg.setBackgroundResource(R.drawable.weibo_list_item_repost_bg);
+            }else{
+                View repostView = LayoutInflater.from(context).inflate(R.layout.weibo_repost, null);
+                layout.addView(repostView);
+
+                ((TextView)repostView.findViewById(R.id.weibo_repost_uname))
+                        .setText(repost.getString("uname"));
+
+                ((TextView)repostView.findViewById(R.id.weibo_repost_ctime))
+                        .setText(repost.getString("ctime"));
+
+                ((TextView)repostView.findViewById(R.id.weibo_repost_content))
+                        .setText(repost.getString("feed_content"));
+
+                ((TextView)repostView.findViewById(R.id.weibo_repost_from))
+                        .setText(WeiboList.switchFromCode(repost.getString("from")));
+
+                ((TextView)repostView.findViewById(R.id.weibo_repost_num))
+                        .setText("转发(" + repost.getString("repost_count") +
+                                    ") | 评论(" + repost.getString("comment_count") +
+                                    ")");
+
+                LinearLayout imgLayout = (LinearLayout)repostView.findViewById(R.id.weibo_repost_img);
+                addImageToLayout(context, repost, imgLayout, 3);
+            }
+        }
+    }
 }

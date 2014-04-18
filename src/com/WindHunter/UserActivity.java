@@ -3,8 +3,10 @@ package com.WindHunter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -96,9 +98,9 @@ public class UserActivity extends WHActivity {
 
         drawButton(this);
 
-        addAvatarToLayout(this, "following", user_following_avatar, 4);
+        addAvatarToLayout(this, "following", user_following_avatar, 5);
 
-        addAvatarToLayout(this, "followers", user_follower_avatar, 4);
+        addAvatarToLayout(this, "followers", user_follower_avatar, 5);
 
     }
 
@@ -128,7 +130,7 @@ public class UserActivity extends WHActivity {
                             user_weibo_count.setText(user.getJSONObject("count_info").getInt("weibo_count") + "");
                             user_following_count.setText(user.getJSONObject("count_info").getInt("following_count") + "");
                             user_follower_count.setText(user.getJSONObject("count_info").getInt("follower_count") + "");
-                            if (user.getString("intro").equals("null"))
+                            if (user.isNull("intro"))
                                 user_intro.setText("这个人很懒，什么都没写");
                             else
                                 user_intro.setText(user.getString("intro"));
@@ -381,16 +383,22 @@ public class UserActivity extends WHActivity {
                                     avatarUrl = jsonArray.getJSONObject(i).getString("avatar_small");
                                     uname = jsonArray.getJSONObject(i).getString("uname");
 
-                                    // 动态生成View TODO: 需要调整填充量
+                                    // 动态生成View
                                     imageView = new ImageView(context);
                                     imageBox = new LinearLayout(context);
                                     textView = new TextView(context);
 
-                                    imageBox.setOrientation(LinearLayout.VERTICAL);
-                                    imageBox.addView(imageView);
-                                    imageBox.addView(textView);
+                                    LinearLayout.LayoutParams textLayout = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                    textLayout.gravity = Gravity.CENTER;
 
-                                    layout.addView(imageBox);
+                                    LinearLayout.LayoutParams imgBoxLayout = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                    imgBoxLayout.leftMargin = 10;
+
+                                    imageBox.setOrientation(LinearLayout.VERTICAL);
+                                    imageBox.addView(imageView, new LinearLayout.LayoutParams(60, 60));
+                                    imageBox.addView(textView, textLayout);
+
+                                    layout.addView(imageBox, imgBoxLayout);
 
                                     // 绘制View
                                     textView.setText(uname);

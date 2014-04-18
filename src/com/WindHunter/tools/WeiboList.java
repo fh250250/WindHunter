@@ -328,7 +328,7 @@ public class WeiboList {
             weiboData.avatar = jsonItem.getString("avatar_middle");
 
             // 空内容
-            if (jsonItem.getString("feed_content").equals("null"))
+            if (jsonItem.isNull("feed_content"))
                 weiboData.content = "";
             else
                 weiboData.content = jsonItem.getString("feed_content");
@@ -358,6 +358,7 @@ public class WeiboList {
         private String from;
         private String comment_count;
         private String repost_count;
+        private String is_del;
     }
 
 
@@ -403,7 +404,7 @@ public class WeiboList {
         private LinearLayout weibo_item_repost;
     }
 
-    private String switchFromCode(String from){
+    public static String switchFromCode(String from){
         if (from.equals("0"))
             return "来自网站";
         else if (from.equals("1"))
@@ -423,7 +424,7 @@ public class WeiboList {
             JSONArray jsonArray = jsonObject.getJSONArray("attach");
 
             for (int i = 0; i < jsonArray.length(); i++){
-                urls.add(jsonArray.getJSONObject(i).getString("attach_middle"));
+                urls.add(jsonArray.getJSONObject(i).getString("attach_small"));
             }
         }
 
@@ -440,7 +441,6 @@ public class WeiboList {
             for (String url : attachUrls){
                 if (counter > 1){
 
-                    //TODO:调整textview的位置
                     TextView textView = new TextView(context);
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     layoutParams.gravity = Gravity.BOTTOM;
@@ -473,7 +473,7 @@ public class WeiboList {
             repostWeiboData.ctime = repostWeibo.getString("ctime");
 
             // 空内容
-            if (repostWeibo.getString("feed_content").equals("null"))
+            if (repostWeibo.isNull("feed_content"))
                 repostWeiboData.content = "";
             else
                 repostWeiboData.content = repostWeibo.getString("feed_content");
@@ -482,6 +482,7 @@ public class WeiboList {
             repostWeiboData.repost_count = repostWeibo.getString("repost_count");
             repostWeiboData.comment_count = repostWeibo.getString("comment_count");
             repostWeiboData.attachUrls = getAttachArray(repostWeibo);
+            repostWeiboData.is_del = repostWeibo.getString("is_del");
 
             return repostWeiboData;
         }else{
@@ -494,26 +495,37 @@ public class WeiboList {
         layout.removeAllViews();
 
         if (repostWeiboData != null){
-            View repostView = inflater.inflate(R.layout.weibo_list_item_repost, null);
-            layout.addView(repostView);
 
-            ((TextView)repostView.findViewById(R.id.weibo_item_repost_uname))
-                    .setText("@" + repostWeiboData.uname);
+            if (repostWeiboData.is_del.equals("1")){
+                // 转发的内容已被删除
+                TextView delMsg = new TextView(context);
+                layout.addView(delMsg);
+                delMsg.setText("内容已被删除");
+                delMsg.setGravity(Gravity.CENTER);
+                delMsg.setHeight(100);
+                delMsg.setBackgroundResource(R.drawable.weibo_list_item_repost_bg);
+            }else{
+                View repostView = inflater.inflate(R.layout.weibo_list_item_repost, null);
+                layout.addView(repostView);
 
-            ((TextView)repostView.findViewById(R.id.weibo_item_repost_ctime))
-                    .setText(repostWeiboData.ctime);
+                ((TextView)repostView.findViewById(R.id.weibo_item_repost_uname))
+                        .setText("@" + repostWeiboData.uname);
 
-            ((TextView)repostView.findViewById(R.id.weibo_item_repost_content))
-                    .setText(repostWeiboData.content);
+                ((TextView)repostView.findViewById(R.id.weibo_item_repost_ctime))
+                        .setText(repostWeiboData.ctime);
 
-            ((TextView)repostView.findViewById(R.id.weibo_item_repost_from))
-                    .setText(switchFromCode(repostWeiboData.from));
+                ((TextView)repostView.findViewById(R.id.weibo_item_repost_content))
+                        .setText(repostWeiboData.content);
 
-            ((TextView)repostView.findViewById(R.id.weibo_item_repost_num))
-                    .setText("转发(" + repostWeiboData.repost_count + ") | 评论(" + repostWeiboData.comment_count + ")");
+                ((TextView)repostView.findViewById(R.id.weibo_item_repost_from))
+                        .setText(switchFromCode(repostWeiboData.from));
 
-            LinearLayout img = (LinearLayout)repostView.findViewById(R.id.weibo_item_repost_img);
-            addImageToLayout(repostWeiboData.attachUrls, img);
+                ((TextView)repostView.findViewById(R.id.weibo_item_repost_num))
+                        .setText("转发(" + repostWeiboData.repost_count + ") | 评论(" + repostWeiboData.comment_count + ")");
+
+                LinearLayout img = (LinearLayout)repostView.findViewById(R.id.weibo_item_repost_img);
+                addImageToLayout(repostWeiboData.attachUrls, img);
+            }
         }
     }
 }

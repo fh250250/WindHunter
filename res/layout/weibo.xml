@@ -8,6 +8,10 @@
         android:background="@color/white">
 
     <LinearLayout
+            android:id="@+id/weibo_user"
+            android:layout_marginTop="3dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -17,25 +21,65 @@
         <ImageView
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
+                android:layout_marginBottom="10dp"
                 android:id="@+id/weibo_user_avatar"
                 android:layout_width="50dp"
                 android:layout_height="50dp"/>
 
         <TextView
                 android:layout_gravity="center"
-                android:textSize="20sp"
+                android:textSize="17sp"
                 android:layout_marginLeft="10dp"
                 android:id="@+id/weibo_user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
-        <Button
-                android:id="@+id/weibo_user"
-                android:layout_gravity=""
-                android:text="跳转"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"/>
+    </LinearLayout>
 
-            </LinearLayout>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+        <TextView
+                android:id="@+id/weibo_ctime"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"/>
+
+        <TextView
+                android:id="@+id/weibo_content"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"/>
+
+        <LinearLayout
+                android:id="@+id/weibo_img"
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"/>
+
+        <LinearLayout
+                android:id="@+id/weibo_repost"
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"/>
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:id="@+id/weibo_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <TextView
+                    android:id="@+id/weibo_from"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>
