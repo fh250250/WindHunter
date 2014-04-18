@@ -3,6 +3,7 @@ package com.WindHunter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.*;
@@ -175,9 +176,9 @@ public class WeiboActivity extends WHActivity {
         }
     }
 
-    private void addRepostToLayout(Context context, JSONObject weibo, LinearLayout layout) throws JSONException {
+    private void addRepostToLayout(final Context context, JSONObject weibo, LinearLayout layout) throws JSONException {
         if (weibo.getString("feedType").equals("repost")){
-            JSONObject repost = weibo.getJSONObject("transpond_data");
+            final JSONObject repost = weibo.getJSONObject("transpond_data");
 
             if (repost.getString("is_del").equals("1")){
                 // 原文内容已删除
@@ -186,19 +187,34 @@ public class WeiboActivity extends WHActivity {
                 delMsg.setText("内容已被删除");
                 delMsg.setGravity(Gravity.CENTER);
                 delMsg.setHeight(100);
-                delMsg.setBackgroundResource(R.drawable.weibo_list_item_repost_bg);
+                delMsg.setBackgroundResource(R.drawable.shadow_bg);
             }else{
                 View repostView = LayoutInflater.from(context).inflate(R.layout.weibo_repost, null);
                 layout.addView(repostView);
 
-                ((TextView)repostView.findViewById(R.id.weibo_repost_uname))
-                        .setText(repost.getString("uname"));
+                // 点击名字跳转
+                final TextView unameView = (TextView)repostView.findViewById(R.id.weibo_repost_uname);
+                unameView.setText("@" + repost.getString("uname"));
+                unameView.setTextColor(Color.BLUE);
+                final String repostUid = repost.getString("uid");
+                unameView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, UserActivity.class);
+                        intent.putExtra("user_id", repostUid);
+                        context.startActivity(intent);
+                    }
+                });
 
                 ((TextView)repostView.findViewById(R.id.weibo_repost_ctime))
                         .setText(repost.getString("ctime"));
 
-                ((TextView)repostView.findViewById(R.id.weibo_repost_content))
-                        .setText(repost.getString("feed_content"));
+                // 空内容
+                TextView feedContentView = (TextView)repostView.findViewById(R.id.weibo_repost_content);
+                if (repost.isNull("feed_content"))
+                    feedContentView.setText("");
+                else
+                    feedContentView.setText(repost.getString("feed_content"));
 
                 ((TextView)repostView.findViewById(R.id.weibo_repost_from))
                         .setText(WeiboList.switchFromCode(repost.getString("from")));

@@ -503,7 +503,7 @@ public class WeiboList {
                 delMsg.setText("内容已被删除");
                 delMsg.setGravity(Gravity.CENTER);
                 delMsg.setHeight(100);
-                delMsg.setBackgroundResource(R.drawable.weibo_list_item_repost_bg);
+                delMsg.setBackgroundResource(R.drawable.shadow_bg);
             }else{
                 View repostView = inflater.inflate(R.layout.weibo_list_item_repost, null);
                 layout.addView(repostView);
