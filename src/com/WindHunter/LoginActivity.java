@@ -77,6 +77,9 @@ public class LoginActivity extends ActionBarActivity {
         SharedPreferences remember = getSharedPreferences("remember", MODE_PRIVATE);
         emailEditText.setText(remember.getString("email", ""));
         passwordEditText.setText(remember.getString("password", ""));
+
+        // 将光标移至末尾
+        emailEditText.setSelection(emailEditText.getText().length());
     }
 
 

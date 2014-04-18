@@ -9,18 +9,18 @@
         android:background="@android:color/white"
         android:baselineAligned="false"
         >
-    <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            >
+    <LinearLayout
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
         <ImageView
                 android:layout_marginTop="5dp"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/login_logo"
                 />
-    </TableRow>
+    </LinearLayout>
     <com.beardedhen.androidbootstrap.BootstrapEditText
             android:id="@+id/email"
             android:layout_width="fill_parent"
