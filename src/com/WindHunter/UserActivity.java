@@ -66,6 +66,12 @@ public class UserActivity extends WHActivity {
     @ViewInject(R.id.user_following_avatar)
     LinearLayout user_following_avatar;
 
+    @ViewInject(R.id.user_following_text)
+    TextView user_following_text;
+
+    @ViewInject(R.id.user_follower_text)
+    TextView user_follower_text;
+
     // 用户id
     private String user_id;
 
@@ -75,7 +81,10 @@ public class UserActivity extends WHActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getSupportActionBar().setTitle("个人主页");
+        if (uid.equals(user_id))
+            getSupportActionBar().setTitle("个人主页");
+        else
+            getSupportActionBar().setTitle("他人主页");
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -106,6 +115,16 @@ public class UserActivity extends WHActivity {
 
 
     private void makeUserUI(final Context context){
+
+        if (uid.equals(user_id)){
+            user_following_text.setText("我的关注");
+            user_follower_text.setText("我的粉丝");
+        }else{
+            user_following_text.setText("他的关注");
+            user_follower_text.setText("他的粉丝");
+        }
+
+
         // 组装个人信息API 请求参数
         String userShowApi = "http://" + host + "index.php?app=api&mod=User&act=show";
         RequestParams requestParams = new RequestParams();

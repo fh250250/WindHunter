@@ -5,7 +5,6 @@ package com.WindHunter;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.*;
-import android.widget.*;
 import com.WH.xListView.XListView;
 import com.WindHunter.tools.WHActivity;
 import com.WindHunter.tools.WeiboList;
@@ -27,27 +26,27 @@ public class MainActivity extends WHActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         ActionBar actionBar = getSupportActionBar();
 
-        actionBar.setTitle("微博列表");
+        actionBar.setTitle("关注微博");
 
-        // 加入 微博转换按钮
-        Switch switchBar = new Switch(this);
-        switchBar.setTextOff("关注微博");
-        switchBar.setTextOn("全部微博");
-        actionBar.setCustomView(switchBar, new ActionBar.LayoutParams(Gravity.CENTER));
-        actionBar.setDisplayShowCustomEnabled(true);
-
-        switchBar.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b){
-                    weiboList.setType("public_timeline").fresh();
-                }else{
-                    weiboList.setType("friends_timeline").fresh();
-                }
-            }
-        });
+        menu.add("全部微博");
+        menu.add("关注微博");
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getTitle().equals("全部微博")){
+            getSupportActionBar().setTitle("全部微博");
+            weiboList.setType("public_timeline").fresh();
+        }
+        else if (item.getTitle().equals("关注微博")){
+            getSupportActionBar().setTitle("关注微博");
+            weiboList.setType("friends_timeline").fresh();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

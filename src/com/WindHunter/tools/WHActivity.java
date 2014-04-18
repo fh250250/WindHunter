@@ -11,8 +11,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
-import android.widget.ImageButton;
-import android.widget.Toast;
 import com.WindHunter.R;
 import com.WindHunter.UserActivity;
 import com.lidroid.xutils.BitmapUtils;
