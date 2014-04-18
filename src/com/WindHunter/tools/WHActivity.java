@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
+import com.WindHunter.AtActivity;
 import com.WindHunter.R;
 import com.WindHunter.UserActivity;
 import com.lidroid.xutils.BitmapUtils;
@@ -53,8 +54,9 @@ public abstract class WHActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home){
             resideMenu.openMenu();
-        }else if (item.getTitle().equals("Post")){
-            // 跳转到发微博
+        }else if (item.getTitle().equals("@我的")){
+            // 跳转到@我的微博列表
+            startActivity(new Intent(this, AtActivity.class));
         }
 
         return super.onOptionsItemSelected(item);
