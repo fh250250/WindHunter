@@ -1,8 +1,11 @@
 package com.WindHunter;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -12,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 import com.WindHunter.tools.WHActivity;
 import com.lidroid.xutils.ViewUtils;
@@ -26,10 +30,15 @@ import java.io.File;
 
 public class PostActivity extends WHActivity {
 
+    private static final int REQUEST_IMAGE_CONTENT = 100;
+    private static final int REQUEST_CAPTURE = 101;
     private String postImgPath;
 
     @ViewInject(R.id.post_edit_text)
     EditText post_edit_text;
+
+    @ViewInject(R.id.post_img_preview)
+    ImageView post_img_preview;
 
 
     @Override
@@ -133,15 +142,36 @@ public class PostActivity extends WHActivity {
 
     @OnClick(R.id.post_add_img)
     public void addImgClick(View view){
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, 1);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("图片来源");
+        String[] options = {"从图库", "从相机"};
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                switch (i){
+                    case 0:
+                        Intent intent = new Intent();
+                        intent.setType("image/*");
+                        intent.setAction(Intent.ACTION_GET_CONTENT);
+                        startActivityForResult(intent, REQUEST_IMAGE_CONTENT);
+                        break;
+                    case 1:
+                        Intent creamer = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(creamer, REQUEST_CAPTURE);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
+        builder.create().show();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK){
+        if (resultCode == RESULT_OK && null != data){
             Uri uri = data.getData();
 
             String[] proj = {MediaStore.Images.Media.DATA};
@@ -149,6 +179,8 @@ public class PostActivity extends WHActivity {
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
             postImgPath = cursor.getString(column_index);
+
+            bitmapUtils.display(post_img_preview, postImgPath);
         }else{
             postImgPath = null;
         }
