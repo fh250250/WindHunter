@@ -2,16 +2,18 @@ package com.WindHunter;
 
 
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.lidroid.xutils.HttpUtils;
+import com.WindHunter.tools.WHActivity;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -19,14 +21,16 @@ import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+import java.io.File;
 
-public class PostActivity extends ActionBarActivity {
+public class PostActivity extends WHActivity {
 
-    private String host, oauth_token, oauth_token_secret, uid;
-    private HttpUtils httpUtils;
+    private String postImgPath;
 
     @ViewInject(R.id.post_edit_text)
     EditText post_edit_text;
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -43,7 +47,7 @@ public class PostActivity extends ActionBarActivity {
 //                .setIcon()
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     @Override
@@ -59,14 +63,25 @@ public class PostActivity extends ActionBarActivity {
             }else{
 
                 // 组装发微博API 请求参数
-                String postApi = "http://" + host + "index.php?app=api&mod=WeiboStatuses&act=update";
+                String postType;
                 RequestParams requestParams = new RequestParams();
+
+                if (postImgPath == null){
+                    postType = "update";
+                }
+                else{
+                    postType = "upload";
+
+                    requestParams.addBodyParameter("img", new File(postImgPath));
+                }
+
+                String postApi = "http://" + host + "index.php?app=api&mod=WeiboStatuses&act=" + postType;
                 requestParams.addQueryStringParameter("from", "2");
-                requestParams.addQueryStringParameter("content", content);
+                requestParams.addBodyParameter("content", content);
                 requestParams.addQueryStringParameter("oauth_token", oauth_token);
                 requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
 
-                httpUtils.send(HttpRequest.HttpMethod.GET,
+                httpUtils.send(HttpRequest.HttpMethod.POST,
                         postApi,
                         requestParams,
                         new RequestCallBack<String>() {
@@ -92,7 +107,7 @@ public class PostActivity extends ActionBarActivity {
 
                             @Override
                             public void onFailure(HttpException e, String s) {
-                                Toast.makeText(PostActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PostActivity.this, s, Toast.LENGTH_SHORT).show();
                                 // 不显示进度条
                                 setProgressBarIndeterminateVisibility(false);
                             }
@@ -100,7 +115,7 @@ public class PostActivity extends ActionBarActivity {
             }
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     @Override
@@ -114,15 +129,30 @@ public class PostActivity extends ActionBarActivity {
 
         ViewUtils.inject(this);
 
+    }
 
-        // 初始化HttpUtils
-        httpUtils = new HttpUtils();
+    @OnClick(R.id.post_add_img)
+    public void addImgClick(View view){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 1);
+    }
 
-        // 从全局对象中获取认证数据
-        SharedPreferences settings = getSharedPreferences("settings", MODE_PRIVATE);
-        host = settings.getString("Host", "demo.thinksns.com/t3/");
-        oauth_token = settings.getString("oauth_token", "");
-        oauth_token_secret = settings.getString("oauth_token_secret", "");
-        uid = settings.getString("uid", "");
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK){
+            Uri uri = data.getData();
+
+            String[] proj = {MediaStore.Images.Media.DATA};
+            Cursor cursor = managedQuery(uri, proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            postImgPath = cursor.getString(column_index);
+        }else{
+            postImgPath = null;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
