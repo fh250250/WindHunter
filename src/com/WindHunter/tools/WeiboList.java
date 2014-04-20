@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -142,7 +143,7 @@ public class WeiboList {
 
                                 weiboList.stopRefresh();
                                 // TODO: 时间有错
-                                weiboList.setRefreshTime(new SimpleDateFormat("HH:MM:SS").format(new Date()));
+                                weiboList.setRefreshTime(new SimpleDateFormat().format(Calendar.getInstance().getTime()));
                             }
 
                             @Override
@@ -150,7 +151,7 @@ public class WeiboList {
                                 Toast.makeText(context, "网络出错", Toast.LENGTH_SHORT).show();
                                 weiboList.stopRefresh();
                                 // TODO：时间有错
-                                weiboList.setRefreshTime(new SimpleDateFormat("HH:MM:SS").format(new Date()));
+                                weiboList.setRefreshTime(new SimpleDateFormat().format(Calendar.getInstance().getTime()));
                             }
                         });
             }

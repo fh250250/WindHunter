@@ -174,6 +174,7 @@ public class PostActivity extends WHActivity {
         if (resultCode == RESULT_OK && null != data){
             Uri uri = data.getData();
 
+            // TODO:可能报错,需修改优化
             String[] proj = {MediaStore.Images.Media.DATA};
             Cursor cursor = managedQuery(uri, proj, null, null, null);
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);

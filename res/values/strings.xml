@@ -8,4 +8,13 @@
     <string name="login_alert_emptyerror">请输入邮箱或密码～</string>
     <string name="login_alert_neterror">对不起，网络连接错误～</string>
     <string name="login_alert_autherror">登录失败，帐号或密码错误～</string>
+    <string name="weibo_digg">赞</string>
+    <string name="weibo_repost">转发</string>
+    <string name="weibo_comment">评论</string>
+    <string name="weibo_favorite">收藏</string>
+    <string name="user_weibo">微博</string>
+    <string name="user_following">关注</string>
+    <string name="user_follower">粉丝</string>
+    <string name="user_checkin">点击签到</string>
+    <string name="user_addfollow">加关注</string>
 </resources>

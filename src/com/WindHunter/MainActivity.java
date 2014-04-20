@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.*;
+import android.widget.Toast;
 import com.WH.xListView.XListView;
 import com.WindHunter.tools.WHActivity;
 import com.WindHunter.tools.WeiboList;
@@ -113,5 +114,21 @@ public class MainActivity extends WHActivity {
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         return resideMenu.onInterceptTouchEvent(ev) || super.dispatchTouchEvent(ev);
+    }
+
+    //按两次退出程序
+    private long mExitTime;
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if ((System.currentTimeMillis() - mExitTime) > 2000) {
+                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                mExitTime = System.currentTimeMillis();
+
+            } else {
+                finish();
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

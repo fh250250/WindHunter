@@ -229,4 +229,12 @@ public class WeiboActivity extends WHActivity {
             }
         }
     }
+
+
+    // TODO:完成点赞事件
+    //点赞事件
+    @OnClick(R.id.digg)
+    public void diggClick(View view){
+
+    }
 }
