@@ -1,13 +1,18 @@
 package com.WindHunter;
 
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.view.Menu;
@@ -172,20 +177,19 @@ public class PostActivity extends WHActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && null != data){
-            Uri uri = data.getData();
-
             // TODO:可能报错,需修改优化
-            String[] proj = {MediaStore.Images.Media.DATA};
-            Cursor cursor = managedQuery(uri, proj, null, null, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            postImgPath = cursor.getString(column_index);
+            if (requestCode == REQUEST_IMAGE_CONTENT){
+                // 图库
+            }else if (requestCode == REQUEST_CAPTURE){
+                // 相机
+            }
 
-            bitmapUtils.display(post_img_preview, postImgPath);
+            // bitmapUtils.display(post_img_preview, postImgPath);
         }else{
             postImgPath = null;
         }
 
         super.onActivityResult(requestCode, resultCode, data);
     }
+
 }
