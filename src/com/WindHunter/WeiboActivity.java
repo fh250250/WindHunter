@@ -10,6 +10,7 @@ import android.view.*;
 import android.widget.*;
 import com.WindHunter.tools.WHActivity;
 import com.WindHunter.tools.WeiboList;
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -22,13 +23,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class WeiboActivity extends WHActivity {
-
-    @ViewInject(R.id.weibo_user)
-    LinearLayout weibo_user;
 
     @ViewInject(R.id.weibo_user_avatar)
     ImageView weibo_user_avatar;
@@ -54,8 +50,21 @@ public class WeiboActivity extends WHActivity {
     @ViewInject(R.id.weibo_img)
     LinearLayout weibo_img;
 
+    @ViewInject(R.id.weibo_digg_text)
+    TextView weibo_digg_text;
+
+    @ViewInject(R.id.digg)
+    LinearLayout digg;
+
+    @ViewInject(R.id.weibo_favorite_text)
+    TextView weibo_favorite_text;
+
+    @ViewInject(R.id.weibo_delete)
+    BootstrapButton weibo_delete;
+
     private String feed_id;
     private String user_id;
+    private boolean is_coll;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -74,6 +83,8 @@ public class WeiboActivity extends WHActivity {
         ViewUtils.inject(this);
 
         feed_id = getIntent().getStringExtra("feed_id");
+
+        weibo_delete.setVisibility(View.GONE);
 
         drawWeiboView(this);
     }
@@ -119,6 +130,27 @@ public class WeiboActivity extends WHActivity {
 
                             addRepostToLayout(context, weibo, weibo_repost);
 
+                            if (weibo.getInt("is_digg") == 1){
+                                weibo_digg_text.setText("已赞");
+                                digg.setEnabled(false);
+                            }else{
+                                weibo_digg_text.setText("赞");
+                                digg.setEnabled(true);
+                            }
+
+                            if (weibo.getJSONObject("iscoll").getInt("colled") == 1){
+                                weibo_favorite_text.setText("取消");
+                                is_coll = true;
+                            }else{
+                                weibo_favorite_text.setText("收藏");
+                                is_coll = false;
+                            }
+
+                            if (uid.equals(user_id)){
+                                weibo_delete.setVisibility(View.VISIBLE);
+                            }else{
+                                weibo_delete.setVisibility(View.GONE);
+                            }
 
                         } catch (JSONException e) {
                             Toast.makeText(context, "网络出错", Toast.LENGTH_SHORT).show();
@@ -231,10 +263,129 @@ public class WeiboActivity extends WHActivity {
     }
 
 
-    // TODO:完成点赞事件
     //点赞事件
     @OnClick(R.id.digg)
     public void diggClick(View view){
+        // 组装 赞API 请求参数
+        String diggApi = "http://" + host + "index.php?app=api&mod=WeiboStatuses&act=add_digg";
+        RequestParams requestParams = new RequestParams();
+        requestParams.addQueryStringParameter("feed_id", feed_id);
+        requestParams.addQueryStringParameter("oauth_token", oauth_token);
+        requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
 
+        httpUtils.send(HttpRequest.HttpMethod.GET,
+                diggApi,
+                requestParams,
+                new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        String state = responseInfo.result;
+
+                        if (state.equals("1")){
+                            Toast.makeText(WeiboActivity.this, "成功", Toast.LENGTH_SHORT).show();
+                            weibo_digg_text.setText("已赞");
+                            digg.setEnabled(false);
+                        }
+                        else
+                            Toast.makeText(WeiboActivity.this, "失败", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                        Toast.makeText(WeiboActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    // 点收藏事件
+    @OnClick(R.id.favorite)
+    public void favoriteClick(View view){
+
+        String type;
+        RequestParams requestParams = new RequestParams();
+
+        if (is_coll){
+            type = "destroy";
+        }else{
+            type = "create";
+            requestParams.addQueryStringParameter("source_app", "public");
+        }
+
+        // 组装 收藏API 请求参数
+        String favoriteApi = "http://" + host + "index.php?app=api&mod=WeiboStatuses&act=favorite_" + type;
+        requestParams.addQueryStringParameter("source_table_name", "feed");
+        requestParams.addQueryStringParameter("source_id", feed_id);
+        requestParams.addQueryStringParameter("oauth_token", oauth_token);
+        requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
+
+        httpUtils.send(HttpRequest.HttpMethod.GET,
+                favoriteApi,
+                requestParams,
+                new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        String state = responseInfo.result;
+
+                        if (state.equals("1")){
+
+                            if (is_coll){
+                                weibo_favorite_text.setText("收藏");
+                                is_coll = false;
+                                Toast.makeText(WeiboActivity.this, "取消收藏成功", Toast.LENGTH_SHORT).show();
+                            }else{
+                                weibo_favorite_text.setText("取消");
+                                is_coll = true;
+                                Toast.makeText(WeiboActivity.this, "收藏成功", Toast.LENGTH_SHORT).show();
+                            }
+                        }else {
+                            Toast.makeText(WeiboActivity.this, "失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                        Toast.makeText(WeiboActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    @OnClick(R.id.repost)
+    public void repostClick(View view){
+        Intent intent = new Intent(this, RepostActivity.class);
+        intent.putExtra("feed_id", feed_id);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.weibo_delete)
+    public void deleteClick(View view){
+
+        // 组装 收藏API 请求参数
+        String deleteApi = "http://" + host + "index.php?app=api&mod=WeiboStatuses&act=destroy";
+        RequestParams requestParams = new RequestParams();
+        requestParams.addQueryStringParameter("id", feed_id);
+        requestParams.addQueryStringParameter("oauth_token", oauth_token);
+        requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
+
+        httpUtils.send(HttpRequest.HttpMethod.GET,
+                deleteApi,
+                requestParams,
+                new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        String state = responseInfo.result;
+
+                        if (state.equals("1")){
+                            Toast.makeText(WeiboActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+                            WeiboActivity.this.finish();
+                        }else{
+                            Toast.makeText(WeiboActivity.this, "删除失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                        Toast.makeText(WeiboActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

@@ -49,7 +49,8 @@ public abstract class WHActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
 
-        httpUtils = new HttpUtils();
+        // 配置HttpUtils
+        initHttpUtils();
 
         // 配置BitmapUtils
         initBitmapUtils();
@@ -64,6 +65,10 @@ public abstract class WHActivity extends ActionBarActivity {
 
     }
 
+    private void initHttpUtils(){
+        httpUtils = new HttpUtils();
+        httpUtils.configDefaultHttpCacheExpiry(1000 * 5);
+    }
 
     private void initBitmapUtils(){
 
