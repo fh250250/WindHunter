@@ -1,7 +1,9 @@
 package com.WindHunter;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -68,10 +70,12 @@ public class WeiboActivity extends WHActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("微博详情");
 
-        return super.onCreateOptionsMenu(menu);
+        super.onCreateOptionsMenu(menu);
+
+        title.setText("微博详情");
+
+        return true;
     }
 
     @Override
@@ -359,33 +363,53 @@ public class WeiboActivity extends WHActivity {
     @OnClick(R.id.weibo_delete)
     public void deleteClick(View view){
 
-        // 组装 收藏API 请求参数
-        String deleteApi = "http://" + host + "index.php?app=api&mod=WeiboStatuses&act=destroy";
-        RequestParams requestParams = new RequestParams();
-        requestParams.addQueryStringParameter("id", feed_id);
-        requestParams.addQueryStringParameter("oauth_token", oauth_token);
-        requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("确认删除");
+        String[] options = {"确定", "取消"};
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                switch (i){
+                    case 0:
 
-        httpUtils.send(HttpRequest.HttpMethod.GET,
-                deleteApi,
-                requestParams,
-                new RequestCallBack<String>() {
-                    @Override
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        String state = responseInfo.result;
+                        // 组装 收藏API 请求参数
+                        String deleteApi = "http://" + host + "index.php?app=api&mod=WeiboStatuses&act=destroy";
+                        RequestParams requestParams = new RequestParams();
+                        requestParams.addQueryStringParameter("id", feed_id);
+                        requestParams.addQueryStringParameter("oauth_token", oauth_token);
+                        requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
 
-                        if (state.equals("1")){
-                            Toast.makeText(WeiboActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
-                            WeiboActivity.this.finish();
-                        }else{
-                            Toast.makeText(WeiboActivity.this, "删除失败", Toast.LENGTH_SHORT).show();
-                        }
-                    }
+                        httpUtils.send(HttpRequest.HttpMethod.GET,
+                                deleteApi,
+                                requestParams,
+                                new RequestCallBack<String>() {
+                                    @Override
+                                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                                        String state = responseInfo.result;
 
-                    @Override
-                    public void onFailure(HttpException e, String s) {
-                        Toast.makeText(WeiboActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                                        if (state.equals("1")){
+                                            Toast.makeText(WeiboActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+                                            WeiboActivity.this.finish();
+                                        }else{
+                                            Toast.makeText(WeiboActivity.this, "删除失败", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(HttpException e, String s) {
+                                        Toast.makeText(WeiboActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                        break;
+                    case 1:
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
+        builder.create().show();
     }
 }

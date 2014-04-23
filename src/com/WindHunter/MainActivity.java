@@ -4,9 +4,11 @@ package com.WindHunter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.*;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.WH.xListView.XListView;
 import com.WindHunter.tools.WHActivity;
@@ -34,17 +36,34 @@ public class MainActivity extends WHActivity {
     // 绘制ActionBar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
+        // 发微博
+        menu.add("Post")
+                .setIcon(R.drawable.action_bar_post)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+
         ActionBar actionBar = getSupportActionBar();
 
         actionBar.setIcon(R.drawable.personal_info_menu);
         actionBar.setHomeButtonEnabled(true);
-
-        actionBar.setTitle("关注微博");
+        actionBar.setDisplayShowTitleEnabled(false);
 
         menu.add("全部微博");
         menu.add("关注微博");
 
-        return super.onCreateOptionsMenu(menu);
+
+        title = new TextView(this);
+        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        layoutParams.gravity = Gravity.LEFT;
+        title.setTextSize(15);
+        title.setTextColor(Color.WHITE);
+        title.setGravity(Gravity.CENTER);
+        actionBar.setCustomView(title, layoutParams);
+        actionBar.setDisplayShowCustomEnabled(true);
+        title.setText("关注微博");
+
+        return true;
     }
 
     @Override
@@ -53,14 +72,17 @@ public class MainActivity extends WHActivity {
         if (item.getItemId() == android.R.id.home){
             resideMenu.openMenu();
         }else if (item.getTitle().equals("全部微博")){
-            getSupportActionBar().setTitle("全部微博");
+            title.setText("全部微博");
             weiboList.setType("public_timeline").fresh();
         }else if (item.getTitle().equals("关注微博")){
-            getSupportActionBar().setTitle("关注微博");
+            title.setText("关注微博");
             weiboList.setType("friends_timeline").fresh();
+        }else if (item.getTitle().equals("Post")){
+            // 跳转到 发微博
+            startActivity(new Intent(this, PostActivity.class));
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     @Override

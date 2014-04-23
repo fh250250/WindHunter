@@ -1,7 +1,9 @@
 package com.WindHunter;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
@@ -81,12 +83,14 @@ public class UserActivity extends WHActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (uid.equals(user_id))
-            getSupportActionBar().setTitle("个人主页");
-        else
-            getSupportActionBar().setTitle("他人主页");
+        super.onCreateOptionsMenu(menu);
 
-        return super.onCreateOptionsMenu(menu);
+        if (uid.equals(user_id))
+            title.setText("个人主页");
+        else
+            title.setText("他人主页");
+
+        return true;
     }
 
     @Override
@@ -438,5 +442,12 @@ public class UserActivity extends WHActivity {
                         Toast.makeText(context, "网络出错", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    @OnClick(R.id.user_weibo_show)
+    public void weiboShowClick(View view){
+        Intent intent = new Intent(this, UserWeiboActivity.class);
+        intent.putExtra("user_id", user_id);
+        startActivity(intent);
     }
 }

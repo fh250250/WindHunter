@@ -4,11 +4,14 @@ package com.WindHunter.tools;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
+import android.widget.TextView;
 import com.WindHunter.*;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.HttpUtils;
@@ -17,6 +20,8 @@ import com.lidroid.xutils.HttpUtils;
 public abstract class WHActivity extends ActionBarActivity {
 
     protected String host, oauth_token, oauth_token_secret, uid;
+
+    protected TextView title;
 
     protected BitmapUtils bitmapUtils;
     protected HttpUtils httpUtils;
@@ -29,6 +34,20 @@ public abstract class WHActivity extends ActionBarActivity {
                 .setIcon(R.drawable.action_bar_post)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setIcon(R.drawable.main_menu_home);
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
+
+        title = new TextView(this);
+        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        layoutParams.gravity = Gravity.LEFT;
+        title.setTextSize(15);
+        title.setTextColor(Color.WHITE);
+        title.setGravity(Gravity.CENTER);
+        actionBar.setCustomView(title, layoutParams);
+        actionBar.setDisplayShowCustomEnabled(true);
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -37,6 +56,10 @@ public abstract class WHActivity extends ActionBarActivity {
         if (item.getTitle().equals("Post")){
             // 跳转到 发微博
             startActivity(new Intent(this, PostActivity.class));
+        }else if (item.getItemId() == android.R.id.home){
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

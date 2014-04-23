@@ -92,6 +92,7 @@
             android:layout_height="wrap_content">
 
         <LinearLayout
+                android:id="@+id/user_weibo_show"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:orientation="vertical"
@@ -115,6 +116,7 @@
         </LinearLayout>
 
         <LinearLayout
+                android:id="@+id/user_following_show"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:orientation="vertical"
@@ -139,6 +141,7 @@
         </LinearLayout>
 
         <LinearLayout
+                android:id="@+id/user_follower_show"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:orientation="vertical"
