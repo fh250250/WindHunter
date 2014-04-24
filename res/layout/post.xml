@@ -6,6 +6,13 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent">
 
+    <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/post_progress"
+            android:layout_gravity="center_horizontal"/>
+
     <EditText
             android:id="@+id/post_edit_text"
             android:gravity="top"
@@ -26,10 +33,10 @@
         <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-        <ImageView
-                android:id="@+id/post_add_img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+        <!--<ImageView-->
+                <!--android:id="@+id/post_add_img"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"/>-->
     </LinearLayout>
     <Button
             android:id="@+id/post_add_img"

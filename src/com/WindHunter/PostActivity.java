@@ -1,18 +1,11 @@
 package com.WindHunter;
 
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.content.ContentUris;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.view.Menu;
@@ -21,6 +14,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.WindHunter.tools.WHActivity;
 import com.lidroid.xutils.ViewUtils;
@@ -45,12 +39,12 @@ public class PostActivity extends WHActivity {
     @ViewInject(R.id.post_img_preview)
     ImageView post_img_preview;
 
+    @ViewInject(R.id.post_progress)
+    ProgressBar post_progress;
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
-        // 默认不显示进度条
-        setProgressBarIndeterminateVisibility(false);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
@@ -101,8 +95,15 @@ public class PostActivity extends WHActivity {
                         new RequestCallBack<String>() {
                             @Override
                             public void onStart() {
-                                // 显示进度条
-                                setProgressBarIndeterminateVisibility(true);
+                                post_progress.setVisibility(View.VISIBLE);
+                            }
+
+                            @Override
+                            public void onLoading(long total, long current, boolean isUploading) {
+                                if (isUploading){
+                                    Long l = current/total * 100;
+                                    post_progress.setProgress(l.intValue());
+                                }
                             }
 
                             @Override
@@ -115,15 +116,13 @@ public class PostActivity extends WHActivity {
                                     finish();
                                 }
 
-                                // 不显示进度条
-                                setProgressBarIndeterminateVisibility(false);
+                                post_progress.setVisibility(View.GONE);
                             }
 
                             @Override
                             public void onFailure(HttpException e, String s) {
-                                Toast.makeText(PostActivity.this, s, Toast.LENGTH_SHORT).show();
-                                // 不显示进度条
-                                setProgressBarIndeterminateVisibility(false);
+                                Toast.makeText(PostActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
+                                post_progress.setVisibility(View.GONE);
                             }
                         });
             }
@@ -136,14 +135,18 @@ public class PostActivity extends WHActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 获取进度条
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-
         setContentView(R.layout.post);
 
         ViewUtils.inject(this);
 
+        post_progress.setVisibility(View.GONE);
+
     }
+
+
+
+    // 用于存储照相后的照片
+    private Uri photoUri = null;
 
     @OnClick(R.id.post_add_img)
     public void addImgClick(View view){
@@ -162,8 +165,11 @@ public class PostActivity extends WHActivity {
                         startActivityForResult(intent, REQUEST_IMAGE_CONTENT);
                         break;
                     case 1:
-                        Intent creamer = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        startActivityForResult(creamer, REQUEST_CAPTURE);
+                        Intent capture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        ContentValues values = new ContentValues();
+                        photoUri = PostActivity.this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                        capture.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, photoUri);
+                        startActivityForResult(capture, REQUEST_CAPTURE);
                         break;
                     default:
                         break;
@@ -176,15 +182,33 @@ public class PostActivity extends WHActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && null != data){
-            // TODO:可能报错,需修改优化
-            if (requestCode == REQUEST_IMAGE_CONTENT){
+        if (resultCode == RESULT_OK){
+
+            if (requestCode == REQUEST_IMAGE_CONTENT && null != data){
                 // 图库
+                Uri imgUri = data.getData();
+                ContentResolver cr = this.getContentResolver();
+                Cursor cursor = null;
+                if (imgUri != null) {
+                    cursor = cr.query(imgUri, null, null, null, null);
+                }
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    postImgPath = cursor.getString(1);
+                    cursor.close();
+                }
             }else if (requestCode == REQUEST_CAPTURE){
                 // 相机
+                ContentResolver cr = this.getContentResolver();
+                Cursor cursor = cr.query(photoUri, null, null, null, null);
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    postImgPath = cursor.getString(1);
+                    cursor.close();
+                }
             }
 
-            // bitmapUtils.display(post_img_preview, postImgPath);
+            bitmapUtils.display(post_img_preview, postImgPath);
         }else{
             postImgPath = null;
         }
