@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.view.*;
 import android.widget.*;
 import com.WindHunter.tools.WHActivity;
@@ -26,7 +25,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class WeiboActivity extends WHActivity {
@@ -67,9 +65,11 @@ public class WeiboActivity extends WHActivity {
     @ViewInject(R.id.weibo_delete)
     BootstrapButton weibo_delete;
 
+
     private String feed_id;
     private String user_id;
     private boolean is_coll;
+    private GestureDetector gestureDetector;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -94,6 +94,17 @@ public class WeiboActivity extends WHActivity {
         weibo_delete.setVisibility(View.GONE);
 
         drawWeiboView(this);
+
+        gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener(){
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                if ((e2.getX() - e1.getX()) > 200)
+                    finish();
+
+                return true;
+            }
+        });
+
     }
 
     private void drawWeiboView(final Context context){
@@ -430,5 +441,17 @@ public class WeiboActivity extends WHActivity {
         });
 
         builder.create().show();
+    }
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return gestureDetector.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        gestureDetector.onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev);
     }
 }
