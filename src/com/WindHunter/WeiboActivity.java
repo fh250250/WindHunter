@@ -25,6 +25,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class WeiboActivity extends WHActivity {
 
@@ -176,7 +179,7 @@ public class WeiboActivity extends WHActivity {
         startActivity(intent);
     }
 
-    private void addImageToLayout(Context context, JSONObject weibo, LinearLayout layout, int maxRow) throws JSONException {
+    private void addImageToLayout(final Context context, JSONObject weibo, LinearLayout layout, int maxRow) throws JSONException {
         if (weibo.getString("feedType").equals("postimage")){
             JSONArray attaches = weibo.getJSONArray("attach");
 
@@ -208,6 +211,22 @@ public class WeiboActivity extends WHActivity {
                     bitmapUtils.display(img, attaches.getJSONObject(row * maxRow + i).getString("attach_small"));
                 }
                 layout.addView(imgBox);
+
+
+
+                // 看大图
+                final ArrayList<String> bigImgUrls = new ArrayList<String>();
+                for (int i = 0; i < attaches.length(); i++){
+                    bigImgUrls.add(attaches.getJSONObject(i).getString("attach_url"));
+                }
+                layout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, BigImageActivity.class);
+                        intent.putStringArrayListExtra("attachUrls", bigImgUrls);
+                        context.startActivity(intent);
+                    }
+                });
             }
         }
     }
