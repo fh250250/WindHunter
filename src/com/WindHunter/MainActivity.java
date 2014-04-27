@@ -131,6 +131,16 @@ public class MainActivity extends WHActivity {
             }
         });
 
+        // 跳转到收藏
+        items.get(1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, CollectionActivity.class);
+                context.startActivity(intent);
+                resideMenu.closeMenu();
+            }
+        });
+
     }
 
     @Override
