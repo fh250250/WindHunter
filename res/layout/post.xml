@@ -6,41 +6,58 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent">
 
-    <ProgressBar
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/post_progress"
-            android:layout_gravity="center_horizontal"/>
-
     <EditText
+            android:background="@drawable/edittext_background_rounded"
+            android:hint="你想说点儿什么..."
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
             android:id="@+id/post_edit_text"
+            android:padding="8dp"
             android:gravity="top"
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="0dip"/>
 
-    <ImageView
-            android:layout_gravity="center"
-            android:id="@+id/post_img_preview"
-            android:layout_width="50dp"
-            android:layout_height="50dp"/>
 
     <LinearLayout
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
-        <ImageView
+
+        <ImageButton
+                android:layout_weight="1"
+                android:id="@+id/post_at"
+                android:src="@drawable/post_at"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-        <!--<ImageView-->
-                <!--android:id="@+id/post_add_img"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"/>-->
+        <ImageButton
+                android:layout_weight="1"
+                android:id="@+id/post_img"
+                android:src="@drawable/post_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        <ImageButton
+                android:layout_weight="1"
+                android:id="@+id/post_capture"
+                android:src="@drawable/post_capture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        <ImageButton
+                android:layout_weight="1"
+                android:id="@+id/post_topic"
+                android:src="@drawable/post_topic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
     </LinearLayout>
-    <Button
-            android:id="@+id/post_add_img"
-            android:text="图片"
+
+    <FrameLayout
+            android:background="@drawable/edittext_background_rounded"
+            android:layout_gravity="center"
+            android:id="@+id/post_img_preview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
 </LinearLayout>

@@ -397,7 +397,7 @@ class Base64 {
 
                 case 2:
                     if (p+1 <= len) {
-                        // A 2-byte tail with at least 1 byte of input.
+                        // A 2-byte tail with post_at least 1 byte of input.
                         v = ((tail[0] & 0xff) << 16) |
                                 ((tail[1] & 0xff) << 8) |
                                 (input[p++] & 0xff);

@@ -19,6 +19,7 @@
         <activity android:name=".RepostActivity" android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
         <activity android:name=".UserWeiboActivity" android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
         <activity android:name=".BigImageActivity"/>
+        <activity android:name=".GetFollowForPostActivity" android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
