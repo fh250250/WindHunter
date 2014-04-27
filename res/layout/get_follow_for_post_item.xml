@@ -2,10 +2,12 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="horizontal"
+              android:gravity="center_vertical"
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
 
     <CheckBox
+            android:layout_margin="8dp"
             android:id="@+id/get_follow_item_check"
             android:focusable="false"
             android:clickable="false"
@@ -13,11 +15,14 @@
             android:layout_height="wrap_content"/>
 
     <ImageView
+            android:layout_margin="8dp"
             android:id="@+id/get_follow_item_avatar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
 
     <TextView
+            android:layout_margin="8dp"
+            android:textSize="14sp"
             android:id="@+id/get_follow_item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

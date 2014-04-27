@@ -4,10 +4,13 @@ package com.WindHunter;
 import android.app.AlertDialog;
 import android.content.*;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
@@ -28,6 +31,7 @@ public class PostActivity extends WHActivity {
     private static final int REQUEST_CAPTURE = 101;
     private static final int REQUEST_AT = 102;
     private String postImgPath;
+    private MenuItem submit;
 
     @ViewInject(R.id.post_edit_text)
     EditText post_edit_text;
@@ -35,18 +39,21 @@ public class PostActivity extends WHActivity {
     @ViewInject(R.id.post_img_preview)
     FrameLayout post_img_preview;
 
+    @ViewInject(R.id.post_words_limit)
+    TextView post_words_limit;
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        // actionBar.setIcon();
-        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setTitle("发表微博");
 
-        menu.add("submit")
-                .setIcon(R.drawable.post_submit)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        submit = menu.add("submit");
+        submit.setIcon(R.drawable.post_submit)
+              .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
 
         return true;
     }
@@ -134,6 +141,32 @@ public class PostActivity extends WHActivity {
         ViewUtils.inject(this);
 
         setProgressBarIndeterminateVisibility(false);
+
+
+        post_edit_text.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                post_words_limit.setText("还可以输入140个字");
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() > 140){
+                    submit.setEnabled(false);
+                    post_words_limit.setTextColor(Color.RED);
+                    post_words_limit.setText("已超过" + (editable.length() - 140) + "个字");
+                }else{
+                    submit.setEnabled(true);
+                    post_words_limit.setTextColor(Color.BLUE);
+                    post_words_limit.setText("还可以输入" + (140 - editable.length()) + "个字");
+                }
+            }
+        });
 
     }
 
@@ -232,7 +265,7 @@ public class PostActivity extends WHActivity {
             postImgPath = null;
         }
 
-        if (requestCode == REQUEST_AT){
+        if (requestCode == REQUEST_AT && data != null){
             String[] names = data.getStringArrayExtra("names");
 
             for (String name : names){

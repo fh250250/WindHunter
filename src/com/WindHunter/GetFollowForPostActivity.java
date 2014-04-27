@@ -98,7 +98,7 @@ public class GetFollowForPostActivity extends ActionBarActivity {
                                     for (int i = 0; i < jsonArray.length(); i++){
                                         UserData userData = new UserData();
                                         userData.name = jsonArray.getJSONObject(i).getString("uname");
-                                        userData.avatar = jsonArray.getJSONObject(i).getString("avatar_small");
+                                        userData.avatar = jsonArray.getJSONObject(i).getString("avatar_middle");
                                         items.add(userData);
                                     }
 
@@ -214,7 +214,11 @@ public class GetFollowForPostActivity extends ActionBarActivity {
                     bitmapUtils.display(avatar, userData.avatar);
                     previews.put(userData.name, avatar);
 
-                    get_follow_preview.addView(avatar);
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(80,80);
+                    layoutParams.gravity = Gravity.CENTER_VERTICAL;
+                    layoutParams.setMargins(10,10,0,10);
+
+                    get_follow_preview.addView(avatar, 0, layoutParams);
                 }
             }
         });
@@ -248,7 +252,7 @@ public class GetFollowForPostActivity extends ActionBarActivity {
                             for (int i = 0; i < jsonArray.length(); i++){
                                 UserData userData = new UserData();
                                 userData.name = jsonArray.getJSONObject(i).getString("uname");
-                                userData.avatar = jsonArray.getJSONObject(i).getString("avatar_small");
+                                userData.avatar = jsonArray.getJSONObject(i).getString("avatar_middle");
                                 items.add(userData);
                             }
 

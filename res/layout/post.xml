@@ -6,18 +6,36 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent">
 
-    <EditText
-            android:background="@drawable/edittext_background_rounded"
-            android:hint="你想说点儿什么..."
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
-            android:id="@+id/post_edit_text"
-            android:padding="8dp"
-            android:gravity="top"
-            android:layout_weight="1"
+    <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="0dip"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+        <EditText
+                android:background="@drawable/edittext_background_rounded"
+                android:hint="你想说点儿什么..."
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:id="@+id/post_edit_text"
+                android:paddingTop="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingBottom="15dp"
+                android:gravity="top"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        <TextView
+                android:textSize="11sp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="3sp"
+                android:id="@+id/post_words_limit"
+                android:layout_gravity="bottom|right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+    </FrameLayout>
 
 
     <LinearLayout

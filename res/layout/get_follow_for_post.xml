@@ -7,14 +7,16 @@
               android:layout_height="match_parent">
 
     <ListView
+            android:layout_weight="1"
             android:id="@+id/get_follow_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
     <LinearLayout
+            android:background="@drawable/follow_preview_bg"
             android:id="@+id/get_follow_preview"
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="100dp"/>
+            android:layout_height="50dp"/>
 
 </LinearLayout>
