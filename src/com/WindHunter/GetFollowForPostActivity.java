@@ -214,7 +214,7 @@ public class GetFollowForPostActivity extends ActionBarActivity {
                     bitmapUtils.display(avatar, userData.avatar);
                     previews.put(userData.name, avatar);
 
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(80,80);
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(50,50);
                     layoutParams.gravity = Gravity.CENTER_VERTICAL;
                     layoutParams.setMargins(10,10,0,10);
 

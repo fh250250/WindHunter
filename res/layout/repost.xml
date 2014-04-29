@@ -1,27 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
+              xmlns:app="http://schemas.android.com/apk/res/com.WindHunter"
               android:orientation="vertical"
               android:background="@color/white"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
     <EditText
+            android:background="@drawable/edittext_background_rounded"
+            android:padding="10dp"
+            android:gravity="top"
+            android:hint="你想说点儿什么……"
+            android:layout_margin="10dp"
+            android:singleLine="false"
             android:id="@+id/repost_content"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="100dp"/>
 
-    <CheckBox
-            android:id="@+id/repost_comment"
-            android:text="同时评论给原作者"
-            android:textColor="@color/black"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+    <LinearLayout
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+        <CheckBox
+                android:id="@+id/repost_comment"
+                android:text="同时评论给原作者"
+                android:textColor="@color/black"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-    <com.beardedhen.androidbootstrap.BootstrapButton
-            android:id="@+id/repost_submit"
-            android:text="转发"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+        <com.beardedhen.androidbootstrap.BootstrapButton
+                android:layout_gravity="right"
+                android:id="@+id/repost_submit"
+                android:text="转发"
+                bootstrapbutton:bb_roundedCorners="true"
+                bootstrapbutton:bb_type="primary"
+                bootstrapbutton:bb_size="small"
+                bootstrapbutton:bb_text_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+    </LinearLayout>
 
 </LinearLayout>
