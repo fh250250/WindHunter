@@ -2,7 +2,6 @@ package com.WindHunter;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -114,6 +113,7 @@ public class LoginActivity extends ActionBarActivity {
 
         // 完成HTTP请求
         HttpUtils http = new HttpUtils();
+        http.configDefaultHttpCacheExpiry(1000);
         http.send(com.lidroid.xutils.http.client.HttpRequest.HttpMethod.GET,
                 authorizeApi,
                 requestParams,

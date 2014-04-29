@@ -90,7 +90,7 @@ public abstract class WHActivity extends ActionBarActivity {
 
     private void initHttpUtils(){
         httpUtils = new HttpUtils();
-        httpUtils.configDefaultHttpCacheExpiry(1000 * 5);
+        httpUtils.configDefaultHttpCacheExpiry(1000 * 2);
     }
 
     private void initBitmapUtils(){

@@ -7,6 +7,7 @@
         android:layout_width="fill_parent"
         android:background="@color/white">
         <ScrollView
+                android:id="@+id/weibo_scroll_view"
                 android:layout_height="fill_parent"
                 android:layout_width="fill_parent"
                 android:layout_weight="1"
@@ -23,9 +24,6 @@
 
                 <LinearLayout
                         android:id="@+id/weibo_user"
-                        android:layout_marginTop="3dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
                         android:orientation="horizontal"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -67,7 +65,7 @@
                             android:layout_marginTop="8dp"
                             android:layout_marginLeft="20dp"
                             android:layout_marginRight="20dp"
-                            android:textSize="14sp"
+                            android:textSize="15sp"
                             android:id="@+id/weibo_content"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"/>
@@ -129,13 +127,38 @@
                         android:layout_width="wrap_content"
                         android:layout_height="35dp"/>
 
+                <TextView
+                        android:background="@drawable/bbuton_default"
+                        android:text="评        论"
+                        android:textSize="15sp"
+                        android:gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:textColor="@color/black"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"/>
+
+
+
+                <LinearLayout
+                        android:id="@+id/weibo_comments"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"/>
+
+
+
             </LinearLayout>
+
 
         </ScrollView>
 
         <LinearLayout
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
             android:background="@drawable/shadow_bg"
             android:baselineAligned="false"
             android:layout_width="fill_parent"

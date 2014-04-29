@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import com.WindHunter.tools.WHActivity;
@@ -65,7 +66,14 @@ public class WeiboActivity extends WHActivity {
     @ViewInject(R.id.weibo_delete)
     BootstrapButton weibo_delete;
 
+    @ViewInject(R.id.weibo_comments)
+    LinearLayout weibo_comments;
 
+    @ViewInject(R.id.weibo_scroll_view)
+    ScrollView weibo_scroll_view;
+
+
+    private final int RIGHT_SCROLL_DELAY = 300;
     private String feed_id;
     private String user_id;
     private boolean is_coll;
@@ -95,10 +103,12 @@ public class WeiboActivity extends WHActivity {
 
         drawWeiboView(this);
 
+        drawCommentsView(this);
+
         gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener(){
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                if ((e2.getX() - e1.getX()) > 200)
+                if ((e2.getX() - e1.getX()) > RIGHT_SCROLL_DELAY)
                     finish();
 
                 return true;
@@ -182,6 +192,112 @@ public class WeiboActivity extends WHActivity {
                 });
     }
 
+    private void drawCommentsView(final Context context){
+
+        final int count = 10;
+        final int[] page = {1};
+
+        // 组装 微博评论API 请求参数
+        String weiboCommentsApi = "http://" + host + "index.php?app=api&mod=WeiboStatuses&act=comments";
+        RequestParams requestParams = new RequestParams();
+        requestParams.addQueryStringParameter("id", feed_id);
+        requestParams.addQueryStringParameter("count", count + "");
+        requestParams.addQueryStringParameter("page", page[0] + "");
+        requestParams.addQueryStringParameter("oauth_token", oauth_token);
+        requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
+
+        httpUtils.send(HttpRequest.HttpMethod.GET,
+                weiboCommentsApi,
+                requestParams,
+                new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        try {
+                            JSONArray jsonArray = new JSONArray(responseInfo.result);
+
+                            if (jsonArray.length() == 0){
+                                // 没有评论
+                                TextView noComments = new TextView(context);
+                                noComments.setText("还没有评论");
+
+                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                layoutParams.gravity = Gravity.CENTER;
+                                layoutParams.setMargins(0,20,0,0);
+                                weibo_comments.addView(noComments,layoutParams);
+                            }else{
+                                addCommentsToLayout(context, jsonArray, weibo_comments);
+                            }
+                        } catch (JSONException e) {
+                            Toast.makeText(context, "网络出错", Toast.LENGTH_SHORT).show();
+                            Log.e("jsonParseError", e.toString());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                        Toast.makeText(context, "网络出错", Toast.LENGTH_SHORT).show();
+                        Log.e("netError", e.toString());
+                    }
+                });
+
+
+        weibo_scroll_view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (weibo_scroll_view.getChildAt(0).getMeasuredHeight() <= v.getHeight() + v.getScrollY()) {
+                            Log.d("scroll view", "bottom");
+                            Log.d("scroll view", page[0] + "");
+
+                            page[0]++;
+
+                            // 组装 微博评论API 请求参数
+                            String weiboCommentsApi = "http://" + host + "index.php?app=api&mod=WeiboStatuses&act=comments";
+                            RequestParams requestParams = new RequestParams();
+                            requestParams.addQueryStringParameter("id", feed_id);
+                            requestParams.addQueryStringParameter("count", count + "");
+                            requestParams.addQueryStringParameter("page", page[0] + "");
+                            requestParams.addQueryStringParameter("oauth_token", oauth_token);
+                            requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
+
+                            httpUtils.send(HttpRequest.HttpMethod.GET,
+                                    weiboCommentsApi,
+                                    requestParams,
+                                    new RequestCallBack<String>() {
+                                        @Override
+                                        public void onSuccess(ResponseInfo<String> responseInfo) {
+                                            try {
+                                                JSONArray jsonArray = new JSONArray(responseInfo.result);
+
+                                                if (jsonArray.length() == 0){
+                                                    page[0]--;
+                                                }else{
+                                                    addCommentsToLayout(context, jsonArray, weibo_comments);
+                                                }
+                                            } catch (JSONException e) {
+                                                page[0]--;
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(HttpException e, String s) {
+                                            page[0] --;
+                                        }
+                                    });
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                return false;
+            }
+        });
+    }
 
     @OnClick(R.id.weibo_user)
     public void weiboUserClick(View view){
@@ -296,6 +412,25 @@ public class WeiboActivity extends WHActivity {
         }
     }
 
+    private void addCommentsToLayout(Context context, JSONArray jsonArray, LinearLayout weibo_comments) throws JSONException {
+
+        for (int i = 0; i < jsonArray.length(); i++){
+
+            JSONObject comment = jsonArray.getJSONObject(i);
+            JSONObject user_info = comment.getJSONObject("user_info");
+
+            View commentBox = LayoutInflater.from(context).inflate(R.layout.weibo_comments_item, null);
+            ImageView avatar = (ImageView)commentBox.findViewById(R.id.weibo_comments_item_avatar);
+            TextView name = (TextView)commentBox.findViewById(R.id.weibo_comments_item_name);
+            TextView content = (TextView)commentBox.findViewById(R.id.weibo_comments_item_content);
+
+            name.setText(user_info.getString("uname"));
+            content.setText(comment.getString("content"));
+            bitmapUtils.display(avatar, user_info.getString("avatar_small"));
+            weibo_comments.addView(commentBox);
+
+        }
+    }
 
     //点赞事件
     @OnClick(R.id.digg)
@@ -441,6 +576,13 @@ public class WeiboActivity extends WHActivity {
         });
 
         builder.create().show();
+    }
+
+    @OnClick(R.id.comment)
+    public void commentClick(View view){
+        Intent intent = new Intent(this, CommentActivity.class);
+        intent.putExtra("feed_id", feed_id);
+        startActivity(intent);
     }
 
 

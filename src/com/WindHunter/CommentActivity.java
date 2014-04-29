@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.WindHunter.tools.WHActivity;
@@ -20,22 +19,20 @@ import com.lidroid.xutils.http.client.HttpRequest;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 
-public class RepostActivity extends WHActivity {
-
-    @ViewInject(R.id.repost_content)
-    EditText repost_content;
-
-    @ViewInject(R.id.repost_comment)
-    CheckBox repost_comment;
+public class CommentActivity extends WHActivity {
 
     private String feed_id;
+
+    @ViewInject(R.id.comment_content)
+    EditText comment_content;
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(false);
-        actionBar.setTitle("转发");
+        actionBar.setTitle("评论");
 
         return true;
     }
@@ -43,36 +40,28 @@ public class RepostActivity extends WHActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.repost);
+        setContentView(R.layout.comment);
 
         ViewUtils.inject(this);
 
         feed_id = getIntent().getStringExtra("feed_id");
     }
 
-    @OnClick(R.id.repost_submit)
-    public void repostClick(View view){
-        String content = repost_content.getText().toString();
+    @OnClick(R.id.comment_submit)
+    public void commentClick(View view){
+        String content = comment_content.getText().toString();
 
-        // 组装 转发API 请求参数
-        String repostApi = "http://" + host + "index.php?app=api&mod=WeiboStatuses&act=repost";
+
+        // 组装 评论API 请求参数
+        String commentApi = "http://" + host + "index.php?app=api&mod=WeiboStatuses&act=comment";
         RequestParams requestParams = new RequestParams();
-
-        if (!content.isEmpty())
-            requestParams.addBodyParameter("content", content);
-
-        if (repost_comment.isChecked())
-            requestParams.addQueryStringParameter("comment", "1");
-        else
-            requestParams.addQueryStringParameter("comment", "0");
-
-        requestParams.addQueryStringParameter("id", feed_id);
-        requestParams.addQueryStringParameter("from", "2");
+        requestParams.addQueryStringParameter("row_id", feed_id);
+        requestParams.addBodyParameter("content", content);
         requestParams.addQueryStringParameter("oauth_token", oauth_token);
         requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
 
         httpUtils.send(HttpRequest.HttpMethod.POST,
-                repostApi,
+                commentApi,
                 requestParams,
                 new RequestCallBack<String>() {
                     @Override
@@ -80,23 +69,23 @@ public class RepostActivity extends WHActivity {
                         String state = responseInfo.result;
 
                         if (state.equals("1")){
-                            Toast.makeText(RepostActivity.this, "转发成功", Toast.LENGTH_SHORT).show();
-                            RepostActivity.this.finish();
+                            Toast.makeText(CommentActivity.this, "评论成功", Toast.LENGTH_SHORT).show();
+                            CommentActivity.this.finish();
                         }else{
-                            Toast.makeText(RepostActivity.this, "转发失败", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CommentActivity.this, "评论失败", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(HttpException e, String s) {
-                        Toast.makeText(RepostActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CommentActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
     @Override
     public void onBackPressed() {
-        if (repost_content.getText().toString().isEmpty()){
+        if (comment_content.getText().toString().isEmpty()){
             super.onBackPressed();
         }else{
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -104,7 +93,7 @@ public class RepostActivity extends WHActivity {
             builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    RepostActivity.super.onBackPressed();
+                    CommentActivity.super.onBackPressed();
                 }
             });
             builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
