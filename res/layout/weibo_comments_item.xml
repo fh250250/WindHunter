@@ -2,7 +2,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="horizontal"
-              android:background="@drawable/bbuton_default"
+              android:background="@color/white"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
     <ImageView
@@ -25,15 +25,18 @@
                 android:layout_height="wrap_content"/>
 
         <!--<ImageView-->
+                <!--android:background="@drawable/comment_header"-->
                 <!--android:layout_marginRight="10dp"-->
                 <!--android:layout_width="fill_parent"-->
                 <!--android:layout_height="wrap_content"/>-->
         <TextView
+                android:background="@drawable/comment_bg"
                 android:layout_marginBottom="5dp"
                 android:layout_marginRight="10dp"
+                android:padding="10dp"
                 android:textSize="13sp"
                 android:id="@+id/weibo_comments_item_content"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
     </LinearLayout>
 

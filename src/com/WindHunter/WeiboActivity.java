@@ -374,19 +374,10 @@ public class WeiboActivity extends WHActivity {
                 View repostView = LayoutInflater.from(context).inflate(R.layout.weibo_repost, null);
                 layout.addView(repostView);
 
-                // 点击名字跳转
+
                 final TextView unameView = (TextView)repostView.findViewById(R.id.weibo_repost_uname);
                 unameView.setText("@" + repost.getString("uname"));
-                unameView.setTextColor(Color.BLUE);
-                final String repostUid = repost.getString("uid");
-                unameView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(context, UserActivity.class);
-                        intent.putExtra("user_id", repostUid);
-                        context.startActivity(intent);
-                    }
-                });
+
 
                 ((TextView)repostView.findViewById(R.id.weibo_repost_ctime))
                         .setText(repost.getString("ctime"));
@@ -408,6 +399,17 @@ public class WeiboActivity extends WHActivity {
 
                 LinearLayout imgLayout = (LinearLayout)repostView.findViewById(R.id.weibo_repost_img);
                 addImageToLayout(context, repost, imgLayout, 3);
+
+
+                final String repost_id = repost.getString("feed_id");
+                layout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(WeiboActivity.this, WeiboActivity.class);
+                        intent.putExtra("feed_id", repost_id);
+                        startActivity(intent);
+                    }
+                });
             }
         }
     }
@@ -596,4 +598,5 @@ public class WeiboActivity extends WHActivity {
         gestureDetector.onTouchEvent(ev);
         return super.dispatchTouchEvent(ev);
     }
+
 }

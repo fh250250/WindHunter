@@ -3,10 +3,12 @@ package com.WindHunter;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.WindHunter.tools.WHActivity;
@@ -25,6 +27,9 @@ public class CommentActivity extends WHActivity {
 
     @ViewInject(R.id.comment_content)
     EditText comment_content;
+
+    @ViewInject(R.id.comment_check)
+    CheckBox comment_check;
 
 
     @Override
@@ -56,6 +61,10 @@ public class CommentActivity extends WHActivity {
         String commentApi = "http://" + host + "index.php?app=api&mod=WeiboStatuses&act=comment";
         RequestParams requestParams = new RequestParams();
         requestParams.addQueryStringParameter("row_id", feed_id);
+
+        if (comment_check.isChecked())
+            requestParams.addQueryStringParameter("ifShareFeed", "1");
+
         requestParams.addBodyParameter("content", content);
         requestParams.addQueryStringParameter("oauth_token", oauth_token);
         requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
@@ -70,7 +79,12 @@ public class CommentActivity extends WHActivity {
 
                         if (state.equals("1")){
                             Toast.makeText(CommentActivity.this, "评论成功", Toast.LENGTH_SHORT).show();
-                            CommentActivity.this.finish();
+
+                            Intent intent = new Intent(CommentActivity.this, WeiboActivity.class);
+                            intent.putExtra("feed_id", feed_id);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                            startActivity(intent);
                         }else{
                             Toast.makeText(CommentActivity.this, "评论失败", Toast.LENGTH_SHORT).show();
                         }
