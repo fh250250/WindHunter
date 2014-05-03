@@ -2,9 +2,11 @@ package com.WindHunter;
 
 
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.Intent;
+import android.content.*;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -79,6 +81,12 @@ public class UserActivity extends WHActivity {
 
     //关注状态
     private boolean follow_state;
+
+    private final int REQUEST_IMAGE_CONTENT = 100;
+    private final int REQUEST_CAPTURE = 101;
+
+    // 用于存储照相后的照片
+    private Uri photoUri = null;
 
 
     @Override
@@ -450,4 +458,79 @@ public class UserActivity extends WHActivity {
         intent.putExtra("user_id", user_id);
         startActivity(intent);
     }
+
+
+    // TODO: 上传头像
+    @OnClick(R.id.user_avatar)
+    public void changeAvatar(View view){
+
+
+        if (uid.equals(user_id)){
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("更换头像");
+            String[] options = {"从图库", "从相机"};
+            builder.setItems(options, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    switch (i){
+                        case 0:
+//                            Intent intent = new Intent();
+//                            intent.setType("image/*");
+//                            intent.setAction(Intent.ACTION_GET_CONTENT);
+//                            startActivityForResult(intent, REQUEST_IMAGE_CONTENT);
+                            break;
+                        case 1:
+//                            Intent capture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                            ContentValues values = new ContentValues();
+//                            photoUri = UserActivity.this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//                            capture.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, photoUri);
+//                            startActivityForResult(capture, REQUEST_CAPTURE);
+                            break;
+                    }
+                }
+            });
+
+            builder.create().show();
+        }
+    }
+//
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//
+//        if (resultCode == RESULT_OK){
+//
+//            String imgPath;
+//
+//            if (requestCode == REQUEST_IMAGE_CONTENT && null != data){
+//                // 图库
+//                Uri imgUri = data.getData();
+//                ContentResolver cr = this.getContentResolver();
+//                Cursor cursor = null;
+//                if (imgUri != null) {
+//                    cursor = cr.query(imgUri, null, null, null, null);
+//                }
+//                if (cursor != null) {
+//                    cursor.moveToFirst();
+//                    imgPath = cursor.getString(1);
+//                    cursor.close();
+//                }
+//            }else if (requestCode == REQUEST_CAPTURE){
+//                // 相机
+//                ContentResolver cr = this.getContentResolver();
+//                Cursor cursor = cr.query(photoUri, null, null, null, null);
+//                if (cursor != null) {
+//                    cursor.moveToFirst();
+//                    imgPath = cursor.getString(1);
+//                    cursor.close();
+//                }
+//            }
+//
+//
+//
+//        }
+//
+//
+//        super.onActivityResult(requestCode, resultCode, data);
+//    }
 }

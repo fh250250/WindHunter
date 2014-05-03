@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
@@ -417,20 +416,8 @@ public class WeiboActivity extends WHActivity {
     private void addCommentsToLayout(Context context, JSONArray jsonArray, LinearLayout weibo_comments) throws JSONException {
 
         for (int i = 0; i < jsonArray.length(); i++){
-
             JSONObject comment = jsonArray.getJSONObject(i);
-            JSONObject user_info = comment.getJSONObject("user_info");
-
-            View commentBox = LayoutInflater.from(context).inflate(R.layout.weibo_comments_item, null);
-            ImageView avatar = (ImageView)commentBox.findViewById(R.id.weibo_comments_item_avatar);
-            TextView name = (TextView)commentBox.findViewById(R.id.weibo_comments_item_name);
-            TextView content = (TextView)commentBox.findViewById(R.id.weibo_comments_item_content);
-
-            name.setText(user_info.getString("uname"));
-            content.setText(comment.getString("content"));
-            bitmapUtils.display(avatar, user_info.getString("avatar_small"));
-            weibo_comments.addView(commentBox);
-
+            weibo_comments.addView(buildCommentBox(context, comment));
         }
     }
 
@@ -599,4 +586,163 @@ public class WeiboActivity extends WHActivity {
         return super.dispatchTouchEvent(ev);
     }
 
+    private void deleteComment(final Context context, final String comment_id, TextView delete, final View commentBox, final LinearLayout weibo_comments){
+        delete.setText("删除");
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("确定删除此评论？");
+
+                builder.setPositiveButton("是的", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // 组装 删除评论API 请求参数
+                        String deleteCommentApi = "http://" + host + "index.php?app=api&mod=WeiboStatuses&act=comment_destroy";
+                        RequestParams requestParams = new RequestParams();
+                        requestParams.addQueryStringParameter("comment_id", comment_id);
+                        requestParams.addQueryStringParameter("oauth_token", oauth_token);
+                        requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
+
+                        httpUtils.send(HttpRequest.HttpMethod.GET,
+                                deleteCommentApi,
+                                requestParams,
+                                new RequestCallBack<String>() {
+                                    @Override
+                                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                                        String state = responseInfo.result;
+
+                                        if (state.equals("1")){
+                                            // 删除评论成功
+                                            weibo_comments.removeView(commentBox);
+                                        }else{
+                                            // 删除评论失败
+                                            Toast.makeText(context, "删除评论失败", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(HttpException e, String s) {
+                                        Toast.makeText(context, "网络出错", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
+                });
+
+                builder.setNegativeButton("不，我再想想", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+
+                builder.create().show();
+            }
+        });
+    }
+
+    private void setReplyCommentListener(final Context context, JSONObject comment, final String row_id, TextView contentTextView) throws JSONException {
+        final String name = comment.getJSONObject("user_info").getString("uname");
+        final String to_comment_id = comment.getString("comment_id");
+        final String to_uid = comment.getJSONObject("user_info").getString("uid");
+
+        contentTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("回复: " + name);
+                final EditText contentView = new EditText(context);
+                builder.setView(contentView);
+                builder.setPositiveButton("回复", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // 具体回复逻辑
+                        String content = contentView.getText().toString();
+                        if (content.isEmpty()){
+                            Toast.makeText(context, "还没有输入内容", Toast.LENGTH_SHORT).show();
+                        }else {
+                            // 组装 回复评论API 请求参数
+                            String replyCommentApi = "http://" + host + "index.php?app=api&mod=WeiboStatuses&act=comment";
+                            RequestParams requestParams = new RequestParams();
+                            requestParams.addQueryStringParameter("row_id", row_id);
+                            requestParams.addQueryStringParameter("to_comment_id", to_comment_id);
+                            requestParams.addQueryStringParameter("to_uid", to_uid);
+                            requestParams.addBodyParameter("content", "回复@" + name + " ：" + content);
+                            requestParams.addQueryStringParameter("oauth_token", oauth_token);
+                            requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
+
+                            httpUtils.send(HttpRequest.HttpMethod.POST,
+                                    replyCommentApi,
+                                    requestParams,
+                                    new RequestCallBack<String>() {
+                                        @Override
+                                        public void onSuccess(ResponseInfo<String> responseInfo) {
+                                            String state = responseInfo.result;
+
+                                            if (state.equals("1")){
+                                                // 回复成功
+                                                Toast.makeText(context, "回复成功", Toast.LENGTH_SHORT).show();
+
+                                                Intent intent = new Intent(context, context.getClass());
+                                                intent.putExtra("feed_id", feed_id);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                startActivity(intent);
+                                            }else{
+                                                // 回复失败
+                                                Toast.makeText(context, "回复失败", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(HttpException e, String s) {
+                                            Toast.makeText(context, "网络出错", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+                    }
+                });
+
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+
+                builder.create().show();
+            }
+        });
+    }
+
+    private View buildCommentBox(Context context, JSONObject comment) throws JSONException {
+        JSONObject user_info = comment.getJSONObject("user_info");
+
+        View commentBox = LayoutInflater.from(context).inflate(R.layout.weibo_comments_item, null);
+        ImageView avatar = (ImageView)commentBox.findViewById(R.id.weibo_comments_item_avatar);
+        TextView name = (TextView)commentBox.findViewById(R.id.weibo_comments_item_name);
+        TextView content = (TextView)commentBox.findViewById(R.id.weibo_comments_item_content);
+        TextView delete = (TextView)commentBox.findViewById(R.id.weibo_comments_item_delete);
+
+        name.setText(user_info.getString("uname"));
+
+        // 去掉content中的a标签
+        String rowContent = comment.getString("content");
+        String realContent = rowContent.replaceAll("<a href[^>]*>", "");
+        realContent = realContent.replaceAll("</a>", "");
+        content.setText(realContent);
+
+        bitmapUtils.display(avatar, user_info.getString("avatar_small"));
+
+        // 删除评论
+        if (user_info.getString("uid").equals(uid)){
+            deleteComment(context, comment.getString("comment_id"), delete, commentBox, weibo_comments);
+        }
+
+        // 点击回复评论
+        setReplyCommentListener(context, comment, feed_id, content);
+
+        return commentBox;
+    }
 }
