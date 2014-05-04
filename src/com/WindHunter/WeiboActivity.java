@@ -417,7 +417,9 @@ public class WeiboActivity extends WHActivity {
 
         for (int i = 0; i < jsonArray.length(); i++){
             JSONObject comment = jsonArray.getJSONObject(i);
-            weibo_comments.addView(buildCommentBox(context, comment));
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(0,0,0,8);
+            weibo_comments.addView(buildCommentBox(context, comment),layoutParams);
         }
     }
 
@@ -586,8 +588,8 @@ public class WeiboActivity extends WHActivity {
         return super.dispatchTouchEvent(ev);
     }
 
-    private void deleteComment(final Context context, final String comment_id, TextView delete, final View commentBox, final LinearLayout weibo_comments){
-        delete.setText("删除");
+    private void deleteComment(final Context context, final String comment_id, BootstrapButton delete, final View commentBox, final LinearLayout weibo_comments){
+        delete.setVisibility(View.VISIBLE);
 
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -643,7 +645,7 @@ public class WeiboActivity extends WHActivity {
         });
     }
 
-    private void setReplyCommentListener(final Context context, JSONObject comment, final String row_id, TextView contentTextView) throws JSONException {
+    private void setReplyCommentListener(final Context context, JSONObject comment, final String row_id, View contentTextView) throws JSONException {
         final String name = comment.getJSONObject("user_info").getString("uname");
         final String to_comment_id = comment.getString("comment_id");
         final String to_uid = comment.getJSONObject("user_info").getString("uid");
@@ -723,7 +725,7 @@ public class WeiboActivity extends WHActivity {
         ImageView avatar = (ImageView)commentBox.findViewById(R.id.weibo_comments_item_avatar);
         TextView name = (TextView)commentBox.findViewById(R.id.weibo_comments_item_name);
         TextView content = (TextView)commentBox.findViewById(R.id.weibo_comments_item_content);
-        TextView delete = (TextView)commentBox.findViewById(R.id.weibo_comments_item_delete);
+        BootstrapButton delete = (BootstrapButton)commentBox.findViewById(R.id.weibo_comments_item_delete);
 
         name.setText(user_info.getString("uname"));
 
@@ -741,7 +743,7 @@ public class WeiboActivity extends WHActivity {
         }
 
         // 点击回复评论
-        setReplyCommentListener(context, comment, feed_id, content);
+        setReplyCommentListener(context, comment, feed_id, commentBox);
 
         return commentBox;
     }

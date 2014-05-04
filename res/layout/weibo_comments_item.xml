@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
               android:orientation="horizontal"
-              android:background="@color/white"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:background="@drawable/comment_bg"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content">
     <ImageView
             android:layout_marginTop="15dp"
             android:layout_marginLeft="15dp"
@@ -12,6 +13,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"/>
     <LinearLayout
+            android:layout_weight="1"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
             android:orientation="vertical"
@@ -24,27 +26,30 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
-        <!--<ImageView-->
-                <!--android:background="@drawable/comment_header"-->
-                <!--android:layout_marginRight="10dp"-->
-                <!--android:layout_width="fill_parent"-->
-                <!--android:layout_height="wrap_content"/>-->
         <TextView
-                android:background="@drawable/comment_bg"
                 android:layout_marginBottom="5dp"
-                android:layout_marginRight="10dp"
-                android:padding="10dp"
+                android:padding="8dp"
                 android:textSize="13sp"
                 android:id="@+id/weibo_comments_item_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
-        <TextView
+    </LinearLayout>
+    <LinearLayout
+            android:layout_marginRight="5dp"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <com.beardedhen.androidbootstrap.BootstrapButton
                 android:id="@+id/weibo_comments_item_delete"
-                android:textColor="@color/bbutton_danger"
+                android:text="删除"
+                android:visibility="gone"
+                bootstrapbutton:bb_roundedCorners="true"
+                bootstrapbutton:bb_type="danger"
+                bootstrapbutton:bb_size="xsmall"
+                bootstrapbutton:bb_text_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-
     </LinearLayout>
 
 

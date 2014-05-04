@@ -2,7 +2,6 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
-              xmlns:app="http://schemas.android.com/apk/res/com.WindHunter"
               android:orientation="vertical"
               android:background="@color/white"
               android:layout_width="match_parent"

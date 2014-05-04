@@ -56,6 +56,10 @@ public class CommentActivity extends WHActivity {
     public void commentClick(View view){
         String content = comment_content.getText().toString();
 
+        if(content.isEmpty()){
+            Toast.makeText(this, "还没有输入内容...", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         // 组装 评论API 请求参数
         String commentApi = "http://" + host + "index.php?app=api&mod=WeiboStatuses&act=comment";

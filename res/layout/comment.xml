@@ -1,28 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
               android:background="@color/white"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
     <EditText
+            android:background="@drawable/edittext_background_rounded"
+            android:padding="10dp"
+            android:gravity="top"
+            android:layout_margin="10dp"
+            android:singleLine="false"
             android:id="@+id/comment_content"
             android:hint="你想说点儿什么"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="100dp"/>
 
-    <com.beardedhen.androidbootstrap.BootstrapButton
-            android:text="评论"
-            android:id="@+id/comment_submit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-    <CheckBox
-            android:id="@+id/comment_check"
-            android:text="同时转发到我的微博"
-            android:textColor="@color/black"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+    <LinearLayout
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+        <CheckBox
+                android:id="@+id/comment_check"
+                android:text="同时转发到我的微博"
+                android:textColor="@color/black"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        <com.beardedhen.androidbootstrap.BootstrapButton
+                android:text="评论"
+                bootstrapbutton:bb_roundedCorners="true"
+                bootstrapbutton:bb_type="primary"
+                bootstrapbutton:bb_size="small"
+                bootstrapbutton:bb_text_gravity="center"
+                android:id="@+id/comment_submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+    </LinearLayout>
 
 </LinearLayout>

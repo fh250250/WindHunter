@@ -225,7 +225,7 @@ public class GetFollowForPostActivity extends ActionBarActivity {
 
 
         // 组装关注用户API
-        String followApi = "http://" + host + "index.php?app=api&mod=User&act=user_following";
+        String followApi = "http://" + host + "index.php?app=api&mod=User&act=user_follow";
         RequestParams requestParams = new RequestParams();
         requestParams.addQueryStringParameter("count", "100");
         requestParams.addQueryStringParameter("user_id", uid);

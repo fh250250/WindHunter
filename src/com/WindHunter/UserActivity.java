@@ -3,10 +3,8 @@ package com.WindHunter;
 
 import android.app.AlertDialog;
 import android.content.*;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -456,6 +454,22 @@ public class UserActivity extends WHActivity {
     public void weiboShowClick(View view){
         Intent intent = new Intent(this, UserWeiboActivity.class);
         intent.putExtra("user_id", user_id);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.user_following_show)
+    public void followingShowClick(View view){
+        Intent intent = new Intent(this, UserFollowActivity.class);
+        intent.putExtra("user_id", user_id);
+        intent.putExtra("type", "user_following");
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.user_follower_show)
+    public void followerShowClick(View view){
+        Intent intent = new Intent(this, UserFollowActivity.class);
+        intent.putExtra("user_id", user_id);
+        intent.putExtra("type", "user_followers");
         startActivity(intent);
     }
 
