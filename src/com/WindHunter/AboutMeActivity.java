@@ -15,6 +15,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.WH.xListView.XListView;
+import com.WindHunter.tools.CommentList;
 import com.WindHunter.tools.WHActivity;
 import com.WindHunter.tools.WeiboList;
 
@@ -25,9 +26,7 @@ import java.util.List;
 public class AboutMeActivity extends WHActivity {
 
     private ViewPager   mPager;         //页卡内容
-    private List<View>  listViews;      // Tab页面列表
     private ImageView   cursor;         // 动画图片
-    private TextView    atMe, commentToMe, commentByMe;     // 页卡头标
     private int         offset = 0;     // 动画图片偏移量
     private int         currIndex = 0;  // 当前页卡编号
     private int         bmpW;           // 动画图片宽度
@@ -51,9 +50,9 @@ public class AboutMeActivity extends WHActivity {
      * 初始化头标
      */
     private void InitTextView() {
-        atMe = (TextView) findViewById(R.id.at_me);
-        commentToMe = (TextView) findViewById(R.id.comment_to_me);
-        commentByMe = (TextView) findViewById(R.id.comment_by_me);
+        TextView atMe = (TextView) findViewById(R.id.at_me);
+        TextView commentToMe = (TextView) findViewById(R.id.comment_to_me);
+        TextView commentByMe = (TextView) findViewById(R.id.comment_by_me);
 
         atMe.setOnClickListener(new MyOnClickListener(0));
         commentToMe.setOnClickListener(new MyOnClickListener(1));
@@ -74,25 +73,25 @@ public class AboutMeActivity extends WHActivity {
         public void onClick(View v) {
             mPager.setCurrentItem(index);
         }
-    };
+    }
 
     /**
      * 初始化ViewPager
      */
     private void InitViewPager() {
         mPager = (ViewPager) findViewById(R.id.vPager);
-        listViews = new ArrayList<View>();
+        List<View> listViews = new ArrayList<View>();
         LayoutInflater mInflater = getLayoutInflater();
         listViews.add(mInflater.inflate(R.layout.at_me, null));
-        listViews.add(mInflater.inflate(R.layout.comment_to_me, null));
-        listViews.add(mInflater.inflate(R.layout.comment_by_me, null));
+        listViews.add(mInflater.inflate(R.layout.comment_about_me, null));
+        listViews.add(mInflater.inflate(R.layout.comment_about_me, null));
         mPager.setAdapter(new MyPagerAdapter(listViews));
         mPager.setCurrentItem(0);
         mPager.setOnPageChangeListener(new MyOnPageChangeListener());
 
         initAtMe(listViews.get(0));
-//        initCommentToMe(listViews.get(1));
-//        initCommentByMe(listViews.get(2));
+        initCommentToMe(listViews.get(1));
+        initCommentByMe(listViews.get(2));
     }
 
     /**
@@ -180,6 +179,7 @@ public class AboutMeActivity extends WHActivity {
                     break;
             }
             currIndex = arg0;
+            assert animation != null;
             animation.setFillAfter(true);// True:图片停在动画结束位置
             animation.setDuration(300);
             cursor.startAnimation(animation);
@@ -199,6 +199,18 @@ public class AboutMeActivity extends WHActivity {
         XListView atMeListView = (XListView)atMeView.findViewById(R.id.at_me_list);
         WeiboList weiboList = new WeiboList(this, atMeListView);
         weiboList.setCount(10).setType("mentions_feed").run();
+    }
+
+    private void initCommentToMe(View commentToMeView){
+        XListView commentToMeList = (XListView)commentToMeView.findViewById(R.id.comment_about_me_list);
+        CommentList commentList = new CommentList(this, commentToMeList);
+        commentList.setCount(10).setType("comments_to_me").run();
+    }
+
+    private void initCommentByMe(View commentByMeView){
+        XListView commentView = (XListView)commentByMeView.findViewById(R.id.comment_about_me_list);
+        CommentList commentList = new CommentList(this, commentView);
+        commentList.setCount(10).setType("comments_by_me").run();
     }
 
 }
