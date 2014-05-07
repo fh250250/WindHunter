@@ -7,7 +7,7 @@
 
     <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:background="@color/bbutton_info" >
 
         <TextView
@@ -36,7 +36,7 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1.0"
                 android:gravity="center"
-                android:text="我评论的"
+                android:text="私信"
                 android:textColor="#ffffff"
                 android:textSize="18sp" />
     </LinearLayout>

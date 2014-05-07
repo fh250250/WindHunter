@@ -3,13 +3,14 @@ package com.WindHunter.tools;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.WH.xListView.XListView;
+import com.WindHunter.MessageDetailActivity;
 import com.WindHunter.R;
-import com.WindHunter.WeiboActivity;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseInfo;
@@ -24,39 +25,31 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class CommentList {
+public class MessageList {
     // 每页 评论数
     private int count;
 
     // 页码
     private int page;
 
-    // 评论类型
-    private String type;
-
     private WHActivity context;
 
-    private XListView commentList;
+    private XListView messageList;
 
-    private CommentAdapter commentAdapter;
+    private MessageAdapter messageAdapter;
 
-    public CommentList(WHActivity context, XListView commentList){
+    public MessageList(WHActivity context, XListView messageList){
         this.context = context;
-        this.commentList = commentList;
+        this.messageList = messageList;
 
-        commentAdapter = new CommentAdapter(context, R.layout.comment_list_item);
-        commentList.setAdapter(commentAdapter);
+        messageAdapter = new MessageAdapter(context, R.layout.message_list_item);
+        messageList.setAdapter(messageAdapter);
 
         this.count = 10;
     }
 
-    public CommentList setCount(int count){
+    public MessageList setCount(int count){
         this.count = count;
-        return this;
-    }
-
-    public CommentList setType(String type){
-        this.type = type;
         return this;
     }
 
@@ -70,7 +63,7 @@ public class CommentList {
         page = 1;
 
         // 组装关注用户最新微博信息API
-        String commentApi = "http://" + context.host + "index.php?app=api&mod=WeiboStatuses&act=" + type;
+        String messageApi = "http://" + context.host + "index.php?app=api&mod=Message&act=get_message_list";
         RequestParams requestParams = new RequestParams();
         requestParams.addQueryStringParameter("count", count + "");
         requestParams.addQueryStringParameter("page", page + "");
@@ -80,7 +73,7 @@ public class CommentList {
 
         // 请求绘制ListView界面
         context.httpUtils.send(HttpRequest.HttpMethod.GET,
-                commentApi,
+                messageApi,
                 requestParams,
                 new RequestCallBack<String>(){
 
@@ -89,10 +82,10 @@ public class CommentList {
                         try {
                             JSONArray jsonArray = new JSONArray(stringResponseInfo.result);
                             if( jsonArray.length() == 0 ){
-                                Toast.makeText(context, "没有评论", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "没有对话", Toast.LENGTH_SHORT).show();
                             }else{
-                                commentAdapter.addAll(getCommentDataArray(jsonArray));
-                                commentAdapter.notifyDataSetChanged();
+                                messageAdapter.addAll(getMessageDataArray(jsonArray));
+                                messageAdapter.notifyDataSetChanged();
 
                                 // 页码加 1
                                 page += 1;
@@ -112,10 +105,10 @@ public class CommentList {
     private void initXListView(){
 
         // 启用上拉更多
-        commentList.setPullLoadEnable(true);
+        messageList.setPullLoadEnable(true);
 
         // 上下拉刷新
-        commentList.setXListViewListener(new XListView.IXListViewListener() {
+        messageList.setXListViewListener(new XListView.IXListViewListener() {
             @Override
             public void onRefresh() {
                 // 下拉刷新
@@ -124,7 +117,7 @@ public class CommentList {
                 page = 1;
 
                 // 组装微博API
-                String commentApi = "http://" + context.host + "index.php?app=api&mod=WeiboStatuses&act=" + type;
+                String messageApi = "http://" + context.host + "index.php?app=api&mod=Message&act=get_message_list";
                 RequestParams requestParams = new RequestParams();
                 requestParams.addQueryStringParameter("count", count + "");
                 requestParams.addQueryStringParameter("page", page + "");
@@ -134,21 +127,21 @@ public class CommentList {
 
                 // 请求绘制ListView界面
                 context.httpUtils.send(HttpRequest.HttpMethod.GET,
-                        commentApi,
+                        messageApi,
                         requestParams,
-                        new RequestCallBack<String>(){
+                        new RequestCallBack<String>() {
 
                             @Override
                             public void onSuccess(ResponseInfo<String> stringResponseInfo) {
                                 try {
                                     JSONArray jsonArray = new JSONArray(stringResponseInfo.result);
-                                    if( jsonArray.length() == 0 ){
-                                        Toast.makeText(context, "没有评论", Toast.LENGTH_SHORT).show();
-                                    }else{
-                                        commentAdapter.clear();
+                                    if (jsonArray.length() == 0) {
+                                        Toast.makeText(context, "没有对话", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        messageAdapter.clear();
 
-                                        commentAdapter.addAll(getCommentDataArray(jsonArray));
-                                        commentAdapter.notifyDataSetChanged();
+                                        messageAdapter.addAll(getMessageDataArray(jsonArray));
+                                        messageAdapter.notifyDataSetChanged();
 
                                         // 页码加 1
                                         page += 1;
@@ -157,15 +150,15 @@ public class CommentList {
                                     Toast.makeText(context, "网络出错", Toast.LENGTH_SHORT).show();
                                 }
 
-                                commentList.stopRefresh();
-                                commentList.setRefreshTime(new SimpleDateFormat().format(Calendar.getInstance().getTime()));
+                                messageList.stopRefresh();
+                                messageList.setRefreshTime(new SimpleDateFormat().format(Calendar.getInstance().getTime()));
                             }
 
                             @Override
                             public void onFailure(HttpException e, String s) {
                                 Toast.makeText(context, "网络出错", Toast.LENGTH_SHORT).show();
-                                commentList.stopRefresh();
-                                commentList.setRefreshTime(new SimpleDateFormat().format(Calendar.getInstance().getTime()));
+                                messageList.stopRefresh();
+                                messageList.setRefreshTime(new SimpleDateFormat().format(Calendar.getInstance().getTime()));
                             }
                         });
             }
@@ -176,7 +169,7 @@ public class CommentList {
 
 
                 // 组装API
-                String commentApi = "http://" + context.host + "index.php?app=api&mod=WeiboStatuses&act=" + type;
+                String messageApi = "http://" + context.host + "index.php?app=api&mod=Message&act=get_message_list";
                 RequestParams requestParams = new RequestParams();
                 requestParams.addQueryStringParameter("count", count + "");
                 requestParams.addQueryStringParameter("page", page + "");
@@ -184,61 +177,62 @@ public class CommentList {
                 requestParams.addQueryStringParameter("oauth_token_secret", context.oauth_token_secret);
 
                 context.httpUtils.send(HttpRequest.HttpMethod.GET,
-                        commentApi,
+                        messageApi,
                         requestParams,
-                        new RequestCallBack<String>(){
+                        new RequestCallBack<String>() {
 
                             @Override
                             public void onSuccess(ResponseInfo<String> stringResponseInfo) {
                                 try {
-                                    JSONArray jsonArray = new JSONArray(stringResponseInfo.result);
-                                    if (jsonArray.length() == 0){
+                                    if (stringResponseInfo.result.equals("null")) {
                                         //  没有更多
                                         Toast.makeText(context, "没有更多", Toast.LENGTH_SHORT).show();
-                                        commentList.stopLoadMore();
-                                    }else{
-                                        commentAdapter.addAll(getCommentDataArray(jsonArray));
-                                        commentAdapter.notifyDataSetChanged();
+                                        messageList.stopLoadMore();
+                                    } else {
+                                        JSONArray jsonArray = new JSONArray(stringResponseInfo.result);
+                                        messageAdapter.addAll(getMessageDataArray(jsonArray));
+                                        messageAdapter.notifyDataSetChanged();
 
-                                        commentList.stopLoadMore();
+                                        messageList.stopLoadMore();
 
                                         // 页码增加
                                         page += 1;
                                     }
                                 } catch (JSONException e) {
                                     Toast.makeText(context, "网络错误", Toast.LENGTH_SHORT).show();
-                                    commentList.stopLoadMore();
+                                    Log.e("json", e.toString());
+                                    messageList.stopLoadMore();
                                 }
                             }
 
                             @Override
                             public void onFailure(HttpException e, String s) {
                                 Toast.makeText(context, "网络错误", Toast.LENGTH_SHORT).show();
-                                commentList.stopLoadMore();
+                                messageList.stopLoadMore();
                             }
                         });
             }
         });
 
         // 点击监听事件
-        commentList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        messageList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CommentData commentData = (CommentData)parent.getItemAtPosition(position);
-                Intent intent = new Intent(context, WeiboActivity.class);
-                intent.putExtra("feed_id", commentData.feed_id);
+                MessageData messageData = (MessageData) parent.getItemAtPosition(position);
+                Intent intent = new Intent(context, MessageDetailActivity.class);
+                intent.putExtra("list_id", messageData.list_id);
 
                 context.startActivity(intent);
             }
         });
     }
 
-    private class CommentAdapter extends ArrayAdapter<CommentData> {
+    private class MessageAdapter extends ArrayAdapter<MessageData> {
 
         private int resource;
         private final LayoutInflater inflater;
 
-        public CommentAdapter(Context context, int resource) {
+        public MessageAdapter(Context context, int resource) {
             super(context, resource);
             this.resource = resource;
             inflater = LayoutInflater.from(context);
@@ -249,56 +243,58 @@ public class CommentList {
             if (convertView == null){
                 convertView = inflater.inflate(resource, parent, false);
             }
-            CommentData commentData = getItem(position);
+            MessageData messageData = getItem(position);
 
-            ImageView avatar = (ImageView)convertView.findViewById(R.id.comment_list_item_avatar);
-            TextView name = (TextView)convertView.findViewById(R.id.comment_list_item_name);
-            TextView comment_content = (TextView)convertView.findViewById(R.id.comment_list_item_comment_content);
-            TextView ctime = (TextView)convertView.findViewById(R.id.comment_list_item_ctime);
+            ImageView from_avatar = (ImageView)convertView.findViewById(R.id.message_list_item_from_avatar);
+            TextView from_name = (TextView)convertView.findViewById(R.id.message_list_item_from_name);
+            TextView last_message = (TextView)convertView.findViewById(R.id.message_list_item_last_message);
+            TextView ctime = (TextView)convertView.findViewById(R.id.message_list_item_ctime);
+            TextView num = (TextView)convertView.findViewById(R.id.message_list_item_num);
 
 
-            context.bitmapUtils.display(avatar, commentData.avatar);
-            name.setText(commentData.name);
-            comment_content.setText(commentData.comment_content);
-            ctime.setText(commentData.ctime);
+            context.bitmapUtils.display(from_avatar, messageData.from_avatar);
+            from_name.setText( ( (context.uid.equals(messageData.from_uid) ) ?
+                    "我" :
+                    messageData.from_name ) + "说: ");
+            last_message.setText(messageData.last_message);
+            ctime.setText(messageData.ctime);
+            num.setText(messageData.num);
 
             return convertView;
         }
     }
 
-    private List<CommentData> getCommentDataArray(JSONArray jsonArray) throws JSONException {
-        List<CommentData> items = new ArrayList<CommentData>();
+    private List<MessageData> getMessageDataArray(JSONArray jsonArray) throws JSONException {
+        List<MessageData> items = new ArrayList<MessageData>();
         JSONObject jsonItem;
 
         for (int i = 0; i < jsonArray.length(); i++){
             jsonItem = jsonArray.getJSONObject(i);
-            CommentData commentData = new CommentData();
+            MessageData messageData = new MessageData();
 
-            commentData.avatar = jsonItem.getJSONObject("user_info").getString("avatar_middle");
-            commentData.name = jsonItem.getJSONObject("user_info").getString("uname");
-
-            // 去掉content中的a标签
-            String rowContent = jsonItem.getString("content");
-            String realContent = rowContent.replaceAll("<a href[^>]*>", "");
-            realContent = realContent.replaceAll("</a>", "");
-            commentData.comment_content = realContent;
-
-            commentData.feed_id = jsonItem.getJSONObject("sourceInfo").getString("feed_id");
-            commentData.ctime = jsonItem.getString("ctime");
+            messageData.from_avatar = jsonItem.getString("from_face");
+            messageData.from_name = jsonItem.getString("from_uname");
+            messageData.last_message = jsonItem.getString("content");
+            messageData.ctime = jsonItem.getString("ctime");
+            messageData.num = jsonItem.getString("message_num");
+            messageData.from_uid = jsonItem.getString("from_uid");
+            messageData.list_id = jsonItem.getString("list_id");
 
 
-            items.add(commentData);
+
+            items.add(messageData);
         }
 
         return items;
     }
 
-    private class CommentData {
-        private String avatar;
-        private String name;
-        private String comment_content;
-        private String feed_id;
+    private class MessageData {
+        private String from_avatar;
+        private String from_uid;
+        private String from_name;
+        private String last_message;
         private String ctime;
+        private String num;
+        private String list_id;
     }
-
 }

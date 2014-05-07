@@ -2,46 +2,54 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="horizontal"
-              android:layout_width="fill_parent"
+              android:layout_width="match_parent"
               android:layout_height="wrap_content">
 
     <ImageView
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="10dp"
-            android:id="@+id/comment_list_item_avatar"
+            android:id="@+id/message_list_item_from_avatar"
             android:layout_width="40dp"
             android:layout_height="40dp"/>
 
     <LinearLayout
-            android:orientation="vertical"
+            android:layout_weight="1"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="5dp"
-            android:layout_marginRight="10dp"
-            android:layout_width="fill_parent"
+            android:layout_marginRight="5dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <TextView
                 android:textSize="13sp"
-                android:id="@+id/comment_list_item_name"
+                android:id="@+id/message_list_item_from_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
         <TextView
-                android:textSize="14sp"
+                android:textSize="15sp"
                 android:layout_marginTop="5dp"
-                android:layout_marginLeft="10dp"
-                android:id="@+id/comment_list_item_comment_content"
+                android:id="@+id/message_list_item_last_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
+
         <TextView
-                android:textSize="11sp"
                 android:layout_gravity="right"
-                android:layout_marginTop="10dp"
-                android:id="@+id/comment_list_item_ctime"
+                android:textSize="10sp"
+                android:layout_marginTop="5dp"
+                android:id="@+id/message_list_item_ctime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
     </LinearLayout>
-
+    <TextView
+            android:background="@drawable/message_list_item_num_bg"
+            android:layout_gravity="center"
+            android:textSize="15sp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/message_list_item_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
 </LinearLayout>

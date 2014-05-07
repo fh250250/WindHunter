@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.WH.xListView.XListView;
 import com.WindHunter.tools.CommentList;
+import com.WindHunter.tools.MessageList;
 import com.WindHunter.tools.WHActivity;
 import com.WindHunter.tools.WeiboList;
 
@@ -84,14 +85,14 @@ public class AboutMeActivity extends WHActivity {
         LayoutInflater mInflater = getLayoutInflater();
         listViews.add(mInflater.inflate(R.layout.at_me, null));
         listViews.add(mInflater.inflate(R.layout.comment_about_me, null));
-        listViews.add(mInflater.inflate(R.layout.comment_about_me, null));
+        listViews.add(mInflater.inflate(R.layout.message_list, null));
         mPager.setAdapter(new MyPagerAdapter(listViews));
         mPager.setCurrentItem(0);
         mPager.setOnPageChangeListener(new MyOnPageChangeListener());
 
         initAtMe(listViews.get(0));
         initCommentToMe(listViews.get(1));
-        initCommentByMe(listViews.get(2));
+        initMessageList(listViews.get(2));
     }
 
     /**
@@ -207,10 +208,10 @@ public class AboutMeActivity extends WHActivity {
         commentList.setCount(10).setType("comments_to_me").run();
     }
 
-    private void initCommentByMe(View commentByMeView){
-        XListView commentView = (XListView)commentByMeView.findViewById(R.id.comment_about_me_list);
-        CommentList commentList = new CommentList(this, commentView);
-        commentList.setCount(10).setType("comments_by_me").run();
+    private void initMessageList(View messageListView){
+        XListView messageList = (XListView)messageListView.findViewById(R.id.message_list);
+        MessageList message = new MessageList(this, messageList);
+        message.setCount(10).run();
     }
 
 }
