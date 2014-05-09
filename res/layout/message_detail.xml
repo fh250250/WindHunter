@@ -1,9 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
               android:background="@color/white"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
+
+    <ScrollView
+            android:id="@+id/message_detail_scroll"
+            android:layout_weight="1"
+            android:fillViewport="true"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent">
+
+        <LinearLayout
+                android:id="@+id/message_detail_list"
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"/>
+
+    </ScrollView>
+    <LinearLayout
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+        <com.beardedhen.androidbootstrap.BootstrapEditText
+                android:id="@+id/message_detail_reply"
+                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                bootstrapbutton:bb_roundedCorners="true"
+                bootstrapbutton:bb_type="default"
+                bootstrapbutton:bb_text_gravity="top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        <com.beardedhen.androidbootstrap.BootstrapButton
+                android:layout_marginBottom="2dp"
+                android:layout_marginRight="5dp"
+                android:id="@+id/message_detail_submit"
+                android:text="回复"
+                bootstrapbutton:bb_roundedCorners="true"
+                bootstrapbutton:bb_type="primary"
+                bootstrapbutton:bb_text_gravity="center"
+                bootstrapbutton:bb_size="small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+    </LinearLayout>
 
 </LinearLayout>

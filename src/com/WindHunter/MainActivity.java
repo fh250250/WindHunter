@@ -106,14 +106,12 @@ public class MainActivity extends WHActivity {
         resideMenu.attachToActivity(this);
 
         String titles[]={"主   页",
-                         "收   藏",
                          "与我相关",
-                         "聊   天",
+                         "收   藏",
                          "微   吧"};
         int icon[]={R.drawable.main_menu_profile,
-                    R.drawable.main_menu_collect,
                     R.drawable.main_menu_about_me,
-                    R.drawable.main_menu_chat,
+                    R.drawable.main_menu_collect,
                     R.drawable.main_menu_app};
 
         List<ResideMenuItem> items = new ArrayList<ResideMenuItem>();
@@ -136,21 +134,21 @@ public class MainActivity extends WHActivity {
             }
         });
 
-        // 跳转到收藏
+        // 跳转到与我相关
         items.get(1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, CollectionActivity.class);
+                Intent intent = new Intent(context, AboutMeActivity.class);
                 context.startActivity(intent);
                 resideMenu.closeMenu();
             }
         });
 
-        // 跳转到与我相关
+        // 跳转到收藏
         items.get(2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, AboutMeActivity.class);
+                Intent intent = new Intent(context, CollectionActivity.class);
                 context.startActivity(intent);
                 resideMenu.closeMenu();
             }
