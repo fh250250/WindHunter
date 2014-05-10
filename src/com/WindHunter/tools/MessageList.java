@@ -1,7 +1,9 @@
 package com.WindHunter.tools;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.widget.*;
 import com.WH.xListView.XListView;
 import com.WindHunter.MessageDetailActivity;
 import com.WindHunter.R;
+import com.beardedhen.androidbootstrap.FontAwesomeText;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseInfo;
@@ -80,10 +83,8 @@ public class MessageList {
                     @Override
                     public void onSuccess(ResponseInfo<String> stringResponseInfo) {
                         try {
-                            JSONArray jsonArray = new JSONArray(stringResponseInfo.result);
-                            if( jsonArray.length() == 0 ){
-                                Toast.makeText(context, "没有对话", Toast.LENGTH_SHORT).show();
-                            }else{
+                            if (!stringResponseInfo.result.equals("null")) {
+                                JSONArray jsonArray = new JSONArray(stringResponseInfo.result);
                                 messageAdapter.addAll(getMessageDataArray(jsonArray));
                                 messageAdapter.notifyDataSetChanged();
 
@@ -134,10 +135,10 @@ public class MessageList {
                             @Override
                             public void onSuccess(ResponseInfo<String> stringResponseInfo) {
                                 try {
-                                    JSONArray jsonArray = new JSONArray(stringResponseInfo.result);
-                                    if (jsonArray.length() == 0) {
+                                    if (stringResponseInfo.result.equals("null")){
                                         Toast.makeText(context, "没有对话", Toast.LENGTH_SHORT).show();
-                                    } else {
+                                    }else{
+                                        JSONArray jsonArray = new JSONArray(stringResponseInfo.result);
                                         messageAdapter.clear();
 
                                         messageAdapter.addAll(getMessageDataArray(jsonArray));
@@ -243,13 +244,14 @@ public class MessageList {
             if (convertView == null){
                 convertView = inflater.inflate(resource, parent, false);
             }
-            MessageData messageData = getItem(position);
+            final MessageData messageData = getItem(position);
 
             ImageView from_avatar = (ImageView)convertView.findViewById(R.id.message_list_item_from_avatar);
             TextView from_name = (TextView)convertView.findViewById(R.id.message_list_item_from_name);
             TextView last_message = (TextView)convertView.findViewById(R.id.message_list_item_last_message);
             TextView ctime = (TextView)convertView.findViewById(R.id.message_list_item_ctime);
             TextView num = (TextView)convertView.findViewById(R.id.message_list_item_num);
+            FontAwesomeText delete = (FontAwesomeText)convertView.findViewById(R.id.message_list_item_delete);
 
 
             context.bitmapUtils.display(from_avatar, messageData.from_avatar);
@@ -259,6 +261,56 @@ public class MessageList {
             last_message.setText(messageData.last_message);
             ctime.setText(messageData.ctime);
             num.setText(messageData.num);
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("是否删除?");
+                    builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            // 组装 API
+                            String deleteMessageApi = "http://" + context.host + "index.php?app=api&mod=Message&act=destroy";
+                            RequestParams requestParams = new RequestParams();
+                            requestParams.addQueryStringParameter("list_id", messageData.list_id);
+                            requestParams.addQueryStringParameter("oauth_token", context.oauth_token);
+                            requestParams.addQueryStringParameter("oauth_token_secret", context.oauth_token_secret);
+
+                            context.httpUtils.send(HttpRequest.HttpMethod.GET,
+                                    deleteMessageApi,
+                                    requestParams,
+                                    new RequestCallBack<String>() {
+                                        @Override
+                                        public void onSuccess(ResponseInfo<String> responseInfo) {
+                                            String state = responseInfo.result;
+
+                                            if (state.equals("1")){
+                                                Toast.makeText(context, "删除成功", Toast.LENGTH_SHORT).show();
+
+                                                messageAdapter.remove(messageData);
+                                                messageAdapter.notifyDataSetChanged();
+                                            }else{
+                                                Toast.makeText(context, "删除失败", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(HttpException e, String s) {
+                                            Toast.makeText(context, "网络出错", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+                    });
+                    builder.setNegativeButton("不,我再想想", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                        }
+                    });
+
+                    builder.create().show();
+                }
+            });
+
 
             return convertView;
         }

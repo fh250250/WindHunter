@@ -2,19 +2,18 @@ package com.WindHunter;
 
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.*;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.WindHunter.tools.WHActivity;
 import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -74,8 +73,12 @@ public class UserActivity extends WHActivity {
     @ViewInject(R.id.user_follower_text)
     TextView user_follower_text;
 
+    @ViewInject(R.id.user_post_message)
+    BootstrapButton user_post_message;
+
     // 用户id
     private String user_id;
+    private String post_name;
 
     //关注状态
     private boolean follow_state;
@@ -129,9 +132,11 @@ public class UserActivity extends WHActivity {
         if (uid.equals(user_id)){
             user_following_text.setText("我的关注");
             user_follower_text.setText("我的粉丝");
+            user_post_message.setVisibility(View.GONE);
         }else{
             user_following_text.setText("他的关注");
             user_follower_text.setText("他的粉丝");
+            user_post_message.setVisibility(View.VISIBLE);
         }
 
 
@@ -154,6 +159,7 @@ public class UserActivity extends WHActivity {
 
                             bitmapUtils.display(user_avatar, user.getString("avatar_middle"));
                             user_name.setText(user.getString("uname"));
+                            post_name = user.getString("uname");
                             user_sex.setText(user.getString("sex"));
                             user_location.setText(user.getString("location"));
                             user_weibo_count.setText(user.getJSONObject("count_info").getInt("weibo_count") + "");
@@ -547,4 +553,64 @@ public class UserActivity extends WHActivity {
 //
 //        super.onActivityResult(requestCode, resultCode, data);
 //    }
+
+
+    @OnClick(R.id.user_post_message)
+    public void postMessage(View view){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("给 " + post_name + "发");
+
+        View postView =  LayoutInflater.from(this).inflate(R.layout.post_message, null);
+
+        builder.setView(postView);
+
+
+        final BootstrapEditText contentView = (BootstrapEditText)postView.findViewById(R.id.post_message_content);
+        BootstrapButton submit = (BootstrapButton)postView.findViewById(R.id.post_message_submit);
+
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String content = contentView.getText().toString();
+
+                if (content.isEmpty()){
+                    Toast.makeText(UserActivity.this, "还没有输入内容", Toast.LENGTH_SHORT).show();
+                }else{
+                    // 组装API 请求参数
+                    String postMessageApi = "http://" + host + "index.php?app=api&mod=Message&act=create";
+                    RequestParams requestParams = new RequestParams();
+                    requestParams.addQueryStringParameter("to_uid", user_id);
+                    requestParams.addBodyParameter("content", content);
+                    requestParams.addQueryStringParameter("oauth_token", oauth_token);
+                    requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
+
+                    httpUtils.send(HttpRequest.HttpMethod.POST,
+                            postMessageApi,
+                            requestParams,
+                            new RequestCallBack<String>() {
+                                @Override
+                                public void onSuccess(ResponseInfo<String> responseInfo) {
+                                    String state = responseInfo.result;
+
+                                    if (state.equals("false")){
+                                        Toast.makeText(UserActivity.this, "发送失败", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        Toast.makeText(UserActivity.this, "发送成功", Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(HttpException e, String s) {
+                                    Toast.makeText(UserActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
+            }
+        });
+    }
 }
