@@ -2,10 +2,10 @@ package com.WindHunter;
 
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.*;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.*;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -161,16 +161,24 @@ public class UserActivity extends WHActivity {
                             user_name.setText(user.getString("uname"));
                             post_name = user.getString("uname");
                             user_sex.setText(user.getString("sex"));
-                            user_location.setText(user.getString("location"));
                             user_weibo_count.setText(user.getJSONObject("count_info").getInt("weibo_count") + "");
                             user_following_count.setText(user.getJSONObject("count_info").getInt("following_count") + "");
                             user_follower_count.setText(user.getJSONObject("count_info").getInt("follower_count") + "");
-                            if (user.isNull("intro"))
+
+                            if (user.isNull("location")){
+                                user_location.setText("");
+                            }else{
+                                user_location.setText(user.getString("location"));
+                            }
+
+                            if (user.isNull("intro")){
                                 user_intro.setText("这个人很懒，什么都没写");
-                            else
+                            }else{
                                 user_intro.setText(user.getString("intro"));
+                            }
                         } catch (JSONException e) {
                             Toast.makeText(context, "网络出错", Toast.LENGTH_SHORT).show();
+                            Log.e("json", e.toString());
                         }
                     }
 
@@ -559,7 +567,7 @@ public class UserActivity extends WHActivity {
     public void postMessage(View view){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setTitle("给 " + post_name + "发");
+        builder.setTitle("给 " + post_name + " 发");
 
         View postView =  LayoutInflater.from(this).inflate(R.layout.post_message, null);
 

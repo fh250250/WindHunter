@@ -187,4 +187,12 @@ public class LoginActivity extends ActionBarActivity {
         loginBtn.setEnabled(b);
     }
 
+
+    // 注册
+    @OnClick(R.id.login_register)
+    public void registerClick(View view){
+        Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
+        this.startActivity(intent);
+        finish();
+    }
 }
