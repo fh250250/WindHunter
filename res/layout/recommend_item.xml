@@ -8,24 +8,30 @@
               android:layout_height="match_parent">
 
     <FrameLayout
+            android:id="@+id/recommend_item_frame"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
         <ImageView
                 android:layout_gravity="center"
                 android:id="@+id/recommend_item_avatar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="80dp"
+                android:layout_height="80dp"/>
         <CheckBox
+                android:focusable="false"
+                android:clickable="false"
                 android:id="@+id/recommend_item_check"
                 android:layout_gravity="right|bottom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
     </FrameLayout>
     <TextView
+            android:gravity="center"
+            android:textSize="13sp"
             android:id="@+id/recommend_item_name"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"/>
     <TextView
+            android:textSize="13sp"
             android:id="@+id/recommend_item_followers_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

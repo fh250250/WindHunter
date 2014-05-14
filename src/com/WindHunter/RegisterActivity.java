@@ -143,6 +143,14 @@ public class RegisterActivity extends ActionBarActivity{
 
                                 startActivity(intent);
                                 finish();
+
+                                // 记住账号密码
+                                SharedPreferences remember = getSharedPreferences("remember", MODE_PRIVATE);
+                                SharedPreferences.Editor rememberEditor = remember.edit();
+
+                                rememberEditor.putString("email", email);
+                                rememberEditor.putString("password", password);
+                                rememberEditor.commit();
                             }
                         } catch (JSONException e) {
                             Toast.makeText(RegisterActivity.this, "网络出错", Toast.LENGTH_SHORT).show();

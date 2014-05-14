@@ -88,9 +88,7 @@ public class CommentList {
                     public void onSuccess(ResponseInfo<String> stringResponseInfo) {
                         try {
                             JSONArray jsonArray = new JSONArray(stringResponseInfo.result);
-                            if( jsonArray.length() == 0 ){
-                                Toast.makeText(context, "没有评论", Toast.LENGTH_SHORT).show();
-                            }else{
+                            if (jsonArray.length() != 0) {
                                 commentAdapter.addAll(getCommentDataArray(jsonArray));
                                 commentAdapter.notifyDataSetChanged();
 

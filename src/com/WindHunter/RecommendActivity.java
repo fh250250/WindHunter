@@ -1,18 +1,16 @@
 package com.WindHunter;
 
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.view.LayoutInflater;
-import android.view.View;
+import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.WindHunter.tools.DES_MOBILE;
 import com.WindHunter.tools.MD5;
 import com.lidroid.xutils.BitmapUtils;
@@ -28,17 +26,59 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class RecommendActivity extends ActionBarActivity {
 
     private String oauth_token;
     private String oauth_token_secret;
     private BitmapUtils bitmapUtils;
+    private ArrayList<String> ids;
 
     @ViewInject(R.id.recommend_row_one)
     LinearLayout rowOne;
 
     @ViewInject(R.id.recommend_row_two)
     LinearLayout rowTwo;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setTitle("推荐关注");
+
+        menu.add("跳过").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        menu.add("完成").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+        setProgressBarIndeterminateVisibility(false);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getTitle().equals("跳过")){
+            Intent i = new Intent(this, MainActivity.class);
+            startActivity(i);
+            finish();
+        }else if (item.getTitle().equals("完成")){
+
+            SharedPreferences settings = getSharedPreferences("settings", MODE_PRIVATE);
+            String host = settings.getString("Host", "demo.thinksns.com/t3/");
+            HttpUtils httpUtils = new HttpUtils();
+            httpUtils.configDefaultHttpCacheExpiry(2000);
+
+            createFollows(host, httpUtils, ids);
+
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +91,7 @@ public class RecommendActivity extends ActionBarActivity {
 
         String email = getIntent().getStringExtra("email");
         String password = getIntent().getStringExtra("password");
+        ids = new ArrayList<String>();
 
         login(email, password);
     }
@@ -137,22 +178,41 @@ public class RecommendActivity extends ActionBarActivity {
                             }else{
                                 for (int i = 0; i < jsonArray.length(); i++){
                                     JSONObject user = jsonArray.getJSONObject(i);
+                                    final String id = user.getString("uid");
 
                                     View view = LayoutInflater.from(RecommendActivity.this).inflate(R.layout.recommend_item, null);
                                     ImageView avatarView = (ImageView)view.findViewById(R.id.recommend_item_avatar);
                                     TextView nameView = (TextView)view.findViewById(R.id.recommend_item_name);
                                     TextView numView = (TextView)view.findViewById(R.id.recommend_item_followers_num);
+                                    final CheckBox checkBox = (CheckBox)view.findViewById(R.id.recommend_item_check);
+                                    FrameLayout frameLayout = (FrameLayout)view.findViewById(R.id.recommend_item_frame);
 
                                     bitmapUtils.display(avatarView, user.getString("avatar_middle"));
                                     nameView.setText(user.getString("uname"));
                                     numView.setText("粉丝数: " + user.getJSONObject("user_data").getString("follower_count"));
 
+                                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                    layoutParams.weight = 1;
+                                    layoutParams.topMargin = 50;
 
                                     if (i < 3){
-                                        rowOne.addView(view);
+                                        rowOne.addView(view,layoutParams);
                                     }else {
-                                        rowTwo.addView(view);
+                                        rowTwo.addView(view,layoutParams);
                                     }
+
+                                    frameLayout.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            if (checkBox.isChecked()){
+                                                checkBox.setChecked(false);
+                                                ids.remove(id);
+                                            }else{
+                                                checkBox.setChecked(true);
+                                                ids.add(id);
+                                            }
+                                        }
+                                    });
                                 }
                             }
                         } catch (JSONException e) {
@@ -182,5 +242,31 @@ public class RecommendActivity extends ActionBarActivity {
         bitmapUtils.configDefaultLoadingImage(R.drawable.loadingimg);
         bitmapUtils.configDefaultLoadFailedImage(R.drawable.icon);
         bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+    }
+
+    private void createFollows(final String host, final HttpUtils httpUtils, final ArrayList<String> ids){
+        if (ids.size() != 0) {
+            final String createFollowApi = "http://" + host + "index.php?app=api&mod=User&act=follow_create";
+            RequestParams requestParams = new RequestParams();
+            requestParams.addQueryStringParameter("user_id", ids.get(0));
+            requestParams.addQueryStringParameter("oauth_token", oauth_token);
+            requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
+
+            httpUtils.send(HttpRequest.HttpMethod.GET,
+                    createFollowApi,
+                    requestParams,
+                    new RequestCallBack<String>() {
+                        @Override
+                        public void onSuccess(ResponseInfo<String> responseInfo) {
+                            ids.remove(ids.get(0));
+                            createFollows(host, httpUtils, ids);
+                        }
+
+                        @Override
+                        public void onFailure(HttpException e, String s) {
+
+                        }
+                    });
+        }
     }
 }
