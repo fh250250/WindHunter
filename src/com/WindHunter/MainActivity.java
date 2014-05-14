@@ -108,11 +108,13 @@ public class MainActivity extends WHActivity {
         String titles[]={"主   页",
                          "与我相关",
                          "收   藏",
-                         "微   吧"};
+                         "微   吧",
+                         "搜   索"};
         int icon[]={R.drawable.main_menu_profile,
                     R.drawable.main_menu_about_me,
                     R.drawable.main_menu_collect,
-                    R.drawable.main_menu_app};
+                    R.drawable.main_menu_app,
+                    R.drawable.main_menu_search};
 
         List<ResideMenuItem> items = new ArrayList<ResideMenuItem>();
 
@@ -130,7 +132,6 @@ public class MainActivity extends WHActivity {
                 Intent intent = new Intent(context, UserActivity.class);
                 intent.putExtra("user_id", uid);
                 context.startActivity(intent);
-                resideMenu.closeMenu();
             }
         });
 
@@ -140,7 +141,6 @@ public class MainActivity extends WHActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(context, AboutMeActivity.class);
                 context.startActivity(intent);
-                resideMenu.closeMenu();
             }
         });
 
@@ -150,10 +150,18 @@ public class MainActivity extends WHActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(context, CollectionActivity.class);
                 context.startActivity(intent);
-                resideMenu.closeMenu();
             }
         });
 
+
+        // 跳转到搜索
+        items.get(4).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, SearchActivity.class);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

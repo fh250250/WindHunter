@@ -41,6 +41,8 @@ public class WeiboList {
     // 当微博类型为user_timeline时的user_id
     private String user_id;
 
+    private String key;
+
     private WHActivity context;
 
     private XListView weiboList;
@@ -77,9 +79,19 @@ public class WeiboList {
         return this;
     }
 
+    public WeiboList setKey(String key){
+        this.key = key;
+        return this;
+    }
+
     public void run(){
         initXListView();
         fillListView();
+    }
+
+    public WeiboList setFreshEnable(boolean b){
+        weiboList.setPullRefreshEnable(b);
+        return this;
     }
 
     public void fresh(){
@@ -108,6 +120,9 @@ public class WeiboList {
                 // 当为user_timeline时多加一个参数
                 if (type.equals("user_timeline"))
                     requestParams.addQueryStringParameter("user_id", user_id);
+
+                if (type.equals("weibo_search_weibo"))
+                    requestParams.addQueryStringParameter("key", key);
 
                 requestParams.addQueryStringParameter("count", count + "");
                 requestParams.addQueryStringParameter("page", page + "");
@@ -165,6 +180,9 @@ public class WeiboList {
                 // 当为user_timeline时多加一个参数
                 if (type.equals("user_timeline"))
                     requestParams.addQueryStringParameter("user_id", user_id);
+
+                if (type.equals("weibo_search_weibo"))
+                    requestParams.addQueryStringParameter("key", key);
 
                 requestParams.addQueryStringParameter("count", count + "");
                 requestParams.addQueryStringParameter("page", page + "");
@@ -231,6 +249,9 @@ public class WeiboList {
 
         if (type.equals("user_timeline"))
             requestParams.addQueryStringParameter("user_id", user_id);
+
+        if (type.equals("weibo_search_weibo"))
+            requestParams.addQueryStringParameter("key", key);
 
         requestParams.addQueryStringParameter("count", count + "");
         requestParams.addQueryStringParameter("page", page + "");

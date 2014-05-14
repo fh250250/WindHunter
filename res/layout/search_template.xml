@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:background="@color/white"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <LinearLayout
+            android:layout_marginTop="2dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+        <com.beardedhen.androidbootstrap.BootstrapEditText
+                android:id="@+id/search_key"
+                android:layout_weight="1"
+                android:hint="输入关键字"
+                bootstrapbutton:be_roundedCorners="true"
+                bootstrapbutton:be_state="default"
+                android:gravity="left|center"
+                android:singleLine="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        <com.beardedhen.androidbootstrap.BootstrapButton
+                android:layout_marginLeft="5dp"
+                android:id="@+id/search_submit"
+                android:text="搜索"
+                bootstrapbutton:bb_roundedCorners="true"
+                bootstrapbutton:bb_type="primary"
+                bootstrapbutton:bb_text_gravity="center"
+                bootstrapbutton:bb_size="small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:id="@+id/search_result"
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"/>
+
+</LinearLayout>
