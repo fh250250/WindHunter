@@ -33,6 +33,8 @@ public class FollowList {
     private String type;
 
     private String user_id;
+    private String key;
+    private String mod;
 
     private WHActivity context;
 
@@ -51,6 +53,7 @@ public class FollowList {
 
         // 默认情况下的值
         this.count = 10;
+        this.mod = "User";
     }
 
     public FollowList setCount(int count){
@@ -68,6 +71,14 @@ public class FollowList {
         return this;
     }
 
+    public FollowList setKey(String key){
+        this.key = key;
+        return this;
+    }
+    public FollowList setMod(String mod){
+        this.mod = mod;
+        return this;
+    }
 
     public void run(){
         initXListView();
@@ -89,10 +100,14 @@ public class FollowList {
             @Override
             public void onLoadMore() {
                 // 组装API
-                String followApi = "http://" + context.host + "index.php?app=api&mod=User&act=" + type;
+                String followApi = "http://" + context.host + "index.php?app=api&mod=" + mod + "&act=" + type;
                 RequestParams requestParams = new RequestParams();
 
-                requestParams.addQueryStringParameter("user_id", user_id);
+                if (mod.equals("User")){
+                    requestParams.addQueryStringParameter("user_id", user_id);
+                }else if (mod.equals("WeiboStatuses")){
+                    requestParams.addQueryStringParameter("key", key);
+                }
                 requestParams.addQueryStringParameter("count", count + "");
                 requestParams.addQueryStringParameter("page", page + "");
                 requestParams.addQueryStringParameter("oauth_token", context.oauth_token);
@@ -155,10 +170,14 @@ public class FollowList {
         page = 1;
 
         // 组装关注用户API
-        String followApi = "http://" + context.host + "index.php?app=api&mod=User&act=" + type;
+        String followApi = "http://" + context.host + "index.php?app=api&mod=" + mod + "&act=" + type;
         RequestParams requestParams = new RequestParams();
 
-        requestParams.addQueryStringParameter("user_id", user_id);
+        if (mod.equals("User")){
+            requestParams.addQueryStringParameter("user_id", user_id);
+        }else if (mod.equals("WeiboStatuses")){
+            requestParams.addQueryStringParameter("key", key);
+        }
         requestParams.addQueryStringParameter("count", count + "");
         requestParams.addQueryStringParameter("page", page + "");
         requestParams.addQueryStringParameter("oauth_token", context.oauth_token);

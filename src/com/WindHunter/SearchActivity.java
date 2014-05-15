@@ -14,6 +14,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.*;
 import com.WH.xListView.XListView;
+import com.WindHunter.tools.FollowList;
 import com.WindHunter.tools.WHActivity;
 import com.WindHunter.tools.WeiboList;
 import com.beardedhen.androidbootstrap.BootstrapButton;
@@ -188,7 +189,31 @@ public class SearchActivity extends WHActivity {
 
 
     private void initSearchUser(View searchUserView){
-        //
+        final BootstrapEditText contentView = (BootstrapEditText)searchUserView.findViewById(R.id.search_key);
+        BootstrapButton submit = (BootstrapButton)searchUserView.findViewById(R.id.search_submit);
+        final LinearLayout resultView = (LinearLayout)searchUserView.findViewById(R.id.search_result);
+
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (contentView.getText().toString().isEmpty()){
+                    Toast.makeText(SearchActivity.this, "输入为空", Toast.LENGTH_SHORT).show();
+                }else{
+                    resultView.removeAllViews();
+                    String key = contentView.getText().toString();
+
+                    XListView xListView = new XListView(SearchActivity.this);
+                    resultView.addView(xListView);
+
+                    FollowList followList = new FollowList(SearchActivity.this, xListView);
+                    followList.setCount(10)
+                            .setMod("WeiboStatuses")
+                            .setType("weibo_search_user")
+                            .setKey(key)
+                            .run();
+                }
+            }
+        });
     }
 
     private void initSearchWeibo(final View searchWeiboView){
