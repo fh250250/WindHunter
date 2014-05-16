@@ -14,6 +14,7 @@ import android.text.TextWatcher;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
+import com.WindHunter.tools.FaceUtils;
 import com.WindHunter.tools.WHActivity;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.exception.HttpException;
@@ -210,6 +211,11 @@ public class PostActivity extends WHActivity {
 
         InputMethodManager inputMethodManager=(InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    @OnClick(R.id.post_face)
+    public void postFace(View view){
+        FaceUtils.getFaceToEdit(this, post_edit_text);
     }
 
     @Override

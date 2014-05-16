@@ -27,6 +27,14 @@
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
+        <ImageView
+                android:id="@+id/message_detail_face"
+                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/face"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
         <com.beardedhen.androidbootstrap.BootstrapEditText
                 android:id="@+id/message_detail_reply"
                 android:layout_marginBottom="2dp"

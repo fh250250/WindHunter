@@ -258,7 +258,7 @@ public class MessageList {
             from_name.setText( ( (context.uid.equals(messageData.from_uid) ) ?
                     "我" :
                     messageData.from_name ) + "说: ");
-            last_message.setText(messageData.last_message);
+            last_message.setText(FaceUtils.getExpressionString(context, messageData.last_message));
             ctime.setText(messageData.ctime);
             num.setText(messageData.num);
             delete.setOnClickListener(new View.OnClickListener() {

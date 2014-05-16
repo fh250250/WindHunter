@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
+import com.WindHunter.tools.FaceUtils;
 import com.WindHunter.tools.WHActivity;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.lidroid.xutils.ViewUtils;
@@ -131,7 +132,7 @@ public class MessageDetailActivity extends WHActivity {
 
 
             bitmapUtils.display(avatarView, from_face);
-            contentView.setText(content);
+            contentView.setText(FaceUtils.getExpressionString(context, content));
             ctimeView.setText(ctime.substring(5, 16));
 
 
@@ -205,7 +206,7 @@ public class MessageDetailActivity extends WHActivity {
                                 TextView contentView = (TextView)message.findViewById(R.id.message_detail_item_content);
 
                                 bitmapUtils.display(avatar, myAvatar);
-                                contentView.setText(content);
+                                contentView.setText(FaceUtils.getExpressionString(MessageDetailActivity.this,content));
 
                                 message_detail_list.addView(message);
                                 scrollToBottom(message_detail_scroll, message_detail_list);
@@ -220,5 +221,10 @@ public class MessageDetailActivity extends WHActivity {
                         }
                     });
         }
+    }
+
+    @OnClick(R.id.message_detail_face)
+    public void faceClick(View view){
+        FaceUtils.getFaceToEdit(this, replyView);
     }
 }

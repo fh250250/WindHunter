@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.WindHunter.tools.FaceUtils;
 import com.WindHunter.tools.WHActivity;
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
@@ -576,9 +577,17 @@ public class UserActivity extends WHActivity {
 
         final BootstrapEditText contentView = (BootstrapEditText)postView.findViewById(R.id.post_message_content);
         BootstrapButton submit = (BootstrapButton)postView.findViewById(R.id.post_message_submit);
+        ImageView face = (ImageView)postView.findViewById(R.id.post_message_face);
 
         final AlertDialog dialog = builder.create();
         dialog.show();
+
+        face.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FaceUtils.getFaceToEdit(UserActivity.this, contentView);
+            }
+        });
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override

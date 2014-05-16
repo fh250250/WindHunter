@@ -321,7 +321,7 @@ public class WeiboList {
 
             context.bitmapUtils.display(holder.weibo_item_avatar, weiboData.avatar);
             holder.weibo_item_uname.setText(weiboData.uname);
-            holder.weibo_item_content.setText(weiboData.content);
+            holder.weibo_item_content.setText(FaceUtils.getExpressionString(context,weiboData.content));
             holder.weibo_item_ctime.setText(weiboData.ctime);
             holder.weibo_item_from.setText(switchFromCode(weiboData.from));
             holder.weibo_item_num.setText("赞(" + weiboData.digg_count + ") | 转发(" + weiboData.repost_count + ") | 评论(" + weiboData.comment_count
@@ -534,7 +534,7 @@ public class WeiboList {
                         .setText(repostWeiboData.ctime);
 
                 ((TextView)repostView.findViewById(R.id.weibo_item_repost_content))
-                        .setText(repostWeiboData.content);
+                        .setText(FaceUtils.getExpressionString(context, repostWeiboData.content));
 
                 ((TextView)repostView.findViewById(R.id.weibo_item_repost_from))
                         .setText(switchFromCode(repostWeiboData.from));

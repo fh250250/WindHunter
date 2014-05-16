@@ -16,18 +16,35 @@
             bootstrapbutton:bb_text_gravity="center"
             android:layout_width="fill_parent"
             android:layout_height="80dp"/>
-    <com.beardedhen.androidbootstrap.BootstrapButton
+    <LinearLayout
             android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_gravity="right"
-            android:id="@+id/post_message_submit"
-            android:text="发送"
-            bootstrapbutton:bb_roundedCorners="true"
-            bootstrapbutton:bb_type="primary"
-            bootstrapbutton:bb_text_gravity="center"
-            bootstrapbutton:bb_size="small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <ImageView
+                android:id="@+id/post_message_face"
+                android:src="@drawable/face"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        <LinearLayout
+                android:gravity="right"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                    android:layout_gravity="end"
+                    android:id="@+id/post_message_submit"
+                    android:text="发送"
+                    bootstrapbutton:bb_roundedCorners="true"
+                    bootstrapbutton:bb_type="primary"
+                    bootstrapbutton:bb_text_gravity="center"
+                    bootstrapbutton:bb_size="small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

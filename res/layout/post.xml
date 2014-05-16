@@ -40,16 +40,22 @@
 
     <LinearLayout
             android:background="@drawable/shadow_bg"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
 
         <ImageView
                 android:layout_weight="1"
+                android:id="@+id/post_face"
+                android:src="@drawable/face"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <ImageView
+                android:layout_weight="1"
                 android:id="@+id/post_at"
-                android:background="@color/white"
                 android:src="@drawable/post_at"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -57,21 +63,18 @@
                 android:layout_weight="1"
                 android:id="@+id/post_img"
                 android:src="@drawable/post_img"
-                android:background="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         <ImageView
                 android:layout_weight="1"
                 android:id="@+id/post_capture"
                 android:src="@drawable/post_capture"
-                android:background="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         <ImageView
                 android:layout_weight="1"
                 android:id="@+id/post_topic"
                 android:src="@drawable/post_topic"
-                android:background="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
     </LinearLayout>

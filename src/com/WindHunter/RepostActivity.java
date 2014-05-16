@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
+import com.WindHunter.tools.FaceUtils;
 import com.WindHunter.tools.WHActivity;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.exception.HttpException;
@@ -92,6 +93,11 @@ public class RepostActivity extends WHActivity {
                         Toast.makeText(RepostActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    @OnClick(R.id.repost_face)
+    public void faceClick(View view){
+        FaceUtils.getFaceToEdit(this, repost_content);
     }
 
     @Override

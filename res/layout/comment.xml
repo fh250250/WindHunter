@@ -26,6 +26,12 @@
             android:layout_gravity="center_vertical"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
+        <ImageView
+                android:layout_marginRight="5dp"
+                android:id="@+id/comment_face"
+                android:src="@drawable/face"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
         <CheckBox
                 android:id="@+id/comment_check"
                 android:text="同时转发到我的微博"

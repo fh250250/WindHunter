@@ -257,7 +257,7 @@ public class CommentList {
 
             context.bitmapUtils.display(avatar, commentData.avatar);
             name.setText(commentData.name);
-            comment_content.setText(commentData.comment_content);
+            comment_content.setText(FaceUtils.getExpressionString(context, commentData.comment_content));
             ctime.setText(commentData.ctime);
 
             return convertView;

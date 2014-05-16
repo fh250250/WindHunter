@@ -9,9 +9,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
+import com.WindHunter.tools.FaceUtils;
 import com.WindHunter.tools.WHActivity;
 import com.WindHunter.tools.WeiboList;
 import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -142,7 +144,7 @@ public class WeiboActivity extends WHActivity {
                             if (weibo.isNull("feed_content"))
                                 weibo_content.setText("");
                             else
-                                weibo_content.setText(weibo.getString("feed_content"));
+                                weibo_content.setText(FaceUtils.getExpressionString(context, weibo.getString("feed_content")));
 
                             weibo_num.setText("赞(" +
                                     weibo.getString("digg_count") +
@@ -386,7 +388,7 @@ public class WeiboActivity extends WHActivity {
                 if (repost.isNull("feed_content"))
                     feedContentView.setText("");
                 else
-                    feedContentView.setText(repost.getString("feed_content"));
+                    feedContentView.setText(FaceUtils.getExpressionString(context, repost.getString("feed_content")));
 
                 ((TextView)repostView.findViewById(R.id.weibo_repost_from))
                         .setText(WeiboList.switchFromCode(repost.getString("from")));
@@ -521,48 +523,45 @@ public class WeiboActivity extends WHActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("确认删除");
-        String[] options = {"确定", "取消"};
-        builder.setItems(options, new DialogInterface.OnClickListener() {
+
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                switch (i){
-                    case 0:
+                // 组装 收藏API 请求参数
+                String deleteApi = "http://" + host + "index.php?app=api&mod=WeiboStatuses&act=destroy";
+                RequestParams requestParams = new RequestParams();
+                requestParams.addQueryStringParameter("id", feed_id);
+                requestParams.addQueryStringParameter("oauth_token", oauth_token);
+                requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
 
-                        // 组装 收藏API 请求参数
-                        String deleteApi = "http://" + host + "index.php?app=api&mod=WeiboStatuses&act=destroy";
-                        RequestParams requestParams = new RequestParams();
-                        requestParams.addQueryStringParameter("id", feed_id);
-                        requestParams.addQueryStringParameter("oauth_token", oauth_token);
-                        requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
+                httpUtils.send(HttpRequest.HttpMethod.GET,
+                        deleteApi,
+                        requestParams,
+                        new RequestCallBack<String>() {
+                            @Override
+                            public void onSuccess(ResponseInfo<String> responseInfo) {
+                                String state = responseInfo.result;
 
-                        httpUtils.send(HttpRequest.HttpMethod.GET,
-                                deleteApi,
-                                requestParams,
-                                new RequestCallBack<String>() {
-                                    @Override
-                                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                                        String state = responseInfo.result;
+                                if (state.equals("1")){
+                                    Toast.makeText(WeiboActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+                                    WeiboActivity.this.finish();
+                                }else{
+                                    Toast.makeText(WeiboActivity.this, "删除失败", Toast.LENGTH_SHORT).show();
+                                }
+                            }
 
-                                        if (state.equals("1")){
-                                            Toast.makeText(WeiboActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
-                                            WeiboActivity.this.finish();
-                                        }else{
-                                            Toast.makeText(WeiboActivity.this, "删除失败", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
+                            @Override
+                            public void onFailure(HttpException e, String s) {
+                                Toast.makeText(WeiboActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        });
 
-                                    @Override
-                                    public void onFailure(HttpException e, String s) {
-                                        Toast.makeText(WeiboActivity.this, "网络出错", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+        builder.setNegativeButton("不,我再想想", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
 
-                        break;
-                    case 1:
-                        break;
-                    default:
-                        break;
-                }
             }
         });
 
@@ -655,11 +654,29 @@ public class WeiboActivity extends WHActivity {
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("回复: " + name);
-                final EditText contentView = new EditText(context);
-                builder.setView(contentView);
-                builder.setPositiveButton("回复", new DialogInterface.OnClickListener() {
+
+                View replyView =  LayoutInflater.from(context).inflate(R.layout.post_message, null);
+
+                builder.setView(replyView);
+
+                final BootstrapEditText contentView = (BootstrapEditText)replyView.findViewById(R.id.post_message_content);
+                BootstrapButton submit = (BootstrapButton)replyView.findViewById(R.id.post_message_submit);
+                ImageView face = (ImageView)replyView.findViewById(R.id.post_message_face);
+
+                submit.setText("回复");
+                final AlertDialog dialog = builder.create();
+                dialog.show();
+
+                face.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    public void onClick(View view) {
+                        FaceUtils.getFaceToEdit(context, contentView);
+                    }
+                });
+
+                submit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
                         // 具体回复逻辑
                         String content = contentView.getText().toString();
                         if (content.isEmpty()){
@@ -705,15 +722,6 @@ public class WeiboActivity extends WHActivity {
                         }
                     }
                 });
-
-                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
-                });
-
-                builder.create().show();
             }
         });
     }
@@ -733,7 +741,7 @@ public class WeiboActivity extends WHActivity {
         String rowContent = comment.getString("content");
         String realContent = rowContent.replaceAll("<a href[^>]*>", "");
         realContent = realContent.replaceAll("</a>", "");
-        content.setText(realContent);
+        content.setText(FaceUtils.getExpressionString(context, realContent));
 
         bitmapUtils.display(avatar, user_info.getString("avatar_small"));
 
