@@ -4,15 +4,20 @@ package com.WindHunter;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.WindHunter.tools.FaceUtils;
 import com.WindHunter.tools.WHActivity;
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -31,6 +36,12 @@ public class CommentActivity extends WHActivity {
 
     @ViewInject(R.id.comment_check)
     CheckBox comment_check;
+
+    @ViewInject(R.id.comment_submit)
+    BootstrapButton comment_submit;
+
+    @ViewInject(R.id.comment_words_limit)
+    TextView comment_words_limit;
 
 
     @Override
@@ -51,6 +62,31 @@ public class CommentActivity extends WHActivity {
         ViewUtils.inject(this);
 
         feed_id = getIntent().getStringExtra("feed_id");
+
+        comment_content.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                comment_words_limit.setText("还可以输入140个字");
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() > 140){
+                    comment_submit.setEnabled(false);
+                    comment_words_limit.setTextColor(Color.RED);
+                    comment_words_limit.setText("已超过" + (editable.length() - 140) + "个字");
+                }else{
+                    comment_submit.setEnabled(true);
+                    comment_words_limit.setTextColor(Color.BLUE);
+                    comment_words_limit.setText("还可以输入" + (140 - editable.length()) + "个字");
+                }
+            }
+        });
     }
 
     @OnClick(R.id.comment_submit)

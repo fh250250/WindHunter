@@ -3,15 +3,20 @@ package com.WindHunter;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.WindHunter.tools.FaceUtils;
 import com.WindHunter.tools.WHActivity;
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -28,6 +33,12 @@ public class RepostActivity extends WHActivity {
 
     @ViewInject(R.id.repost_comment)
     CheckBox repost_comment;
+
+    @ViewInject(R.id.repost_words_limit)
+    TextView repost_words_limit;
+
+    @ViewInject(R.id.repost_submit)
+    BootstrapButton repost_submit;
 
     private String feed_id;
 
@@ -49,6 +60,31 @@ public class RepostActivity extends WHActivity {
         ViewUtils.inject(this);
 
         feed_id = getIntent().getStringExtra("feed_id");
+
+        repost_content.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                repost_words_limit.setText("还可以输入140个字");
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() > 140){
+                    repost_submit.setEnabled(false);
+                    repost_words_limit.setTextColor(Color.RED);
+                    repost_words_limit.setText("已超过" + (editable.length() - 140) + "个字");
+                }else{
+                    repost_submit.setEnabled(true);
+                    repost_words_limit.setTextColor(Color.BLUE);
+                    repost_words_limit.setText("还可以输入" + (140 - editable.length()) + "个字");
+                }
+            }
+        });
     }
 
     @OnClick(R.id.repost_submit)
@@ -100,6 +136,7 @@ public class RepostActivity extends WHActivity {
         FaceUtils.getFaceToEdit(this, repost_content);
     }
 
+
     @Override
     public void onBackPressed() {
         if (repost_content.getText().toString().isEmpty()){
@@ -122,4 +159,5 @@ public class RepostActivity extends WHActivity {
             builder.create().show();
         }
     }
+
 }

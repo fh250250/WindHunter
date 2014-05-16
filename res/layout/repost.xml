@@ -7,16 +7,31 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <EditText
-            android:background="@drawable/edittext_background_rounded"
-            android:padding="10dp"
-            android:gravity="top"
-            android:hint="你想说点儿什么……"
+    <FrameLayout
             android:layout_margin="10dp"
-            android:singleLine="false"
-            android:id="@+id/repost_content"
             android:layout_width="fill_parent"
-            android:layout_height="100dp"/>
+            android:layout_height="wrap_content">
+        <EditText
+                android:background="@drawable/edittext_background_rounded"
+                android:paddingTop="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingBottom="15dp"
+                android:gravity="top"
+                android:hint="你想说点儿什么……"
+                android:singleLine="false"
+                android:id="@+id/repost_content"
+                android:layout_width="fill_parent"
+                android:layout_height="150dp"/>
+        <TextView
+                android:textSize="11sp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="3sp"
+                android:id="@+id/repost_words_limit"
+                android:layout_gravity="bottom|right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+    </FrameLayout>
 
     <LinearLayout
             android:layout_marginTop="5dp"
