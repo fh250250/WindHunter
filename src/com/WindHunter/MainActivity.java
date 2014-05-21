@@ -153,6 +153,14 @@ public class MainActivity extends WHActivity {
             }
         });
 
+        // 跳转到微吧
+        items.get(3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, WeibaActivity.class);
+                context.startActivity(intent);
+            }
+        });
 
         // 跳转到搜索
         items.get(4).setOnClickListener(new View.OnClickListener() {
