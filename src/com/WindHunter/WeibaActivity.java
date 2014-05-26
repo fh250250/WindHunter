@@ -3,6 +3,7 @@ package com.WindHunter;
 
 import android.app.ActionBar;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
@@ -46,39 +47,37 @@ public class WeibaActivity extends WeibaBaseActivity {
         final TabHost tabHost = (TabHost)findViewById(R.id.weiba_tab_host);
         tabHost.setup();
 
-        ImageButton tab1 = new ImageButton(context);
+        final ImageView tab1 = new ImageView(context);
         tab1.setImageResource(R.drawable.tabbar_home_highlighted);
         tabHost.addTab(tabHost.newTabSpec("home").setIndicator(tab1).setContent(R.id.weiba_tab_home));
 
-        ImageButton tab2 = new ImageButton(context);
-        tab2.setImageResource(R.drawable.tabbar_profile_highlighted);
+        final ImageView tab2 = new ImageView(context);
+        tab2.setImageResource(R.drawable.tabbar_profile);
         tabHost.addTab(tabHost.newTabSpec("profile").setIndicator(tab2).setContent(R.id.weiba_tab_me));
 
-        ImageButton tab3 = new ImageButton(context);
-        tab3.setImageResource(R.drawable.tabbar_discover_highlighted);
+        final ImageView tab3 = new ImageView(context);
+        tab3.setImageResource(R.drawable.tabbar_discover);
         tabHost.addTab(tabHost.newTabSpec("search").setIndicator(tab3).setContent(R.id.weiba_tab_search));
 
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String s) {
-                int j = tabHost.getTabWidget().getTabCount();
-                ImageButton currentView =(ImageButton) tabHost.getCurrentTabView();
-                for (int i = 0; i < j ; i++){
-                    if(tabHost.getCurrentTab() == i){
-                        currentView.setEnabled(false);
-                    }else{
-                        if(tabHost.getTabWidget().getChildTabViewAt(i) != null){
-                            tabHost.getTabWidget().getChildTabViewAt(i).setEnabled(true);
-                        }
-                    }
-                }
 
                 if (s.equals("home")){
                     actionBar.setTitle("微吧首页");
+                    tab1.setImageResource(R.drawable.tabbar_home_highlighted);
+                    tab2.setImageResource(R.drawable.tabbar_profile);
+                    tab3.setImageResource(R.drawable.tabbar_discover);
                 }else if (s.equals("profile")){
                     actionBar.setTitle("我的微吧");
+                    tab1.setImageResource(R.drawable.tabbar_home);
+                    tab2.setImageResource(R.drawable.tabbar_profile_highlighted);
+                    tab3.setImageResource(R.drawable.tabbar_discover);
                 }else if (s.equals("search")){
                     actionBar.setTitle("搜索");
+                    tab1.setImageResource(R.drawable.tabbar_home);
+                    tab2.setImageResource(R.drawable.tabbar_profile);
+                    tab3.setImageResource(R.drawable.tabbar_discover_highlighted);
                 }
             }
         });
@@ -128,7 +127,9 @@ public class WeibaActivity extends WeibaBaseActivity {
                                         JSONObject jsonObject = (JSONObject)adapterView.getItemAtPosition(i);
                                         try {
                                             String weiba_id = jsonObject.getString("weiba_id");
-                                            Toast.makeText(context, weiba_id, Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(context, WeibaPostsActivity.class);
+                                            intent.putExtra("weiba_id", weiba_id);
+                                            startActivity(intent);
                                         } catch (JSONException e) {
                                             Log.e("json error", e.toString());
                                         }
@@ -150,7 +151,8 @@ public class WeibaActivity extends WeibaBaseActivity {
     }
 
     private void initMeView(Context context, LinearLayout layout){
-
+        View view =  LayoutInflater.from(context).inflate(R.layout.my_weiba, null);
+        layout.addView(view);
     }
 
     private void initSearchView(Context context, LinearLayout layout){

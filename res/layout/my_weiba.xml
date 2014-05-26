@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:background="@color/white"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent">
+
+    <com.beardedhen.androidbootstrap.BootstrapButton
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:text="我关注的微吧帖子"
+            bootstrapbutton:bb_icon_left="fa-plus"
+            bootstrapbutton:bb_icon_right="fa-chevron-right"
+            bootstrapbutton:bb_roundedCorners="true"
+            bootstrapbutton:bb_type="default"
+            bootstrapbutton:bb_text_gravity="left"/>
+
+    <com.beardedhen.androidbootstrap.BootstrapButton
+            android:layout_marginTop="3dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:text="我发布的帖子"
+            bootstrapbutton:bb_icon_left="fa-share"
+            bootstrapbutton:bb_icon_right="fa-chevron-right"
+            bootstrapbutton:bb_roundedCorners="true"
+            bootstrapbutton:bb_type="default"
+            bootstrapbutton:bb_text_gravity="left"/>
+
+    <com.beardedhen.androidbootstrap.BootstrapButton
+            android:layout_marginTop="3dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:text="我回复的帖子"
+            bootstrapbutton:bb_icon_left="fa-comment"
+            bootstrapbutton:bb_icon_right="fa-chevron-right"
+            bootstrapbutton:bb_roundedCorners="true"
+            bootstrapbutton:bb_type="default"
+            bootstrapbutton:bb_text_gravity="left"/>
+
+    <com.beardedhen.androidbootstrap.BootstrapButton
+            android:layout_marginTop="3dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:text="我收藏的帖子"
+            bootstrapbutton:bb_icon_left="fa-heart"
+            bootstrapbutton:bb_icon_right="fa-chevron-right"
+            bootstrapbutton:bb_roundedCorners="true"
+            bootstrapbutton:bb_type="default"
+            bootstrapbutton:bb_text_gravity="left"/>
+
+</LinearLayout>
