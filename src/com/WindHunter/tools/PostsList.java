@@ -1,6 +1,8 @@
 package com.WindHunter.tools;
 
 
+import android.graphics.drawable.Drawable;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,8 @@ import com.lidroid.xutils.http.client.HttpRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
 
 public class PostsList {
 
@@ -242,23 +246,25 @@ public class PostsList {
                 ImageView avatarView = (ImageView)view.findViewById(R.id.water_fall_cell_avatar);
                 TextView nameView = (TextView)view.findViewById(R.id.water_fall_cell_name);
                 TextView titleView = (TextView)view.findViewById(R.id.water_fall_cell_title);
-                TextView contentView = (TextView)view.findViewById(R.id.water_fall_cell_content);
                 TextView timeView = (TextView)view.findViewById(R.id.water_fall_cell_time);
                 TextView countView = (TextView)view.findViewById(R.id.water_fall_cell_count);
 
                 String avatar = jsonObject.getJSONObject("author_info").getString("avatar_middle");
                 String name = jsonObject.getJSONObject("author_info").getString("uname");
                 String title = jsonObject.getString("title");
-                String content = jsonObject.getString("content");
-                String time = jsonObject.getString("post_time");
+                String time = jsonObject.getString("post_time") + "000";
                 String replyCount = jsonObject.getString("reply_count");
                 String readCount = jsonObject.getString("read_count");
 
                 context.bitmapUtils.display(avatarView, avatar);
                 nameView.setText(name);
                 titleView.setText(title);
-                contentView.setText(content);
+
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                time = df.format(Long.parseLong(time));
                 timeView.setText(time);
+
+
                 countView.setText("浏览数: " + readCount + " | 评论数: " + replyCount);
 
             } catch (JSONException e) {
