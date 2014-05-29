@@ -27,8 +27,8 @@
         <ImageView
                 android:id="@+id/post_message_face"
                 android:src="@drawable/face"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="35dp"
+                android:layout_height="35dp"/>
         <LinearLayout
                 android:gravity="right"
                 android:orientation="vertical"

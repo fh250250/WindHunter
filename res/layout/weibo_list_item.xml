@@ -29,6 +29,7 @@
                 android:layout_height="wrap_content"/>
         <TextView
                 android:id="@+id/weibo_item_ctime"
+                android:textColor="@android:color/darker_gray"
                 android:textSize="13sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -78,11 +79,13 @@
         <TextView
                 android:layout_gravity="right"
                 android:id="@+id/weibo_item_num"
+                android:textSize="12sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         <TextView
                 android:layout_gravity="right"
                 android:layout_marginTop="5dp"
+                android:textSize="12sp"
                 android:id="@+id/weibo_item_from"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>

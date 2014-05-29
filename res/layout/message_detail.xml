@@ -33,8 +33,8 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:src="@drawable/face"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="35dp"
+                android:layout_height="35dp"/>
         <com.beardedhen.androidbootstrap.BootstrapEditText
                 android:id="@+id/message_detail_reply"
                 android:layout_marginBottom="2dp"

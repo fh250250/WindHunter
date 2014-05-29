@@ -168,7 +168,7 @@
             android:background="@drawable/shadow_bg"
             android:baselineAligned="false"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="55dp">
             <LinearLayout
                     android:id="@+id/digg"
                     android:layout_marginTop="3dp"
@@ -179,12 +179,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                 <ImageView
+                        android:id="@+id/weibo_digg_img"
                         android:src="@drawable/weibo_digg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 <TextView
                         android:id="@+id/weibo_digg_text"
-                        android:textSize="15sp"
+                        android:textSize="13sp"
                         android:textColor="@color/black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
@@ -204,7 +205,7 @@
                         android:layout_height="wrap_content"/>
                 <TextView
                         android:text="@string/weibo_repost"
-                        android:textSize="15sp"
+                        android:textSize="13sp"
                         android:textColor="@color/black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
@@ -224,7 +225,7 @@
                         android:layout_height="wrap_content"/>
                 <TextView
                         android:text="@string/weibo_comment"
-                        android:textSize="15sp"
+                        android:textSize="13sp"
                         android:textColor="@color/black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
@@ -239,12 +240,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                 <ImageView
+                        android:id="@+id/weibo_favorite_img"
                         android:src="@drawable/weibo_favorite"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 <TextView
                         android:id="@+id/weibo_favorite_text"
-                        android:textSize="15sp"
+                        android:textSize="13sp"
                         android:textColor="@color/black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>

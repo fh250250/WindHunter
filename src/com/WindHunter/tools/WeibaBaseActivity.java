@@ -11,6 +11,8 @@ import com.WindHunter.R;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.HttpUtils;
 
+import java.text.SimpleDateFormat;
+
 public abstract class WeibaBaseActivity extends Activity {
 
     protected String host, oauth_token, oauth_token_secret, uid;
@@ -56,5 +58,12 @@ public abstract class WeibaBaseActivity extends Activity {
         bitmapUtils.configDefaultLoadingImage(R.drawable.loadingimg);
         bitmapUtils.configDefaultLoadFailedImage(R.drawable.icon);
         bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+    }
+
+    public static String getTimeFromPHP(String phpTime){
+        String time = phpTime + "000";
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        time = df.format(Long.parseLong(time));
+        return time;
     }
 }

@@ -73,6 +73,12 @@ public class WeiboActivity extends WHActivity {
     @ViewInject(R.id.weibo_scroll_view)
     ScrollView weibo_scroll_view;
 
+    @ViewInject(R.id.weibo_digg_img)
+    ImageView weibo_digg_img;
+
+    @ViewInject(R.id.weibo_favorite_img)
+    ImageView weibo_favorite_img;
+
 
     private final int RIGHT_SCROLL_DELAY = 300;
     private String feed_id;
@@ -161,17 +167,21 @@ public class WeiboActivity extends WHActivity {
 
                             if (weibo.getInt("is_digg") == 1){
                                 weibo_digg_text.setText("已赞");
+                                weibo_digg_img.setImageResource(R.drawable.weibo_digg_clicked);
                                 digg.setEnabled(false);
                             }else{
                                 weibo_digg_text.setText("赞");
+                                weibo_digg_img.setImageResource(R.drawable.weibo_digg);
                                 digg.setEnabled(true);
                             }
 
                             if (weibo.getJSONObject("iscoll").getInt("colled") == 1){
                                 weibo_favorite_text.setText("取消");
+                                weibo_favorite_img.setImageResource(R.drawable.weibo_favorite_clicked);
                                 is_coll = true;
                             }else{
                                 weibo_favorite_text.setText("收藏");
+                                weibo_favorite_img.setImageResource(R.drawable.weibo_favorite);
                                 is_coll = false;
                             }
 
@@ -446,6 +456,7 @@ public class WeiboActivity extends WHActivity {
                         if (state.equals("1")){
                             Toast.makeText(WeiboActivity.this, "成功", Toast.LENGTH_SHORT).show();
                             weibo_digg_text.setText("已赞");
+                            weibo_digg_img.setImageResource(R.drawable.weibo_digg_clicked);
                             digg.setEnabled(false);
                         }
                         else
@@ -492,10 +503,12 @@ public class WeiboActivity extends WHActivity {
 
                             if (is_coll){
                                 weibo_favorite_text.setText("收藏");
+                                weibo_favorite_img.setImageResource(R.drawable.weibo_favorite);
                                 is_coll = false;
                                 Toast.makeText(WeiboActivity.this, "取消收藏成功", Toast.LENGTH_SHORT).show();
                             }else{
                                 weibo_favorite_text.setText("取消");
+                                weibo_favorite_img.setImageResource(R.drawable.weibo_favorite_clicked);
                                 is_coll = true;
                                 Toast.makeText(WeiboActivity.this, "收藏成功", Toast.LENGTH_SHORT).show();
                             }
@@ -732,6 +745,7 @@ public class WeiboActivity extends WHActivity {
         View commentBox = LayoutInflater.from(context).inflate(R.layout.weibo_comments_item, null);
         ImageView avatar = (ImageView)commentBox.findViewById(R.id.weibo_comments_item_avatar);
         TextView name = (TextView)commentBox.findViewById(R.id.weibo_comments_item_name);
+        TextView time = (TextView)commentBox.findViewById(R.id.weibo_comments_item_time);
         TextView content = (TextView)commentBox.findViewById(R.id.weibo_comments_item_content);
         BootstrapButton delete = (BootstrapButton)commentBox.findViewById(R.id.weibo_comments_item_delete);
 
@@ -752,6 +766,9 @@ public class WeiboActivity extends WHActivity {
 
         // 点击回复评论
         setReplyCommentListener(context, comment, feed_id, commentBox);
+
+        //时间
+        time.setText(comment.getString("ctime"));
 
         return commentBox;
     }

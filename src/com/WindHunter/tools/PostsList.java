@@ -1,17 +1,16 @@
 package com.WindHunter.tools;
 
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.WH.xListView.XListView;
+import com.WindHunter.PostDetailActivity;
 import com.WindHunter.R;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -23,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class PostsList {
 
@@ -88,17 +88,18 @@ public class PostsList {
                                         adapter.setJsonArray(jsonArray);
                                         adapter.notifyDataSetChanged();
                                     }
-                                    xListView.stopRefresh();
                                 } catch (JSONException e) {
-                                    xListView.stopRefresh();
                                     Toast.makeText(context, "网络异常", Toast.LENGTH_SHORT).show();
                                     Log.e("json error", e.toString());
                                 }
+                                xListView.stopRefresh();
+                                xListView.setRefreshTime(new SimpleDateFormat().format(Calendar.getInstance().getTime()));
                             }
 
                             @Override
                             public void onFailure(HttpException e, String s) {
                                 xListView.stopRefresh();
+                                xListView.setRefreshTime(new SimpleDateFormat().format(Calendar.getInstance().getTime()));
                                 Toast.makeText(context, "网络异常", Toast.LENGTH_SHORT).show();
                                 Log.e("net error", e.toString() + s);
                             }
@@ -150,6 +151,22 @@ public class PostsList {
                                 Log.e("net error", e.toString() + s);
                             }
                         });
+            }
+        });
+
+        xListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                JSONObject jsonObject = (JSONObject)adapterView.getItemAtPosition(i);
+                try {
+                    String post_id = jsonObject.getString("post_id");
+
+                    Intent intent = new Intent(context, PostDetailActivity.class);
+                    intent.putExtra("post_id", post_id);
+                    context.startActivity(intent);
+                } catch (JSONException e) {
+                    Log.e("json error", e.toString());
+                }
             }
         });
     }
@@ -252,17 +269,14 @@ public class PostsList {
                 String avatar = jsonObject.getJSONObject("author_info").getString("avatar_middle");
                 String name = jsonObject.getJSONObject("author_info").getString("uname");
                 String title = jsonObject.getString("title");
-                String time = jsonObject.getString("post_time") + "000";
+                String time = jsonObject.getString("post_time");
                 String replyCount = jsonObject.getString("reply_count");
                 String readCount = jsonObject.getString("read_count");
 
                 context.bitmapUtils.display(avatarView, avatar);
                 nameView.setText(name);
                 titleView.setText(title);
-
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                time = df.format(Long.parseLong(time));
-                timeView.setText(time);
+                timeView.setText(context.getTimeFromPHP(time));
 
 
                 countView.setText("浏览数: " + readCount + " | 评论数: " + replyCount);

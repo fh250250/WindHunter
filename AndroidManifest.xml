@@ -28,8 +28,9 @@
         <activity android:name=".RegisterActivity" android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
         <activity android:name=".RecommendActivity" android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
         <activity android:name=".SearchActivity" android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
-        <activity android:name=".WeibaActivity"/>
-        <activity android:name=".WeibaPostsActivity"/>
+        <activity android:name=".WeibaActivity" android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
+        <activity android:name=".WeibaPostsActivity" android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
+        <activity android:name=".PostDetailActivity" android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>

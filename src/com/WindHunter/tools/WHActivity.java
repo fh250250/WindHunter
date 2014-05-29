@@ -16,6 +16,8 @@ import com.WindHunter.*;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.HttpUtils;
 
+import java.text.SimpleDateFormat;
+
 
 public abstract class WHActivity extends ActionBarActivity {
 
@@ -109,5 +111,4 @@ public abstract class WHActivity extends ActionBarActivity {
         bitmapUtils.configDefaultLoadFailedImage(R.drawable.icon);
         bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
     }
-
 }

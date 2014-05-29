@@ -45,8 +45,8 @@
                 android:layout_marginRight="5dp"
                 android:id="@+id/repost_face"
                 android:src="@drawable/face"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="35dp"
+                android:layout_height="35dp"/>
         <CheckBox
                 android:id="@+id/repost_comment"
                 android:text="同时评论给原作者"
