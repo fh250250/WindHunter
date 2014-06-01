@@ -3,6 +3,7 @@ package com.WindHunter.tools;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,12 +98,14 @@ public class CommentList {
                             }
                         } catch (JSONException e) {
                             Toast.makeText(context, "网络出错", Toast.LENGTH_SHORT).show();
+                            Log.e("json error", e.toString());
                         }
                     }
 
                     @Override
                     public void onFailure(HttpException e, String s) {
                         Toast.makeText(context, "网络出错", Toast.LENGTH_SHORT).show();
+                        Log.e("net error", e.toString() + s);
                     }
                 });
     }
@@ -153,6 +156,7 @@ public class CommentList {
                                     }
                                 } catch (JSONException e) {
                                     Toast.makeText(context, "网络出错", Toast.LENGTH_SHORT).show();
+                                    Log.e("json error", e.toString());
                                 }
 
                                 commentList.stopRefresh();
@@ -205,6 +209,7 @@ public class CommentList {
                                     }
                                 } catch (JSONException e) {
                                     Toast.makeText(context, "网络错误", Toast.LENGTH_SHORT).show();
+                                    Log.e("json error", e.toString());
                                     commentList.stopLoadMore();
                                 }
                             }
@@ -281,7 +286,7 @@ public class CommentList {
             realContent = realContent.replaceAll("</a>", "");
             commentData.comment_content = realContent;
 
-            commentData.feed_id = jsonItem.getJSONObject("sourceInfo").getString("feed_id");
+            commentData.feed_id = jsonItem.getJSONObject("sourceInfo").getString("source_id");
             commentData.ctime = jsonItem.getString("ctime");
 
 
