@@ -1,16 +1,18 @@
 package com.WindHunter;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.*;
+import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.*;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.WindHunter.tools.FaceUtils;
 import com.WindHunter.tools.WHActivity;
 import com.beardedhen.androidbootstrap.BootstrapButton;
@@ -26,6 +28,8 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
 
 public class UserActivity extends WHActivity {
 
@@ -86,9 +90,10 @@ public class UserActivity extends WHActivity {
 
     private final int REQUEST_IMAGE_CONTENT = 100;
     private final int REQUEST_CAPTURE = 101;
+    private final int CROP_PHOTO_REQUEST_CODE = 102;
 
     // 用于存储照相后的照片
-    private Uri photoUri = null;
+    private Uri cropUri = null;
 
 
     @Override
@@ -489,7 +494,6 @@ public class UserActivity extends WHActivity {
     }
 
 
-    // TODO: 上传头像
     @OnClick(R.id.user_avatar)
     public void changeAvatar(View view){
 
@@ -504,17 +508,17 @@ public class UserActivity extends WHActivity {
                 public void onClick(DialogInterface dialogInterface, int i) {
                     switch (i){
                         case 0:
-//                            Intent intent = new Intent();
-//                            intent.setType("image/*");
-//                            intent.setAction(Intent.ACTION_GET_CONTENT);
-//                            startActivityForResult(intent, REQUEST_IMAGE_CONTENT);
+                            Intent intent = new Intent();
+                            intent.setType("image/*");
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            startActivityForResult(intent, REQUEST_IMAGE_CONTENT);
                             break;
                         case 1:
-//                            Intent capture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                            ContentValues values = new ContentValues();
-//                            photoUri = UserActivity.this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-//                            capture.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, photoUri);
-//                            startActivityForResult(capture, REQUEST_CAPTURE);
+                            Intent capture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            ContentValues values = new ContentValues();
+                            cropUri = UserActivity.this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                            capture.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, cropUri);
+                            startActivityForResult(capture, REQUEST_CAPTURE);
                             break;
                     }
                 }
@@ -523,46 +527,156 @@ public class UserActivity extends WHActivity {
             builder.create().show();
         }
     }
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//
-//        if (resultCode == RESULT_OK){
-//
-//            String imgPath;
-//
-//            if (requestCode == REQUEST_IMAGE_CONTENT && null != data){
-//                // 图库
-//                Uri imgUri = data.getData();
-//                ContentResolver cr = this.getContentResolver();
-//                Cursor cursor = null;
-//                if (imgUri != null) {
-//                    cursor = cr.query(imgUri, null, null, null, null);
-//                }
-//                if (cursor != null) {
-//                    cursor.moveToFirst();
-//                    imgPath = cursor.getString(1);
-//                    cursor.close();
-//                }
-//            }else if (requestCode == REQUEST_CAPTURE){
-//                // 相机
-//                ContentResolver cr = this.getContentResolver();
-//                Cursor cursor = cr.query(photoUri, null, null, null, null);
-//                if (cursor != null) {
-//                    cursor.moveToFirst();
-//                    imgPath = cursor.getString(1);
-//                    cursor.close();
-//                }
-//            }
-//
-//
-//
-//        }
-//
-//
-//        super.onActivityResult(requestCode, resultCode, data);
-//    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (resultCode == RESULT_OK){
+
+            String imgPath = null;
+
+            if (requestCode == REQUEST_IMAGE_CONTENT && null != data){
+                // 图库
+                Uri imgUri = data.getData();
+                ContentResolver cr = this.getContentResolver();
+                Cursor cursor = null;
+                if (imgUri != null) {
+                    cursor = cr.query(imgUri, null, null, null, null);
+                }
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    imgPath = cursor.getString(1);
+                    cursor.close();
+                }
+
+            }else if (requestCode == REQUEST_CAPTURE){
+                // 相机
+                ContentResolver cr = this.getContentResolver();
+                Cursor cursor = cr.query(cropUri, null, null, null, null);
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    imgPath = cursor.getString(1);
+                    cursor.close();
+                }
+            }
+
+            // 预览并上传
+            preUpload(this, imgPath);
+        }
+
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void preUpload(final Context context, String imgPath){
+        final Dialog dialog = new Dialog(context);
+        dialog.setTitle("确定上传?");
+        View view = LayoutInflater.from(context).inflate(R.layout.upload_avatar_preview, null);
+        dialog.setContentView(view);
+
+        TextView sizeView = (TextView)view.findViewById(R.id.upload_preview_size);
+        ImageView img = (ImageView)view.findViewById(R.id.upload_preview_img);
+        final Button ok = (Button)view.findViewById(R.id.upload_preview_ok);
+        Button cancel = (Button)view.findViewById(R.id.upload_preview_cancel);
+        final ProgressBar progressBar = (ProgressBar)view.findViewById(R.id.upload_preview_progress);
+
+        final File file = new File(imgPath);
+        if (file.length() > 1024 * 1024){
+            sizeView.setText("图片大小: " + fileSize(file.length()) + " ( 上传图片不能大于 1M )");
+            sizeView.setTextColor(Color.RED);
+            ok.setEnabled(false);
+        }else {
+            sizeView.setText("图片大小: " + fileSize(file.length()));
+            sizeView.setTextColor(Color.BLACK);
+        }
+
+        bitmapUtils.display(img, imgPath);
+
+
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String api = "http://" + host + "index.php?app=api&mod=User&act=upload_face";
+                RequestParams requestParams = new RequestParams();
+                requestParams.addQueryStringParameter("oauth_token", oauth_token);
+                requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
+                requestParams.addBodyParameter("file", file);
+
+                httpUtils.send(HttpRequest.HttpMethod.POST,
+                        api,
+                        requestParams,
+                        new RequestCallBack<String>() {
+
+                            @Override
+                            public void onStart() {
+                                super.onStart();
+                                progressBar.setVisibility(View.VISIBLE);
+                                ok.setEnabled(false);
+                            }
+
+                            @Override
+                            public void onSuccess(ResponseInfo<String> responseInfo) {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(responseInfo.result);
+
+                                    int state = jsonObject.getInt("status");
+
+                                    if (state == 1){
+                                        Toast.makeText(context, "上传头像成功", Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
+
+                                        bitmapUtils.display(user_avatar, jsonObject.getJSONObject("data").getString("middle"));
+                                        bitmapUtils.clearCache();
+                                    }else {
+                                        Toast.makeText(context, "上传头像失败", Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
+                                    }
+
+                                } catch (JSONException e) {
+                                    Toast.makeText(context, "网络异常", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                    Log.e("json error", e.toString());
+                                }
+
+                            }
+
+                            @Override
+                            public void onFailure(HttpException e, String s) {
+                                Toast.makeText(context, "网络异常", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                                Log.e("net error", e.toString() + s);
+                            }
+                        });
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+
+        dialog.show();
+    }
+
+    private String fileSize(long length){
+        String type;
+        long size;
+        if (length >= 1024 * 1024){ // MB
+            size = length / (1024 * 1024);
+            type = " MB";
+        }else if (length < 1024 * 1024 && length >= 1024){ // KB
+            size = length / 1024;
+            type = " KB";
+        }else{
+            size = length;
+            type = " B";
+        }
+
+        return size + type;
+    }
 
     @OnClick(R.id.user_post_message)
     public void postMessage(View view){
