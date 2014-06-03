@@ -1,7 +1,6 @@
 package com.WindHunter;
 
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.*;
@@ -28,7 +27,6 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.File;
 
 public class UserActivity extends WHActivity {
@@ -90,7 +88,6 @@ public class UserActivity extends WHActivity {
 
     private final int REQUEST_IMAGE_CONTENT = 100;
     private final int REQUEST_CAPTURE = 101;
-    private final int CROP_PHOTO_REQUEST_CODE = 102;
 
     // 用于存储照相后的照片
     private Uri cropUri = null;

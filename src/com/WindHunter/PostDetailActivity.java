@@ -26,16 +26,55 @@ import org.json.JSONObject;
 public class PostDetailActivity extends WeibaBaseActivity {
 
     private String post_id;
+    private MenuItem favoriteMenuItem;
+    private int favorite;
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
 
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setTitle("帖子详情");
 
-        menu.add("comment").setIcon(R.drawable.face).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        menu.add("favorite").setIcon(R.drawable.face).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        menu.add("comment").setIcon(R.drawable.bar_reply).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        favoriteMenuItem = menu.add("favorite").setIcon(R.drawable.bar_favorits);
+        favoriteMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+//  ============================================================================================
+        String api = "http://" + host + "index.php?app=api&mod=Weiba&act=post_detail";
+        RequestParams requestParams = new RequestParams();
+        requestParams.addQueryStringParameter("id", post_id);
+        requestParams.addQueryStringParameter("user_id", uid);
+        requestParams.addQueryStringParameter("oauth_token", oauth_token);
+        requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
+
+        httpUtils.send(HttpRequest.HttpMethod.GET,
+                api,
+                requestParams,
+                new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(responseInfo.result);
+                            favorite = jsonObject.getInt("favorite");
+
+                            if (favorite == 1){
+                                favoriteMenuItem.setIcon(R.drawable.bar_favorits_clicked);
+                            }
+
+                        } catch (JSONException e) {
+                            Toast.makeText(PostDetailActivity.this, "网络异常", Toast.LENGTH_SHORT).show();
+                            Log.e("json error", e.toString());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                        Toast.makeText(PostDetailActivity.this, "网络异常", Toast.LENGTH_SHORT).show();
+                        Log.e("net error", e.toString() + s);
+                    }
+                });
+//  ======================================================================================================
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -112,6 +151,8 @@ public class PostDetailActivity extends WeibaBaseActivity {
                     }
                 }
             });
+        }else if (item.getTitle().equals("favorite")){
+
         }
 
         return super.onOptionsItemSelected(item);

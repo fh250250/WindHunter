@@ -30,9 +30,8 @@ public class BigImageActivity extends Activity {
         AlphaAnimation animation = new AlphaAnimation(0.0f, 1.0f);
         animation.setDuration(1000);
         bitmapUtils.configDefaultImageLoadAnimation(animation);
-        // TODO: 需添加载失败图片
         bitmapUtils.configDefaultLoadingImage(R.drawable.loadingimg);
-        bitmapUtils.configDefaultLoadFailedImage(R.drawable.icon);
+        bitmapUtils.configDefaultLoadFailedImage(R.drawable.img_failure);
         bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
 
         ViewPager bigImage = (ViewPager)findViewById(R.id.big_image);

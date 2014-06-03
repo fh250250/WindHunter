@@ -33,11 +33,11 @@ public abstract class WHActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // 发微博
         menu.add("Post")
-                .setIcon(R.drawable.action_bar_post)
+                .setIcon(R.drawable.bar_post)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setIcon(R.drawable.main_menu_home);
+        actionBar.setIcon(R.drawable.bar_home);
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false);
 
@@ -106,9 +106,8 @@ public abstract class WHActivity extends ActionBarActivity {
         bitmapUtils.configDefaultImageLoadAnimation(animation);
 
         // 占位图片
-        // TODO: 需添加载失败图片
         bitmapUtils.configDefaultLoadingImage(R.drawable.loadingimg);
-        bitmapUtils.configDefaultLoadFailedImage(R.drawable.icon);
+        bitmapUtils.configDefaultLoadFailedImage(R.drawable.img_failure);
         bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
     }
 }

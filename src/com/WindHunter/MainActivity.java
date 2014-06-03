@@ -39,7 +39,7 @@ public class MainActivity extends WHActivity {
 
         // 发微博
         menu.add("Post")
-                .setIcon(R.drawable.action_bar_post)
+                .setIcon(R.drawable.bar_post)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
 

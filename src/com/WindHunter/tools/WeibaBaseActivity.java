@@ -54,9 +54,8 @@ public abstract class WeibaBaseActivity extends Activity {
         bitmapUtils.configDefaultImageLoadAnimation(animation);
 
         // 占位图片
-        // TODO: 需添加载失败图片
         bitmapUtils.configDefaultLoadingImage(R.drawable.loadingimg);
-        bitmapUtils.configDefaultLoadFailedImage(R.drawable.icon);
+        bitmapUtils.configDefaultLoadFailedImage(R.drawable.img_failure);
         bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
     }
 

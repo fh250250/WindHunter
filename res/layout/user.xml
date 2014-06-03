@@ -184,8 +184,6 @@
 
     </LinearLayout>
 
-    <!--TODO：需要调整-->
-
     <TextView
             android:id="@+id/user_following_text"
             android:textColor="#000000"

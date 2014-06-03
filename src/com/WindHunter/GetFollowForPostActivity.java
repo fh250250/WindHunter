@@ -175,11 +175,9 @@ public class GetFollowForPostActivity extends ActionBarActivity {
         AlphaAnimation animation = new AlphaAnimation(0.0f, 1.0f);
         animation.setDuration(1000);
         bitmapUtils.configDefaultImageLoadAnimation(animation);
-
         // 占位图片
-        // TODO: 需添加载失败图片
         bitmapUtils.configDefaultLoadingImage(R.drawable.loadingimg);
-        bitmapUtils.configDefaultLoadFailedImage(R.drawable.icon);
+        bitmapUtils.configDefaultLoadFailedImage(R.drawable.img_failure);
         bitmapUtils.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
 
         oauth_token = getIntent().getStringExtra("oauth_token");
