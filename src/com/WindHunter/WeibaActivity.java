@@ -8,8 +8,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
+import com.WH.xListView.XListView;
+import com.WindHunter.tools.PostsList;
 import com.WindHunter.tools.WeibaBaseActivity;
 import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseInfo;
@@ -41,7 +44,7 @@ public class WeibaActivity extends WeibaBaseActivity {
         initTabHost(this);
     }
 
-    private void initTabHost(final Context context){
+    private void initTabHost(final WeibaBaseActivity context){
         actionBar.setTitle("微吧首页");
 
         final TabHost tabHost = (TabHost)findViewById(R.id.weiba_tab_host);
@@ -91,7 +94,7 @@ public class WeibaActivity extends WeibaBaseActivity {
         initSearchView(context, searchView);
     }
 
-    private void initHomeView(final Context context, final LinearLayout layout){
+    private void initHomeView(final WeibaBaseActivity context, final LinearLayout layout){
         // 组装 API 请求参数
         String getWeibaApi = "http://" + host + "index.php?app=api&mod=Weiba&act=get_weibas";
         RequestParams requestParams = new RequestParams();
@@ -150,13 +153,75 @@ public class WeibaActivity extends WeibaBaseActivity {
                 });
     }
 
-    private void initMeView(Context context, LinearLayout layout){
+    private void initMeView(final WeibaBaseActivity context, LinearLayout layout){
         View view =  LayoutInflater.from(context).inflate(R.layout.my_weiba, null);
         layout.addView(view);
+        BootstrapButton followingBtn = (BootstrapButton)view.findViewById(R.id.weiba_following);
+        BootstrapButton postBtn = (BootstrapButton)view.findViewById(R.id.weiba_posts);
+        BootstrapButton commentBtn = (BootstrapButton)view.findViewById(R.id.weiba_comments);
+        BootstrapButton favoriteBtn = (BootstrapButton)view.findViewById(R.id.weiba_favorites);
+
+        followingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, MyWeibaPostsActivity.class);
+                intent.putExtra("type", "following_posts");
+                startActivity(intent);
+            }
+        });
+
+        postBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, MyWeibaPostsActivity.class);
+                intent.putExtra("type", "posteds");
+                startActivity(intent);
+            }
+        });
+
+        commentBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, MyWeibaPostsActivity.class);
+                intent.putExtra("type", "commenteds");
+                startActivity(intent);
+            }
+        });
+
+        favoriteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, MyWeibaPostsActivity.class);
+                intent.putExtra("type", "favorite_list");
+                startActivity(intent);
+            }
+        });
     }
 
-    private void initSearchView(Context context, LinearLayout layout){
+    private void initSearchView(final WeibaBaseActivity context, LinearLayout layout){
+        View view = LayoutInflater.from(context).inflate(R.layout.search_template, null);
+        layout.addView(view);
 
+        final BootstrapEditText keyEdit = (BootstrapEditText)view.findViewById(R.id.search_key);
+        BootstrapButton submitBtn = (BootstrapButton)view.findViewById(R.id.search_submit);
+        final LinearLayout resultView = (LinearLayout)view.findViewById(R.id.search_result);
+
+        submitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String keyword = keyEdit.getText().toString();
+                if (keyword.isEmpty()){
+                    Toast.makeText(context, "输入为空", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                resultView.removeAllViews();
+                XListView xListView = new XListView(context);
+                resultView.addView(xListView);
+                PostsList postsList = new PostsList(context, xListView);
+                postsList.setCount(10).setType("search_post").setKeyword(keyword).setRefreshEnable(false).run();
+            }
+        });
     }
 
 

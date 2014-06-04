@@ -272,7 +272,7 @@ public class FollowList {
 
             context.bitmapUtils.display(avatar, followData.avatar);
             name.setText(followData.name);
-            intro.setText("个人简介:"+followData.intro);
+            intro.setText(followData.intro);
             sex.setText(followData.sex);
 
             return convertView;

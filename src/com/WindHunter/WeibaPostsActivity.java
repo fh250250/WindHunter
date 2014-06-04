@@ -47,7 +47,7 @@ public class WeibaPostsActivity extends WeibaBaseActivity {
 
         XListView xListView = (XListView)findViewById(R.id.weiba_posts_list);
         PostsList postsList = new PostsList(this, xListView);
-        postsList.setCount(10).setWeibaID(weiba_id).run();
+        postsList.setCount(10).setType("get_posts").setWeibaID(weiba_id).run();
     }
 
 }

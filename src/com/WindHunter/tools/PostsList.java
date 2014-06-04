@@ -2,8 +2,6 @@ package com.WindHunter.tools;
 
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +18,6 @@ import com.lidroid.xutils.http.client.HttpRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -28,8 +25,11 @@ public class PostsList {
 
     private WeibaBaseActivity context;
     private String weiba_id;
+    private String user_id;
     private XListView xListView;
     private PostsAdapter adapter;
+    private String type;
+    private String keyword;
     private int count;
     private int page;
 
@@ -39,6 +39,8 @@ public class PostsList {
 
         this.count = 10;
         this.page = 1;
+        this.type = "";
+        keyword = "";
 
         xListView.setPullLoadEnable(true);
         xListView.setPullRefreshEnable(true);
@@ -54,6 +56,26 @@ public class PostsList {
         return this;
     }
 
+    public PostsList setType(String type){
+        this.type = type;
+        return this;
+    }
+
+    public PostsList setUserID(String id){
+        this.user_id = id;
+        return this;
+    }
+
+    public PostsList setKeyword(String keyword){
+        this.keyword = keyword;
+        return this;
+    }
+
+    public PostsList setRefreshEnable(boolean b){
+        xListView.setPullRefreshEnable(b);
+        return this;
+    }
+
     public void run(){
         init();
         setListener();
@@ -65,9 +87,15 @@ public class PostsList {
             public void onRefresh() {
                 page = 1;
 
-                String api = "http://" + context.host + "index.php?app=api&mod=Weiba&act=get_posts";
+                String api = "http://" + context.host + "index.php?app=api&mod=Weiba&act=" + type;
                 RequestParams requestParams = new RequestParams();
-                requestParams.addQueryStringParameter("id", weiba_id);
+                if (type.equals("get_posts")){
+                    requestParams.addQueryStringParameter("id", weiba_id);
+                }else if (type.equals("search_post")){
+                    requestParams.addQueryStringParameter("keyword", keyword);
+                }else {
+                    requestParams.addQueryStringParameter("user_id", user_id);
+                }
                 requestParams.addQueryStringParameter("count", count + "");
                 requestParams.addQueryStringParameter("page", page + "");
                 requestParams.addQueryStringParameter("oauth_token", context.oauth_token);
@@ -110,9 +138,15 @@ public class PostsList {
             public void onLoadMore() {
                 page ++;
 
-                String api = "http://" + context.host + "index.php?app=api&mod=Weiba&act=get_posts";
+                String api = "http://" + context.host + "index.php?app=api&mod=Weiba&act=" + type;
                 RequestParams requestParams = new RequestParams();
-                requestParams.addQueryStringParameter("id", weiba_id);
+                if (type.equals("get_posts")){
+                    requestParams.addQueryStringParameter("id", weiba_id);
+                }else if (type.equals("search_post")){
+                    requestParams.addQueryStringParameter("keyword", keyword);
+                }else {
+                    requestParams.addQueryStringParameter("user_id", user_id);
+                }
                 requestParams.addQueryStringParameter("count", count + "");
                 requestParams.addQueryStringParameter("page", page + "");
                 requestParams.addQueryStringParameter("oauth_token", context.oauth_token);
@@ -172,9 +206,15 @@ public class PostsList {
     }
 
     private void init(){
-        String api = "http://" + context.host + "index.php?app=api&mod=Weiba&act=get_posts";
+        String api = "http://" + context.host + "index.php?app=api&mod=Weiba&act=" + type;
         RequestParams requestParams = new RequestParams();
-        requestParams.addQueryStringParameter("id", weiba_id);
+        if (type.equals("get_posts")){
+            requestParams.addQueryStringParameter("id", weiba_id);
+        }else if (type.equals("search_post")){
+            requestParams.addQueryStringParameter("keyword", keyword);
+        }else {
+            requestParams.addQueryStringParameter("user_id", user_id);
+        }
         requestParams.addQueryStringParameter("count", count + "");
         requestParams.addQueryStringParameter("page", page + "");
         requestParams.addQueryStringParameter("oauth_token", context.oauth_token);
