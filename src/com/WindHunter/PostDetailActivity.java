@@ -21,6 +21,7 @@ import com.lidroid.xutils.http.client.HttpRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 
 public class PostDetailActivity extends WeibaBaseActivity {
@@ -152,7 +153,53 @@ public class PostDetailActivity extends WeibaBaseActivity {
                 }
             });
         }else if (item.getTitle().equals("favorite")){
+            String type;
+            if (favorite == 1){
+                type = "unfavorite";
+            }else {
+                type = "favorite";
+            }
 
+            String api = "http://" + host + "index.php?app=api&mod=Weiba&act=post_" + type;
+            RequestParams requestParams = new RequestParams();
+            requestParams.addQueryStringParameter("id", post_id);
+            requestParams.addQueryStringParameter("user_id", uid);
+            requestParams.addQueryStringParameter("oauth_token", oauth_token);
+            requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
+
+            httpUtils.send(HttpRequest.HttpMethod.GET,
+                    api,
+                    requestParams,
+                    new RequestCallBack<String>() {
+                        @Override
+                        public void onSuccess(ResponseInfo<String> responseInfo) {
+                            String state = responseInfo.result;
+
+                            if (state.equals("1")){
+                                if (favorite == 1){
+                                    Toast.makeText(PostDetailActivity.this, "取消成功", Toast.LENGTH_SHORT).show();
+                                    favoriteMenuItem.setIcon(R.drawable.bar_favorits);
+                                    favorite = 0;
+                                }else {
+                                    Toast.makeText(PostDetailActivity.this, "收藏成功", Toast.LENGTH_SHORT).show();
+                                    favoriteMenuItem.setIcon(R.drawable.bar_favorits_clicked);
+                                    favorite = 1;
+                                }
+                            }else {
+                                if (favorite == 1){
+                                    Toast.makeText(PostDetailActivity.this, "取消失败", Toast.LENGTH_SHORT).show();
+                                }else {
+                                    Toast.makeText(PostDetailActivity.this, "收藏失败", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(HttpException e, String s) {
+                            Toast.makeText(PostDetailActivity.this, "网络异常", Toast.LENGTH_SHORT).show();
+                            Log.e("net error", e.toString() + s);
+                        }
+                    });
         }
 
         return super.onOptionsItemSelected(item);
