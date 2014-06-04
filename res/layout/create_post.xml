@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:background="@color/white"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <com.beardedhen.androidbootstrap.BootstrapEditText
+            android:id="@+id/create_post_title"
+            android:hint="请输入标题"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="fill_parent"
+            android:layout_height="48dp"
+            bootstrapbutton:be_roundedCorners="true"
+            bootstrapbutton:be_state="default"
+            android:gravity="left|center"
+            android:singleLine="true"/>
+
+    <com.beardedhen.androidbootstrap.BootstrapEditText
+            android:id="@+id/create_post_content"
+            android:hint="请输入内容"
+            android:layout_width="fill_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            bootstrapbutton:be_roundedCorners="true"
+            bootstrapbutton:be_state="default"
+            android:gravity="left"/>
+
+    <com.beardedhen.androidbootstrap.BootstrapButton
+            android:id="@+id/create_post_submit"
+            android:text="发表"
+            android:layout_width="fill_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            bootstrapbutton:bb_roundedCorners="true"
+            bootstrapbutton:bb_type="primary"
+            bootstrapbutton:bb_text_gravity="center" />
+
+</LinearLayout>

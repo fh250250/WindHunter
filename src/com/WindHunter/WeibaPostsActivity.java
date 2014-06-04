@@ -2,8 +2,10 @@ package com.WindHunter;
 
 
 import android.app.ActionBar;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import com.WH.xListView.XListView;
 import com.WindHunter.tools.PostsList;
 import com.WindHunter.tools.WeibaBaseActivity;
@@ -19,7 +21,21 @@ public class WeibaPostsActivity extends WeibaBaseActivity {
         actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setTitle("帖子列表");
 
+        menu.add("post").setIcon(R.drawable.bar_post).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getTitle().equals("post")){
+            Intent intent = new Intent(this, CreatePostActivity.class);
+            intent.putExtra("weiba_id", weiba_id);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
