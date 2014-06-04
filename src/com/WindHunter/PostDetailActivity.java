@@ -396,12 +396,13 @@ public class PostDetailActivity extends WeibaBaseActivity {
         BootstrapButton deleteBtn = (BootstrapButton)commentBox.findViewById(R.id.weibo_comments_item_delete);
 
         String avatar = jsonObject.getJSONObject("author_info").getString("avatar_middle");
-        String name = jsonObject.getJSONObject("author_info").getString("uname");
+        final String name = jsonObject.getJSONObject("author_info").getString("uname");
         String time = jsonObject.getString("ctime");
         String content = jsonObject.getString("content");
         String user_id = jsonObject.getString("uid");
         final String reply_id = jsonObject.getString("reply_id");
         if (uid.equals(user_id)){
+            // 删除评论
             deleteBtn.setVisibility(View.VISIBLE);
             deleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -452,6 +453,81 @@ public class PostDetailActivity extends WeibaBaseActivity {
                 }
             });
         }
+
+        // 回复评论
+        commentBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("回复: " + name);
+
+                View replyView =  LayoutInflater.from(context).inflate(R.layout.post_message, null);
+
+                builder.setView(replyView);
+                builder.create().show();
+
+                final BootstrapEditText contentView = (BootstrapEditText)replyView.findViewById(R.id.post_message_content);
+                BootstrapButton submit = (BootstrapButton)replyView.findViewById(R.id.post_message_submit);
+                ImageView face = (ImageView)replyView.findViewById(R.id.post_message_face);
+
+                submit.setText("回复");
+
+                face.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        FaceUtils.getFaceToEdit(context, contentView);
+                    }
+                });
+
+                submit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // 具体回复逻辑
+                        String content = contentView.getText().toString();
+                        if (content.isEmpty()){
+                            Toast.makeText(context, "还没有输入内容", Toast.LENGTH_SHORT).show();
+                        }else {
+                            // 组装 回复评论API 请求参数
+                            String replyCommentApi = "http://" + host + "index.php?app=api&mod=Weiba&act=reply_comment";
+                            RequestParams requestParams = new RequestParams();
+                            requestParams.addQueryStringParameter("id", reply_id);
+                            requestParams.addQueryStringParameter("user_id", uid);
+                            requestParams.addBodyParameter("content", "回复@" + name + " ：" + content);
+                            requestParams.addQueryStringParameter("oauth_token", oauth_token);
+                            requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
+
+                            httpUtils.send(HttpRequest.HttpMethod.POST,
+                                    replyCommentApi,
+                                    requestParams,
+                                    new RequestCallBack<String>() {
+                                        @Override
+                                        public void onSuccess(ResponseInfo<String> responseInfo) {
+                                            String state = responseInfo.result;
+
+                                            if (state.equals("1")){
+                                                // 回复成功
+                                                Toast.makeText(context, "回复成功", Toast.LENGTH_SHORT).show();
+
+                                                Intent intent = new Intent(context, context.getClass());
+                                                intent.putExtra("post_id", post_id);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                startActivity(intent);
+                                            }else{
+                                                // 回复失败
+                                                Toast.makeText(context, "回复失败", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(HttpException e, String s) {
+                                            Toast.makeText(context, "网络异常", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+                    }
+                });
+            }
+        });
 
         bitmapUtils.display(avatarView, avatar);
         nameView.setText(name);
