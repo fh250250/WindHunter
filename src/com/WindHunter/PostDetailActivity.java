@@ -3,6 +3,7 @@ package com.WindHunter;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
@@ -21,7 +22,6 @@ import com.lidroid.xutils.http.client.HttpRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 
 public class PostDetailActivity extends WeibaBaseActivity {
@@ -304,7 +304,7 @@ public class PostDetailActivity extends WeibaBaseActivity {
                                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                                     layoutParams.setMargins(0,0,0,8);
-                                    layout.addView(buildComment(context, jsonObject), layoutParams);
+                                    layout.addView(buildComment(context, jsonObject, layout), layoutParams);
                                 }
                             }
                         } catch (JSONException e) {
@@ -362,7 +362,7 @@ public class PostDetailActivity extends WeibaBaseActivity {
                                                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                                                         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                                                         layoutParams.setMargins(0,0,0,8);
-                                                        layout.addView(buildComment(context, jsonObject), layoutParams);
+                                                        layout.addView(buildComment(context, jsonObject, layout), layoutParams);
                                                     }
                                                 }
                                             } catch (JSONException e) {
@@ -386,24 +386,78 @@ public class PostDetailActivity extends WeibaBaseActivity {
         });
     }
 
-    private View buildComment(WeibaBaseActivity context, JSONObject jsonObject) throws JSONException {
-        View view = LayoutInflater.from(context).inflate(R.layout.weibo_comments_item, null);
+    private View buildComment(final WeibaBaseActivity context, JSONObject jsonObject, final LinearLayout layout) throws JSONException {
+        final View commentBox = LayoutInflater.from(context).inflate(R.layout.weibo_comments_item, null);
 
-        ImageView avatarView = (ImageView)view.findViewById(R.id.weibo_comments_item_avatar);
-        TextView nameView = (TextView)view.findViewById(R.id.weibo_comments_item_name);
-        TextView timeView = (TextView)view.findViewById(R.id.weibo_comments_item_time);
-        TextView contentView = (TextView)view.findViewById(R.id.weibo_comments_item_content);
+        ImageView avatarView = (ImageView)commentBox.findViewById(R.id.weibo_comments_item_avatar);
+        TextView nameView = (TextView)commentBox.findViewById(R.id.weibo_comments_item_name);
+        TextView timeView = (TextView)commentBox.findViewById(R.id.weibo_comments_item_time);
+        TextView contentView = (TextView)commentBox.findViewById(R.id.weibo_comments_item_content);
+        BootstrapButton deleteBtn = (BootstrapButton)commentBox.findViewById(R.id.weibo_comments_item_delete);
 
         String avatar = jsonObject.getJSONObject("author_info").getString("avatar_middle");
         String name = jsonObject.getJSONObject("author_info").getString("uname");
         String time = jsonObject.getString("ctime");
         String content = jsonObject.getString("content");
+        String user_id = jsonObject.getString("uid");
+        final String reply_id = jsonObject.getString("reply_id");
+        if (uid.equals(user_id)){
+            deleteBtn.setVisibility(View.VISIBLE);
+            deleteBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View view) {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("确定删除?");
+                    builder.setPositiveButton("是的", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            String api = "http://" + host + "index.php?app=api&mod=Weiba&act=delete_comment";
+                            RequestParams requestParams = new RequestParams();
+                            requestParams.addQueryStringParameter("id", reply_id);
+                            requestParams.addQueryStringParameter("user_id", uid);
+                            requestParams.addQueryStringParameter("oauth_token", oauth_token);
+                            requestParams.addQueryStringParameter("oauth_token_secret", oauth_token_secret);
+
+                            httpUtils.send(HttpRequest.HttpMethod.GET,
+                                    api,
+                                    requestParams,
+                                    new RequestCallBack<String>() {
+                                        @Override
+                                        public void onSuccess(ResponseInfo<String> responseInfo) {
+                                            String state = responseInfo.result;
+
+                                            if (state.equals("1")){
+                                                Toast.makeText(context, "删除成功", Toast.LENGTH_SHORT).show();
+                                                layout.removeView(commentBox);
+                                            }else {
+                                                Toast.makeText(context, "删除失败", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(HttpException e, String s) {
+                                            Toast.makeText(context, "网络异常", Toast.LENGTH_SHORT).show();
+                                            Log.e("net error", e.toString() + s);
+                                        }
+                                    });
+                        }
+                    });
+                    builder.setNegativeButton("不,我再想想", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                        }
+                    });
+                    builder.create().show();
+                }
+            });
+        }
 
         bitmapUtils.display(avatarView, avatar);
         nameView.setText(name);
         timeView.setText(WeibaBaseActivity.getTimeFromPHP(time));
         contentView.setText(FaceUtils.getExpressionString(context, content));
 
-        return view;
+        return commentBox;
     }
 }
