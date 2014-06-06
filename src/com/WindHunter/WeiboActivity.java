@@ -83,6 +83,7 @@ public class WeiboActivity extends WHActivity {
     private final int RIGHT_SCROLL_DELAY = 300;
     private String feed_id;
     private String user_id;
+    private String type;
     private boolean is_coll;
     private GestureDetector gestureDetector;
 
@@ -142,15 +143,19 @@ public class WeiboActivity extends WHActivity {
                             JSONObject weibo = new JSONObject(responseInfo.result);
 
                             user_id = weibo.getString("uid");
+                            type = weibo.getString("type");
                             weibo_user_name.setText(weibo.getString("uname"));
                             bitmapUtils.display(weibo_user_avatar, weibo.getString("avatar_middle"));
 
                             weibo_ctime.setText(weibo.getString("ctime"));
 
-                            if (weibo.isNull("feed_content"))
+                            if (weibo.isNull("feed_content")){
                                 weibo_content.setText("");
-                            else
-                                weibo_content.setText(FaceUtils.getExpressionString(context, weibo.getString("feed_content")));
+                            } else {
+                                String content = weibo.getString("feed_content");
+                                content = content.replaceAll("&nbsp;", "");
+                                weibo_content.setText(FaceUtils.getExpressionString(context, content));
+                            }
 
                             weibo_num.setText("赞(" +
                                     weibo.getString("digg_count") +
@@ -395,10 +400,13 @@ public class WeiboActivity extends WHActivity {
 
                 // 空内容
                 TextView feedContentView = (TextView)repostView.findViewById(R.id.weibo_repost_content);
-                if (repost.isNull("feed_content"))
+                if (repost.isNull("feed_content")){
                     feedContentView.setText("");
-                else
-                    feedContentView.setText(FaceUtils.getExpressionString(context, repost.getString("feed_content")));
+                }else{
+                    String content = repost.getString("feed_content");
+                    content = content.replaceAll("&nbsp;", "");
+                    feedContentView.setText(FaceUtils.getExpressionString(context, content));
+                }
 
                 ((TextView)repostView.findViewById(R.id.weibo_repost_from))
                         .setText(WeiboList.switchFromCode(repost.getString("from")));
@@ -528,6 +536,7 @@ public class WeiboActivity extends WHActivity {
     public void repostClick(View view){
         Intent intent = new Intent(this, RepostActivity.class);
         intent.putExtra("feed_id", feed_id);
+        intent.putExtra("type", type);
         startActivity(intent);
     }
 

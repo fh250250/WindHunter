@@ -41,7 +41,7 @@ public class RepostActivity extends WHActivity {
     BootstrapButton repost_submit;
 
     private String feed_id;
-
+    private String type;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -60,6 +60,7 @@ public class RepostActivity extends WHActivity {
         ViewUtils.inject(this);
 
         feed_id = getIntent().getStringExtra("feed_id");
+        type = getIntent().getStringExtra("type");
 
         repost_content.addTextChangedListener(new TextWatcher() {
             @Override
@@ -102,6 +103,10 @@ public class RepostActivity extends WHActivity {
             requestParams.addQueryStringParameter("comment", "1");
         else
             requestParams.addQueryStringParameter("comment", "0");
+
+        if (type.equals("weiba_post")){
+            requestParams.addQueryStringParameter("type", type);
+        }
 
         requestParams.addQueryStringParameter("id", feed_id);
         requestParams.addQueryStringParameter("from", "2");

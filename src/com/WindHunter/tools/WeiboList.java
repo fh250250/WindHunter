@@ -351,6 +351,7 @@ public class WeiboList {
                 weiboData.content = "";
             else
                 weiboData.content = jsonItem.getString("feed_content");
+            weiboData.content = weiboData.content.replaceAll("&nbsp;", "");
 
             weiboData.feed_id = jsonItem.getString("feed_id");
             weiboData.ctime = jsonItem.getString("ctime");
@@ -496,6 +497,7 @@ public class WeiboList {
                 repostWeiboData.content = "";
             else
                 repostWeiboData.content = repostWeibo.getString("feed_content");
+            repostWeiboData.content = repostWeiboData.content.replaceAll("&nbsp;", "");
 
             repostWeiboData.from = repostWeibo.getString("from");
             repostWeiboData.repost_count = repostWeibo.getString("repost_count");
