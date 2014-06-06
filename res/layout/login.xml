@@ -4,9 +4,9 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
+        android:background="@color/white"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@android:color/white"
         android:baselineAligned="false"
         >
     <LinearLayout
@@ -18,7 +18,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/login_logo"
+                android:src="@drawable/logo"
                 />
     </LinearLayout>
     <com.beardedhen.androidbootstrap.BootstrapEditText
@@ -63,7 +63,7 @@
     <LinearLayout
             android:layout_marginTop="3dp"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
+            android:gravity="bottom"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
         <CheckBox
@@ -79,7 +79,7 @@
                 android:textSize="16sp"
                 android:gravity="right"
                 android:layout_marginRight="20dp"
-                android:textColor="@color/bbutton_info"
+                android:textColor="#05c665"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
     </LinearLayout>
